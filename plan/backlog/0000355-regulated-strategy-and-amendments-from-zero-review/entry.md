@@ -83,17 +83,44 @@ Framework differs from Zero in these ways:
 - Other frameworks: 0000348 to 0000351.
 - Jira: 0000352 to 0000354.
 
-## 5. Suggested order
+## 5. Feature breakdown
 
-1. Retire Fast Path: 0000358. The owner asked for this first on 2026-10-31.
-2. Urgent controls: 0000297, 0000298, and 0000299.
-3. 0000272 and 0000301.
-4. Base controls: 0000288, 0000286, and 0000289, with 0000303 and 0000305.
-5. 0000296 and 0000295.
-6. 0000348 and 0000337.
-7. 0000339, 0000338, 0000340, 0000341, and 0000342.
-8. Postmortem and CAPA: 0000330 to 0000332, then the hotfix path 0000359 after 0000334.
-9. The remaining items.
+Framework builds one feature at a time. Each row below is one pipeline run, in order. The run takes its feature ID at P0. Its P0 pulls in the listed entries and may split or merge them. Entries 0000280 to 0000293 live on PR #74.
+
+| # | Feature | Entries | Route |
+|---|---------|---------|-------|
+| F1 | Retire Fast Path | 0000358. Closes 0000152 and 0000200, and narrows 0000308. | Feature |
+| F2 | Make enforcement fail closed | 0000310 first, so tests can fail. Then 0000297, 0000298, 0000299, 0000130, 0000179, and 0000309. | Feature |
+| F3 | Block AI attribution everywhere | 0000276 | Feature |
+| F4 | Make setup safe | 0000272, 0000300, 0000314, 0000321, and 0000329 | Change |
+| F5 | Remove bundled skills and govern your own | 0000301, 0000302, and 0000318 | Feature |
+| F6 | Protect policy and attribute approvals | 0000288, 0000286, 0000325, and 0000327 | Feature |
+| F7 | Tamper-evident audit trail and evidence | 0000289, 0000290, 0000312, 0000323, 0000326, and 0000351 | Feature |
+| F8 | Git and run guards | 0000303, 0000304, 0000305, 0000308, 0000311, 0000313, 0000320, and 0000322 | Feature |
+| F9 | Test integrity | 0000315, 0000316, and 0000324 | Change |
+| F10 | Permanent ADR homes and timestamps | 0000296 and 0000294 | Change |
+| F11 | Plan work in Jira | 0000295, 0000280, 0000282, and 0000354 | Feature |
+| F12 | Jira approvals and the change record | 0000352 and 0000353 | Feature |
+| F13 | Compliance profiles and defaults | 0000356 decision first, then 0000348, 0000285, 0000287, 0000306, and 0000307 | Feature |
+| F14 | Control data sent to the model provider | 0000357 and 0000345 | Feature |
+| F15 | GxP profile and specifications | 0000337, 0000338, and 0000339 | Feature |
+| F16 | Traceability and validation reporting | 0000340, 0000341, and 0000342 | Feature |
+| F17 | Part 11, validated state, and tool qualification | 0000343, 0000344, 0000346, 0000347, and 0000317 | Feature |
+| F18 | Postmortem and CAPA | 0000330, 0000331, and 0000332, which ship together | Feature |
+| F19 | Incidents, hotfixes, and deviations | 0000334, 0000359, and 0000333 | Feature |
+| F20 | Trends and periodic review | 0000335 and 0000336 | Feature |
+| F21 | Medical device risk and SOUP | 0000284, 0000349, and 0000350 | Feature |
+| F22 | Report skill | 0000360 | Feature |
+| F23 | Agent conduct fixes | 0000319, 0000328, and 0000059 | Change |
+
+Points on the order:
+
+- F1 goes first because the owner asked for it on 2026-10-31. F2 follows because the other runs rely on hooks that fail closed.
+- F6 and F7 are the base controls. F11 onwards depend on them.
+- F18 needs F11, because each CAPA action raises a Jira issue with an owner and a due date.
+- F19 needs F18. F13 must settle 0000356 before F15 starts.
+- The entries in section 2 need the owner's decision before any run that cites them.
+- Entries not listed here, such as 0000023 and 0000283, stay in the backlog for a later P0.
 
 ## Why Deferred
 
