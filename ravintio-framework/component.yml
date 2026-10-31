@@ -1,7 +1,7 @@
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
 feature: "0000039-ravintio-rebrand"
-version: "0.37.1"
+version: "0.37.2"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
@@ -215,7 +215,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-10-25"
+  updatedAt: "2026-10-31"
   # Updated by 0000021 (spec-agent) P1: seeded requirements-derived
   # responsibilities/scope/risk entries for the regression-pack and
   # audit-findings-report/guardrailed-trim process ahead of P3 codegen.

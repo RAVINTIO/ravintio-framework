@@ -8,6 +8,7 @@
 #        product-version.mjs prints it. A patch release keeps the 0.37 minor.
 #   AC2: every `git grep` hit for 1.0.0 names it as the removal point for
 #        old-name reads, or sits in a third-party or non-release version field.
+#        The EXEMPT list names the paths the scan skips (backlog 0000361).
 #
 # Verified by: integration
 # Verified by: execution
@@ -39,7 +40,20 @@ PV_OUT="$(cd "$REPO" && env -u CLAUDE_PROJECT_DIR node "$FRAMEWORK/scripts/produ
 assert_equals "$WANT" "$PV_OUT" "req-010 AC1: product-version.mjs prints $WANT"
 
 # --- AC2 ---------------------------------------------------------------
-HITS="$(cd "$REPO" && git grep -n '1\.0\.0' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!ravintio-framework/tests/test-0000039-req-010-version-bump.sh' ':!ravintio-framework/tests/regression/test-0000039-req-010-version-bump.sh' 2>/dev/null || true)"
+# Paths the scan skips. History, backlog entries, and reports may name 1.0.0
+# as an example or a plan without claiming it as the current release.
+# -I skips binary files, such as PDF reports.
+EXEMPT=(
+  ':!plan/_archive'
+  ':!plan/changelog'
+  ':!plan/_migrations'
+  ':!plan/current'
+  ':!plan/backlog'
+  ':!plan/reports'
+  ':!ravintio-framework/tests/test-0000039-req-010-version-bump.sh'
+  ':!ravintio-framework/tests/regression/test-0000039-req-010-version-bump.sh'
+)
+HITS="$(cd "$REPO" && git grep -n -I '1\.0\.0' -- . "${EXEMPT[@]}" 2>/dev/null || true)"
 
 # A removal-point line pairs 1.0.0 with a form of "remove" or "go", in either order,
 # such as "removed at 1.0.0", "1.0.0 removes them", or "upgrades straight to 1.0.0"
