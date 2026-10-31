@@ -3,9 +3,17 @@
 <meta charset="utf-8">
 <title>Framework for Regulated Delivery</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
 <style>
+/* Static font instances. Chrome embeds variable fonts as Type 3, which breaks copied text in PDF viewers. */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/files/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: italic; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/files/ibm-plex-sans-latin-400-italic.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/files/ibm-plex-sans-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-sans@5.2.5/files/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.5/files/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.2.5/files/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Newsreader"; font-weight: 400; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/newsreader@5.2.5/files/newsreader-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Newsreader"; font-weight: 500; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/newsreader@5.2.5/files/newsreader-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Newsreader"; font-weight: 600; font-style: normal; src: url(https://cdn.jsdelivr.net/npm/@fontsource/newsreader@5.2.5/files/newsreader-latin-600-normal.woff2) format("woff2"); }
 /* Layout: a controlled quality document. A4 pages, a document-control header band, numbered sections, diagrams set as figures. */
 :root {
   --ink: #14202e;
@@ -31,7 +39,7 @@
   size: A4;
   margin: 20mm 18mm 18mm 18mm;
   @top-left { content: "RAVINTIO Framework  ·  Regulated strategy review"; font: 500 7.5pt "IBM Plex Sans", Arial, sans-serif; color: #6b7889; }
-  @top-right { content: "RFW-RPT-0001  ·  Rev 1.0  ·  2026-10-31"; font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
+  @top-right { content: "RFW-RPT-0001  ·  Rev 1.1  ·  2026-10-31"; font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
   @bottom-left { content: "Proposal for owner review. Framework records evidence and never claims compliance."; font: 400 7pt "IBM Plex Sans", Arial, sans-serif; color: #6b7889; }
   @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
 }
@@ -164,7 +172,7 @@ a { color: var(--teal); text-decoration: none; }
 
 <!-- ===================== COVER ===================== -->
 <section class="cover">
-  <div class="cover-top"><span>RAVINTIO FRAMEWORK</span><span>RFW-RPT-0001 · REV 1.0</span></div>
+  <div class="cover-top"><span>RAVINTIO FRAMEWORK</span><span>RFW-RPT-0001 · REV 1.1</span></div>
 
   <svg class="cover-art" viewBox="0 0 400 400" aria-hidden="true">
     <g fill="none" stroke="#2c4057" stroke-width="1">
@@ -195,7 +203,7 @@ a { color: var(--teal); text-decoration: none; }
 
   <dl class="doc-control">
     <div><dt>Document</dt><dd>RFW-RPT-0001</dd></div>
-    <div><dt>Revision</dt><dd>1.0 · 2026-10-31</dd></div>
+    <div><dt>Revision</dt><dd>1.1 · 2026-10-31</dd></div>
     <div><dt>Status</dt><dd>Proposal for owner review</dd></div>
     <div><dt>Pull request</dt><dd>#75</dd></div>
     <div><dt>Branch</dt><dd>chore/0000294-zero-filed-backlog</dd></div>
@@ -545,7 +553,7 @@ a { color: var(--teal); text-decoration: none; }
     </div>
     <div class="callout" style="margin:0">
       <b class="t">What Framework adds</b>
-      <p>Deterministic triggers and a gate before archive. A CAPA register where closure needs evidence that the action worked. Impact on validated state, deviations, incidents, trends, and periodic review.</p>
+      <p>Deterministic triggers and a gate before archive. Every action gets a Jira issue, a named owner, and a committed due date. An overdue action blocks the next release. Closure needs evidence that the action worked.</p>
     </div>
   </div>
   <figure>
@@ -558,7 +566,7 @@ a { color: var(--teal); text-decoration: none; }
 
         <rect x="0" y="50" width="86" height="54" rx="2" fill="#fbe9e7" stroke="#b3261e"/><text x="43" y="73" text-anchor="middle" font-weight="600" fill="#b3261e">Trigger</text><text x="43" y="87" text-anchor="middle" fill="#b3261e" font-size="8">stop, failed CI</text>
         <rect x="96" y="50" width="98" height="54" rx="2" fill="#14202e"/><text x="145" y="70" text-anchor="middle" font-weight="600" fill="#ffffff">Postmortem</text><text x="145" y="83" text-anchor="middle" fill="#c6d1dd" font-size="8">5 whys, fishbone,</text><text x="145" y="94" text-anchor="middle" fill="#c6d1dd" font-size="8">impact</text>
-        <rect x="246" y="50" width="70" height="54" rx="2" fill="#f2f5f8" stroke="#9aa6b5"/><text x="281" y="81" text-anchor="middle" font-weight="600">Open</text>
+        <rect x="246" y="50" width="70" height="54" rx="2" fill="#f2f5f8" stroke="#9aa6b5"/><text x="281" y="70" text-anchor="middle" font-weight="600">Open</text><text x="281" y="83" text-anchor="middle" fill="#6b7889" font-size="8">Jira, owner,</text><text x="281" y="94" text-anchor="middle" fill="#6b7889" font-size="8">due date</text>
         <rect x="326" y="50" width="86" height="54" rx="2" fill="#f2f5f8" stroke="#9aa6b5"/><text x="369" y="81" text-anchor="middle" font-weight="600">Implemented</text>
         <rect x="422" y="50" width="86" height="54" rx="2" fill="#fbf0e3" stroke="#a85a12"/><text x="465" y="73" text-anchor="middle" font-weight="600" fill="#a85a12">Effectiveness</text><text x="465" y="87" text-anchor="middle" font-weight="600" fill="#a85a12">check</text>
         <rect x="518" y="50" width="62" height="54" rx="2" fill="#e3f1ef" stroke="#0d6b66"/><text x="549" y="81" text-anchor="middle" font-weight="600" fill="#0d6b66">Effective</text>
@@ -629,12 +637,12 @@ a { color: var(--teal); text-decoration: none; }
   <div class="section-head"><span class="num">10</span><h2>Suggested delivery order</h2></div>
   <p>Framework builds one feature at a time, so the order matters. Each wave depends on the one before it. The base controls in wave 3 carry most of what later waves need.</p>
   <div class="waves">
-    <div class="wave first"><div class="w"><small>Wave</small>1</div><div><h3>Close the three urgent gaps</h3><p>Stop an agent switching off its own controls or leaking a secret.</p><div class="ids"><span>0000297</span><span>0000298</span><span>0000299</span></div></div></div>
+    <div class="wave first"><div class="w"><small>Wave</small>1</div><div><h3>Retire Fast Path and close the three urgent gaps</h3><p>Route every change through a pipeline. Stop an agent switching off its own controls or leaking a secret.</p><div class="ids"><span>0000358</span><span>0000297</span><span>0000298</span><span>0000299</span></div></div></div>
     <div class="wave"><div class="w"><small>Wave</small>2</div><div><h3>Remove the bundled skills</h3><p>Fix the manifest first, then remove the library and open the governed route.</p><div class="ids"><span>0000272</span><span>0000301</span><span>0000302</span></div></div></div>
     <div class="wave"><div class="w"><small>Wave</small>3</div><div><h3>Build the base controls</h3><p>Protected policy, attributable approvals, a tamper-evident audit trail, git guards, and the one-feature lock.</p><div class="ids"><span>0000288</span><span>0000286</span><span>0000289</span><span>0000303</span><span>0000305</span></div></div></div>
     <div class="wave"><div class="w"><small>Wave</small>4</div><div><h3>Put Jira at the centre</h3><p>Permanent ADR homes, then Jira planning and approval records bound to commits.</p><div class="ids"><span>0000296</span><span>0000295</span><span>0000352</span></div></div></div>
     <div class="wave"><div class="w"><small>Wave</small>5</div><div><h3>Add profiles and GAMP 5</h3><p>Confirm the enforcement table, build the profile mechanism, then the GxP records in order.</p><div class="ids"><span>0000356</span><span>0000348</span><span>0000337</span><span>0000339</span><span>0000338</span><span>0000340</span><span>0000341</span><span>0000342</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>6</div><div><h3>Close the quality loop</h3><p>Postmortems, CAPA, and the gate before archive. The remaining entries follow.</p><div class="ids"><span>0000330</span><span>0000331</span><span>0000332</span></div></div></div>
+    <div class="wave"><div class="w"><small>Wave</small>6</div><div><h3>Close the quality loop</h3><p>Postmortems, CAPA, and the gate before archive, then the incident hotfix path. The remaining entries follow.</p><div class="ids"><span>0000330</span><span>0000331</span><span>0000332</span><span>0000359</span></div></div></div>
   </div>
 </section>
 
@@ -728,9 +736,11 @@ a { color: var(--teal); text-decoration: none; }
       <tr class="g"><td colspan="3">Jira</td></tr>
       <tr><td class="id">0000352</td><td>Jira approval records bound to commit and digest</td><td>Feature</td></tr>
       <tr><td class="id">0000353</td><td>Change record gate before ship</td><td>Feature</td></tr>
-      <tr><td class="id">0000354</td><td>CAPA and defect source links in templates</td><td>Fast or Change</td></tr>
-      <tr class="g"><td colspan="3">Strategy record</td></tr>
+      <tr><td class="id">0000354</td><td>CAPA and defect source links in templates</td><td>Change</td></tr>
+      <tr class="g"><td colspan="3">Strategy record and follow-ups</td></tr>
       <tr><td class="id">0000355</td><td>Regulated strategy and amendments from the Zero review</td><td>Record</td></tr>
+      <tr><td class="id">0000358</td><td>Retire Fast Path</td><td>Feature</td></tr>
+      <tr><td class="id">0000359</td><td>Design a controlled hotfix path for incidents</td><td>Feature</td></tr>
     </tbody>
   </table>
   </div>
