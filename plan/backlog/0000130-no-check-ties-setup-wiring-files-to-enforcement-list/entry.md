@@ -24,6 +24,10 @@ Nothing checks the constant against the paths the setup scripts write. The per-t
 
 Add a suite that collects every wiring file path the setup scripts write and asserts each one matches `FAST_PATH_ENFORCEMENT_PATHS`. One option is to run setup into a fixture and compare the written files with the constant.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and may rename `FAST_PATH_ENFORCEMENT_PATHS`. If the list survives under a new name, this check still applies to it. If 0000358 removes the list, close this entry.
+
 ## Why Deferred
 
 The 0000035 scope covers the enforcement list and its parity with `fast-path.md`, not setup behaviour. A setup-level check needs its own design for how to enumerate wiring files across every tool.

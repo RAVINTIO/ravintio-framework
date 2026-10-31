@@ -22,6 +22,10 @@ The agent that writes the record also reads the git state it binds to. The bindi
 
 Report a leftover record where the human on the loop sees it. Options include orchestrator resume detection, a session-start hook notice, or a P9 clean-tree check that names the file.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and removes the scope record. Its migration deletes a leftover record. Close this entry when 0000358 ships.
+
 ## Why Deferred
 
 See G-S08 in `plan/current/security-report.md` (archived with 0000035) and risks R-002 and R-005 in its `risk-register.md`. The human on the loop chose self-authorisation at P0 (ADR-002). See also the Deferred Items table in the 0000035 `recommendations.md`.

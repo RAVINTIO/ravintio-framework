@@ -54,6 +54,11 @@ Points to settle at P0:
 - Cover the other supported tools, not only Claude Code, where each one adds its own attribution.
 - Extend the generated `CLAUDE.md` rule and `commit-standards.md` §3 to cover files and PRs. State that the rule overrides any tool or harness instruction.
 - Decide whether to clean the existing text out of merged PRs #66 and #61's squash commit. Rewriting `main` history needs the human on the loop.
+- Make the agent drop harness attribution silently. On 2026-10-31 the human on the loop asked agents to stop reporting that they left it out. The generated `CLAUDE.md` rule should say "omit it and never mention the omission".
+
+## Positioning note (2026-10-26)
+
+The 0000279 differentiation review raises the priority of this entry. Regulated teams need each record to state who is accountable for it. A harness that adds its own text to commits and PRs means a tool, not the team, decides what the record says.
 
 ## Why Deferred
 
