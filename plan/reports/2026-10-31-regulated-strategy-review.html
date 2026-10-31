@@ -39,7 +39,7 @@
   size: A4;
   margin: 20mm 18mm 18mm 18mm;
   @top-left { content: "RAVINTIO Framework  ·  Regulated strategy review"; font: 500 7.5pt "IBM Plex Sans", Arial, sans-serif; color: #6b7889; }
-  @top-right { content: "RFW-RPT-0001  ·  Rev 1.1  ·  2026-10-31"; font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
+  @top-right { content: "RFW-RPT-0001  ·  Rev 1.2  ·  2026-10-31"; font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
   @bottom-left { content: "Proposal for owner review. Framework records evidence and never claims compliance."; font: 400 7pt "IBM Plex Sans", Arial, sans-serif; color: #6b7889; }
   @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 400 7.5pt "IBM Plex Mono", Menlo, monospace; color: #6b7889; }
 }
@@ -148,6 +148,17 @@ svg .mono { font-family: "IBM Plex Mono", Menlo, monospace; }
 .ids { display: flex; flex-wrap: wrap; gap: 3pt; margin-top: 4pt; }
 .ids span { font: 500 7.4pt var(--mono); background: var(--wash); color: var(--ink-2); padding: 1pt 4pt; border-radius: 2pt; }
 .wave.first .w { color: var(--red); }
+.features td { padding: 4pt 8pt 4pt 0; font-size: 8.2pt; }
+.features td.n { font: 500 10pt var(--display); color: var(--teal); width: 26pt; }
+.features td b { display: block; font-weight: 600; color: var(--ink); }
+.features td small { display: block; font-size: 7.4pt; color: var(--ink-3); margin-top: 1pt; }
+.features td.ent { width: 44%; }
+.features td.ent span { display: inline-block; font: 500 6.8pt var(--mono); background: #eef2f5; color: var(--ink-2); padding: 1pt 3pt; border-radius: 2pt; margin: 0 2pt 2pt 0; }
+.features td:last-child { width: 44pt; color: var(--ink-3); }
+.features tr { break-inside: avoid; }
+.features tr.g { break-after: avoid; page-break-after: avoid; }
+.features tr.g td { font: 600 7pt var(--body); letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); padding-top: 8pt; border-bottom: 1pt solid var(--ink); }
+.features tr.now td.n { color: var(--red); }
 
 /* Decisions */
 .decisions { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: d; }
@@ -172,7 +183,7 @@ a { color: var(--teal); text-decoration: none; }
 
 <!-- ===================== COVER ===================== -->
 <section class="cover">
-  <div class="cover-top"><span>RAVINTIO FRAMEWORK</span><span>RFW-RPT-0001 · REV 1.1</span></div>
+  <div class="cover-top"><span>RAVINTIO FRAMEWORK</span><span>RFW-RPT-0001 · REV 1.2</span></div>
 
   <svg class="cover-art" viewBox="0 0 400 400" aria-hidden="true">
     <g fill="none" stroke="#2c4057" stroke-width="1">
@@ -203,7 +214,7 @@ a { color: var(--teal); text-decoration: none; }
 
   <dl class="doc-control">
     <div><dt>Document</dt><dd>RFW-RPT-0001</dd></div>
-    <div><dt>Revision</dt><dd>1.1 · 2026-10-31</dd></div>
+    <div><dt>Revision</dt><dd>1.2 · 2026-10-31</dd></div>
     <div><dt>Status</dt><dd>Proposal for owner review</dd></div>
     <div><dt>Pull request</dt><dd>#75</dd></div>
     <div><dt>Branch</dt><dd>chore/0000294-zero-filed-backlog</dd></div>
@@ -634,15 +645,45 @@ a { color: var(--teal); text-decoration: none; }
 
 <!-- ===================== 10. ROADMAP ===================== -->
 <section class="section page-break">
-  <div class="section-head"><span class="num">10</span><h2>Suggested delivery order</h2></div>
-  <p>Framework builds one feature at a time, so the order matters. Each wave depends on the one before it. The base controls in wave 3 carry most of what later waves need.</p>
-  <div class="waves">
-    <div class="wave first"><div class="w"><small>Wave</small>1</div><div><h3>Retire Fast Path and close the three urgent gaps</h3><p>Route every change through a pipeline. Stop an agent switching off its own controls or leaking a secret.</p><div class="ids"><span>0000358</span><span>0000297</span><span>0000298</span><span>0000299</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>2</div><div><h3>Remove the bundled skills</h3><p>Fix the manifest first, then remove the library and open the governed route.</p><div class="ids"><span>0000272</span><span>0000301</span><span>0000302</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>3</div><div><h3>Build the base controls</h3><p>Protected policy, attributable approvals, a tamper-evident audit trail, git guards, and the one-feature lock.</p><div class="ids"><span>0000288</span><span>0000286</span><span>0000289</span><span>0000303</span><span>0000305</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>4</div><div><h3>Put Jira at the centre</h3><p>Permanent ADR homes, then Jira planning and approval records bound to commits.</p><div class="ids"><span>0000296</span><span>0000295</span><span>0000352</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>5</div><div><h3>Add profiles and GAMP 5</h3><p>Confirm the enforcement table, build the profile mechanism, then the GxP records in order.</p><div class="ids"><span>0000356</span><span>0000348</span><span>0000337</span><span>0000339</span><span>0000338</span><span>0000340</span><span>0000341</span><span>0000342</span></div></div></div>
-    <div class="wave"><div class="w"><small>Wave</small>6</div><div><h3>Close the quality loop</h3><p>Postmortems, CAPA, and the gate before archive, then the incident hotfix path. The remaining entries follow.</p><div class="ids"><span>0000330</span><span>0000331</span><span>0000332</span><span>0000359</span></div></div></div>
+  <div class="section-head"><span class="num">10</span><h2>Features in run order</h2></div>
+  <p>Framework builds one feature at a time. Each row is one pipeline run that takes its feature ID at P0. Its P0 pulls in the listed entries and may split or merge them. Entry 0000355 holds the same list.</p>
+  <table class="features">
+    <thead><tr><th>#</th><th>Feature</th><th>Entries</th><th>Route</th></tr></thead>
+    <tbody>
+      <tr class="g"><td colspan="4">Close the gaps</td></tr>
+      <tr class="now"><td class="n">F1</td><td><b>Retire Fast Path</b><small>Closes 0000152 and 0000200, and narrows 0000308.</small></td><td class="ent"><span>0000358</span></td><td>Feature</td></tr>
+      <tr><td class="n">F2</td><td><b>Make enforcement fail closed</b><small>Fix the test runner first, so tests can fail.</small></td><td class="ent"><span>0000310</span><span>0000297</span><span>0000298</span><span>0000299</span><span>0000130</span><span>0000179</span><span>0000309</span></td><td>Feature</td></tr>
+      <tr><td class="n">F3</td><td><b>Block AI attribution everywhere</b></td><td class="ent"><span>0000276</span></td><td>Feature</td></tr>
+      <tr><td class="n">F4</td><td><b>Make setup safe</b></td><td class="ent"><span>0000272</span><span>0000300</span><span>0000314</span><span>0000321</span><span>0000329</span></td><td>Change</td></tr>
+      <tr><td class="n">F5</td><td><b>Remove bundled skills and govern your own</b></td><td class="ent"><span>0000301</span><span>0000302</span><span>0000318</span></td><td>Feature</td></tr>
+      <tr class="g"><td colspan="4">Build the base controls</td></tr>
+      <tr><td class="n">F6</td><td><b>Protect policy and attribute approvals</b></td><td class="ent"><span>0000288</span><span>0000286</span><span>0000325</span><span>0000327</span></td><td>Feature</td></tr>
+      <tr><td class="n">F7</td><td><b>Tamper-evident audit trail and evidence</b></td><td class="ent"><span>0000289</span><span>0000290</span><span>0000312</span><span>0000323</span><span>0000326</span><span>0000351</span></td><td>Feature</td></tr>
+      <tr><td class="n">F8</td><td><b>Git and run guards</b></td><td class="ent"><span>0000303</span><span>0000304</span><span>0000305</span><span>0000308</span><span>0000311</span><span>0000313</span><span>0000320</span><span>0000322</span></td><td>Feature</td></tr>
+      <tr><td class="n">F9</td><td><b>Test integrity</b></td><td class="ent"><span>0000315</span><span>0000316</span><span>0000324</span></td><td>Change</td></tr>
+      <tr class="g"><td colspan="4">Put Jira at the centre</td></tr>
+      <tr><td class="n">F10</td><td><b>Permanent ADR homes and timestamps</b></td><td class="ent"><span>0000296</span><span>0000294</span></td><td>Change</td></tr>
+      <tr><td class="n">F11</td><td><b>Plan work in Jira</b></td><td class="ent"><span>0000295</span><span>0000280</span><span>0000282</span><span>0000354</span></td><td>Feature</td></tr>
+      <tr><td class="n">F12</td><td><b>Jira approvals and the change record</b></td><td class="ent"><span>0000352</span><span>0000353</span></td><td>Feature</td></tr>
+      <tr class="g"><td colspan="4">Profiles and GAMP 5</td></tr>
+      <tr><td class="n">F13</td><td><b>Compliance profiles and defaults</b><small>Settle the 0000356 table first.</small></td><td class="ent"><span>0000356</span><span>0000348</span><span>0000285</span><span>0000287</span><span>0000306</span><span>0000307</span></td><td>Feature</td></tr>
+      <tr><td class="n">F14</td><td><b>Control data sent to the model provider</b></td><td class="ent"><span>0000357</span><span>0000345</span></td><td>Feature</td></tr>
+      <tr><td class="n">F15</td><td><b>GxP profile and specifications</b></td><td class="ent"><span>0000337</span><span>0000338</span><span>0000339</span></td><td>Feature</td></tr>
+      <tr><td class="n">F16</td><td><b>Traceability and validation reporting</b></td><td class="ent"><span>0000340</span><span>0000341</span><span>0000342</span></td><td>Feature</td></tr>
+      <tr><td class="n">F17</td><td><b>Part 11, validated state, and tool qualification</b></td><td class="ent"><span>0000343</span><span>0000344</span><span>0000346</span><span>0000347</span><span>0000317</span></td><td>Feature</td></tr>
+      <tr class="g"><td colspan="4">Close the quality loop</td></tr>
+      <tr><td class="n">F18</td><td><b>Postmortem and CAPA</b><small>Each action gets a Jira issue, a named owner, and a due date.</small></td><td class="ent"><span>0000330</span><span>0000331</span><span>0000332</span></td><td>Feature</td></tr>
+      <tr><td class="n">F19</td><td><b>Incidents, hotfixes, and deviations</b></td><td class="ent"><span>0000334</span><span>0000359</span><span>0000333</span></td><td>Feature</td></tr>
+      <tr><td class="n">F20</td><td><b>Trends and periodic review</b></td><td class="ent"><span>0000335</span><span>0000336</span></td><td>Feature</td></tr>
+      <tr><td class="n">F21</td><td><b>Medical device risk and SOUP</b></td><td class="ent"><span>0000284</span><span>0000349</span><span>0000350</span></td><td>Feature</td></tr>
+      <tr class="g"><td colspan="4">Supporting work</td></tr>
+      <tr><td class="n">F22</td><td><b>Report skill</b><small>Zero can reuse it for initiatives.</small></td><td class="ent"><span>0000360</span></td><td>Feature</td></tr>
+      <tr><td class="n">F23</td><td><b>Agent conduct fixes</b></td><td class="ent"><span>0000319</span><span>0000328</span><span>0000059</span></td><td>Change</td></tr>
+    </tbody>
+  </table>
+  <div class="callout" style="margin-top:10pt">
+    <b class="t">Why this order</b>
+    <p>F1 goes first at the owner's request. F2 follows because every later run relies on hooks that fail closed. F6 and F7 are the base controls that F11 onwards depend on. F18 needs Jira from F11, and F19 needs F18.</p>
   </div>
 </section>
 
