@@ -24,6 +24,10 @@ The one timing-dependent code is two wall-clock assertions at lines 320 and 325.
 
 Capture the failing assertion name the next time the suite fails (rerun with the output saved). If it is a 500 ms assertion, widen the bound or measure the hook's own time rather than the process start. If it is another assertion, diagnose from the saved output.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and removes or rewrites this suite. Close this entry when 0000358 ships.
+
 ## Why Deferred
 
 P3 has no failing output to act on. A change to a timing bound without evidence would guess at the cause.
