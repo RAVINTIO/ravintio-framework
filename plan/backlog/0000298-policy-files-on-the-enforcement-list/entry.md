@@ -48,6 +48,10 @@ Only a human changes `ravintio-overrides/`. The template's promise matches what 
 
 - With a confirmed design, should `gate-write` also block `ravintio-overrides/` when a component path covers it? 0000297 asks the same question for every enforcement path.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path, which removes the first write route. Keep `ravintio-overrides/` on the enforcement list under whatever name 0000358 gives it. The P0 skill intake change still applies.
+
 ## Why Deferred
 
 The human asked for it on 2026-10-31. It changes the enforcement list and a P0 procedure, so it needs the Change Pipeline.

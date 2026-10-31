@@ -24,6 +24,10 @@ The gap predates 0000036. See finding 6 in `plan/current/security-review-hooks.m
 
 Route `.gitattributes` through the normal design route when it sits in the root or in a folder above an enforcement path. Another option is to add the root `.gitattributes` to `FAST_PATH_ENFORCEMENT_PATHS`.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and may rename `FAST_PATH_ENFORCEMENT_PATHS`. Apply this fix to the list under its new name.
+
 ## Why Deferred
 
 It changes the always-permitted list outside enforcement paths, which 0000036 req-009 keeps unchanged. It needs its own design decision.

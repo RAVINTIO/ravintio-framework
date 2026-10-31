@@ -24,6 +24,8 @@ Publish a measured comparison of a fixed task set built three ways: baseline age
 
 Small and honest beats large and delayed — five tasks published is worth more than fifty planned.
 
+Update 2026-10-31: 0000358 retires Fast Path. Compare the Change Pipeline in its place.
+
 ## Why Deferred
 
 Filed from an external review rather than an in-flight pipeline feature. Depends on 0000022, which supplies two of the four metrics automatically; without it, tokens and duration have to be collected by hand.

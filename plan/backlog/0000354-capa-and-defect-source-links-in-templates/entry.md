@@ -10,7 +10,7 @@ status: "open"
 **Deferral source:** human request
 **Date filed:** 2026-10-31
 
-**Suggested route:** Fast Path or Change Pipeline
+**Suggested route:** Change Pipeline. 0000358 retires Fast Path.
 **Related:** 0000295, 0000331
 
 ---

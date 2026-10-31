@@ -10,7 +10,7 @@ status: "open"
 **Deferral source:** human request
 **Date filed:** 2026-10-31
 **Suggested route:** Feature Pipeline. Ship it with 0000330 and 0000331.
-**Related:** 0000085, 0000312
+**Related:** 0000085, 0000312, 0000331
 
 ---
 
@@ -33,6 +33,11 @@ Add a read-only script, `ravintio-framework/scripts/postmortem-check.mjs`, and r
 
 It also refuses when a corrective CAPA raised in this run is still `open`. A CAPA in `implemented` or `effectiveness-pending` passes, because its check falls after the run.
 
+It also refuses in these cases (0000331):
+
+- A CAPA from this run has no Jira issue, no named assignee, or no due date.
+- Any CAPA in the register is overdue. This blocks every release until the action is done or a human records a new date with a reason.
+
 P8's build report lists each postmortem and the status of each CAPA.
 
 Add a rule to the postmortem skill: if a lesson appears in two records, it must become a check, not text. The action for that lesson is a test, a hook, or a script, never a new sentence in a skill.
@@ -40,6 +45,7 @@ Add a rule to the postmortem skill: if a lesson appears in two records, it must 
 ## Wanted outcome
 
 - `postmortem-check.mjs` exits non-zero for each missing-postmortem case and each open corrective CAPA.
+- It exits non-zero for a CAPA without a Jira assignee or due date, and for any overdue CAPA.
 - It exits zero for a clean run, and it writes no file.
 - P7 stops on a non-zero exit and names each gap.
 - The P8 build report lists every postmortem and CAPA status for the run.

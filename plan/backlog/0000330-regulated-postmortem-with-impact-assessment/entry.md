@@ -47,7 +47,7 @@ Port Zero's skill as `ravintio-postmortem`. In Framework terms, the self-correct
   - a regulatory significance call for data integrity, patient safety, and financial reporting
 - **Record:** write each record outside `plan/current/`, for example `plan/quality/postmortems/`. Never overwrite one. A correction is a new record that links the old one.
 
-Each action becomes a CAPA record under 0000331. The postmortem records evidence and links to the organisation's QMS. It never claims compliance.
+Each action becomes a CAPA record under 0000331. Each one raises a Jira issue with a named assignee and a due date. The postmortem can't close until every action has all three. The postmortem records evidence and links to the organisation's QMS. It never claims compliance.
 
 ## Wanted outcome
 

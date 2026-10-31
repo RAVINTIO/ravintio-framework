@@ -42,6 +42,10 @@ A commit subject can't buy a weaker check. Tests check these conditions:
 - A `fix(fast-path):` branch that breaks a Fast Path criterion fails CI.
 - A branch that meets every criterion passes, whatever its commit subjects say.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and removes the `fix(fast-path):` exemption from pre-push and CI. That removes the weaker check this entry describes. The advisory pre-commit and the presence-only checks remain. When 0000358 ships, narrow this entry to those two problems.
+
 ## Why Deferred
 
 The human asked for it on 2026-10-31 after the Zero comparison review. It changes an enforcement path and the consumer CI template.

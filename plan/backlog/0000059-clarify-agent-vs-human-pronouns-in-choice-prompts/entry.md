@@ -29,3 +29,5 @@ Then sweep other phase skills' `SKILL.md` files for the same recommend-then-conf
 ## Why Deferred
 
 Discovered live during this feature's own P9 run; a copy/wording fix to a skill file is out of scope for a docs/tooling-fix batch already in its ship phase. Small, low-risk — a future pickup can land it as a Fast Path or a small Change Pipeline item.
+
+Update 2026-10-31: 0000358 retires Fast Path, so route this through the Change Pipeline.

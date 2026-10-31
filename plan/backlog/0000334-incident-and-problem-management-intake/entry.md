@@ -10,7 +10,7 @@ status: "open"
 **Deferral source:** human request
 **Date filed:** 2026-10-31
 **Suggested route:** Feature Pipeline
-**Related:** 0000280, 0000282, 0000284, 0000330
+**Related:** 0000280, 0000282, 0000284, 0000330, 0000359
 
 ---
 
@@ -34,7 +34,7 @@ Raise a problem record when either of these is true:
 - one incident is serious
 - incidents recur against the same component or cause
 
-A problem record runs the postmortem from 0000330. The corrective change enters the Feature Pipeline or the Change Pipeline with the problem ID as its source. The run links back to the incident and problem through 0000282.
+A problem record runs the postmortem from 0000330. The corrective change enters the Feature Pipeline or the Change Pipeline with the problem ID as its source. An incident that needs an urgent fix uses the hotfix path from 0000359. The run links back to the incident and problem through 0000282.
 
 Extend the release record at P9 with a residual anomalies section. List each known open anomaly with its evaluation, its risk link, and why the release can still ship.
 
