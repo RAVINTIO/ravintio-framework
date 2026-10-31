@@ -28,6 +28,10 @@ Route `.gitattributes` through the normal design route when it sits in the root 
 
 The 0000279 differentiation review raises the priority of this entry. Regulated teams depend on human review of every enforcement change. A change that hides from review defeats separation of duties (0000286). Group it with 0000288, which also adds paths to the enforcement list.
 
+## Update 2026-10-31
+
+0000358 retires Fast Path and may rename `FAST_PATH_ENFORCEMENT_PATHS`. Apply this fix to the list under its new name.
+
 ## Why Deferred
 
 It changes the always-permitted list outside enforcement paths, which 0000036 req-009 keeps unchanged. It needs its own design decision.
