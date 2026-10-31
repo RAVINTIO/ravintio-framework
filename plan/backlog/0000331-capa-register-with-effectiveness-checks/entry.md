@@ -10,7 +10,7 @@ status: "open"
 **Deferral source:** human request
 **Date filed:** 2026-10-31
 **Suggested route:** Feature Pipeline
-**Related:** 0000085, 0000287, 0000290, 0000286
+**Related:** 0000085, 0000286, 0000287, 0000289, 0000290, 0000295, 0000332
 
 ---
 
@@ -33,10 +33,24 @@ Each record holds these fields:
 
 - type: corrective, preventive, or detective
 - the source postmortem
-- an owner and a due date
+- the Jira key of the action's issue
+- a named responsible person, who is the Jira assignee
+- a committed due date, which is the Jira due date
 - a measurable effectiveness criterion, such as "no recurrence in 10 runs" or "the detective test fails on the seeded fault"
 - a check trigger: a run count, a date, or a named event
-- links to a Jira issue (0000295) or the organisation's QMS CAPA
+- a link to the organisation's QMS CAPA, if it has one
+
+### Commitment to act
+
+On 2026-10-31 the owner asked that Framework commit to a date for every action. For each action, Framework must:
+
+1. Raise a Jira issue through the adapter (0000295). The postmortem can't close without the issue key.
+2. Assign the issue to a named person. A team, a queue, or the agent account doesn't count.
+3. Set a due date on the issue.
+
+The record can't leave `open` until the issue has an assignee and a due date. A human sets both, and the agent never picks them. The agent may draft both for the human to confirm.
+
+When the due date passes on an open action, Framework flags the CAPA as overdue. An overdue CAPA blocks the next release gate (0000332). A human can move the due date only by recording a new date and a reason. The audit trail (0000289) keeps every change of date or assignee.
 
 States run in this order:
 
@@ -53,6 +67,8 @@ The organisation's QMS CAPA stays the system of record. Framework records eviden
 ## Wanted outcome
 
 - Every postmortem action has exactly one CAPA record.
+- Every CAPA record has a Jira issue with a named assignee and a due date before it leaves `open`.
+- An overdue CAPA blocks the next release until the action is done or a human records a new date with a reason.
 - A record can't reach `closed` without effectiveness evidence and a sign-off reference.
 - An `ineffective` record links a new postmortem.
 - Tests cover each state transition and reject each skipped state.
@@ -61,6 +77,7 @@ The organisation's QMS CAPA stays the system of record. Framework records eviden
 
 - Should the register hold one file per CAPA, or one index file plus a folder per CAPA?
 - How does a product override the default effectiveness window?
+- What does Framework do when Jira is unavailable? The outbox in the 0000295 amendments may cover it.
 
 ## Why Deferred
 
