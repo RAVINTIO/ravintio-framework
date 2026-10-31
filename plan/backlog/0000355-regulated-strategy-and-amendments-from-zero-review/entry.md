@@ -32,6 +32,7 @@ Framework differs from Zero in these ways:
 - It supports GAMP 5 and other risk-averse frameworks.
 - It ships no bundled third-party skills. Developers bring their own through overrides.
 - It adopts Zero's postmortem approach and goes further.
+- It has no Fast Path. Quick, uncontrolled changes belong in Zero (0000358). Incidents get a designed hotfix path (0000359).
 
 ## 2. Decisions needed
 
@@ -84,14 +85,15 @@ Framework differs from Zero in these ways:
 
 ## 5. Suggested order
 
-1. Urgent controls: 0000297, 0000298, and 0000299.
-2. 0000272 and 0000301.
-3. Base controls: 0000288, 0000286, and 0000289, with 0000303 and 0000305.
-4. 0000296 and 0000295.
-5. 0000348 and 0000337.
-6. 0000339, 0000338, 0000340, 0000341, and 0000342.
-7. Postmortem and CAPA: 0000330 to 0000332.
-8. The remaining items.
+1. Retire Fast Path: 0000358. The owner asked for this first on 2026-10-31.
+2. Urgent controls: 0000297, 0000298, and 0000299.
+3. 0000272 and 0000301.
+4. Base controls: 0000288, 0000286, and 0000289, with 0000303 and 0000305.
+5. 0000296 and 0000295.
+6. 0000348 and 0000337.
+7. 0000339, 0000338, 0000340, 0000341, and 0000342.
+8. Postmortem and CAPA: 0000330 to 0000332, then the hotfix path 0000359 after 0000334.
+9. The remaining items.
 
 ## Why Deferred
 
