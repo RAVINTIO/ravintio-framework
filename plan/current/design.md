@@ -39,6 +39,7 @@
 - Hooks: `gate-write`, `shell-write-guard`, and `ratchet-check` stop reading `plan/.fast-path-scope`. With no design, `gate-write` blocks every `src/` write. P2 decides whether `FAST_PATH_ENFORCEMENT_PATHS` survives under a new name.
 - Git and CI: `hooks/pre-push` and `hooks/ravintio.yml` lose the `fix(fast-path):` exemption. This repo's `.github/workflows/ravintio.yml` matches.
 - Migration: a new `migrate-0.38.0-retire-fast-path-and-change-pipeline.md` deletes a leftover `plan/.fast-path-scope`. It removes the exemption block from `.github/workflows/ravintio.yml` once the human on the loop confirms. It tells the human on the loop that both tracks are gone and asks for a setup re-run. Setup keeps its copy-if-absent rule for the CI file. Every step is safe to repeat, so an interrupted run applies again cleanly. If `plan/current/` holds an unfinished Change Pipeline or Fast Path run, the migration warns and tells the human on the loop to restart it on the Feature Pipeline. If the CI block can't be matched, or the human declines, the migration names the file and the lines to delete and records the outcome with that reason.
+- Migrator scope: rule 1 in `skills/ravintio-migrator/SKILL.md` widens so a migration can name extra paths it may edit, outside `plan/`, `docs/`, and `ravintio-framework/`. The human on the loop confirms each edit. `src/` stays closed. This migration names only `.github/workflows/ravintio.yml`.
 - Version: last known `0.37.2`. Suggested `0.38.0`, a minor bump for a Feature Pipeline run. The version bump table loses its Fast Path and Change Pipeline rows.
 
 ## Scope
@@ -47,7 +48,8 @@
   - deletion of both tracks' workflows, the change agent, and their installed copies
   - the scope record removed from the three hooks
   - the `fix(fast-path):` exemption removed from pre-push and both CI files
-  - the consumer migration
+  - the consumer migration, and the migrator rule 1 widening it needs
+  - a named retired list in `setup.sh` and `setup.ps1`
   - Fast Path and Change Pipeline tests removed or rewritten, with a residue search suite
   - superseding notes on 0000033 ADR-009, 0000035 ADR-002, 0000035 ADR-004, and the bump-rules ADR-004
 - Out:
@@ -84,7 +86,7 @@ P1 owns the final requirement split. This draft maps the expected requirements.
 | REQ-002 - gates-ignore-scope-record | ravintio-codegen-agent | Hook code under TDD, with gate parity |
 | REQ-003 - no-commit-subject-exemption | ravintio-codegen-agent | Pre-push and both CI files under TDD |
 | REQ-004 - remove-track-files | ravintio-codegen-agent | Delete workflows and the change agent, setup removes installed copies |
-| REQ-005 - consumer-migration | ravintio-codegen-agent | The migration file and its test |
+| REQ-005 - consumer-migration | ravintio-codegen-agent | The migration file, the migrator rule 1 widening, and their tests |
 | REQ-006 - residue-guard | ravintio-test-writer | A search suite with an allowlist for history |
 | REQ-007 - docs-and-adr-supersede | ravintio-docs-agent | Docs, decisions index, and the version bump |
 
