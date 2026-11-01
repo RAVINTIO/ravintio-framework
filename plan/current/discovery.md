@@ -45,6 +45,17 @@ A search for "fast path" or "fast-path", outside history folders, finds these li
 
 Setup finding: `setup.sh` copies the CI template to `.github/workflows/ravintio.yml` only when that file is absent (lines 763 to 771). A consumer repo that upgrades keeps its old CI file, with the `fix(fast-path):` exemption, unless something else replaces it.
 
+### Change Pipeline footprint
+
+Added 2026-11-01, after the owner widened the scope. A search for "change pipeline", "change-agent", or `PC:`, outside history folders, finds 36 live files. The main ones are:
+
+- Track: `ravintio-framework/workflows/change-pipeline.md` and `skills/ravintio-change-agent/` (with `assets/`, `references/`, and `scripts/`). Setup installs `.claude/commands/change-pipeline.md` and `.claude/skills/ravintio-change-agent/`.
+- Routing: the orchestrator `SKILL.md` (decision tree, `PC:` prefix, Hard Limit 10), both phase 0 references, and the adr, optimise, and ship skills.
+- Hooks: `auto-trigger-orchestrator.mjs` and `path-rules.mjs`.
+- Templates: `change-summary.template.md`, `component-guide.md`, and `domain-glossary-guide.md`.
+- Docs: `README.md`, `getting-started.md`, `pipeline-reference.md`, `tool-setup-reference.md`, `docs/decisions-index.md`, and `src/setup-hook-integration/docs/scope.md`.
+- Tests: about 12 suites, including `test-0000017-req-007-change-agent-archive.sh` and its regression copy, and `regression-manifest.json`.
+
 ## Record Samples
 
 None. The design reads no existing records.
