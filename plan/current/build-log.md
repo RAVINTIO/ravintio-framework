@@ -44,4 +44,5 @@ P0 references loaded: ravintio-framework/skills/ravintio-orchestrator/references
 Resume detection: no pending migrations (12 of 12 recorded), skill-drift-check exit 0, run-mode.mjs printed interactive with no run active.
 P0 exchange (pre-flight): Q: Main matches origin/main and no PRs are open. Create feat/0000040-retire-fast-path? / A: confirmed. Branch created.
 Backlog pickup: pulled in 0000358 (retire Fast Path), 0000152 (stale scope record), and 0000200 (flaky scope suite), per F1 in 0000355 section 5. 0000308 stays in the backlog and P7 narrows it. Every other entry is left untouched, per the F1 row.
-Strict-mode ack: no session_id in context, so plan/.orchestrator-ack holds the UTC timestamp.
+Strict-mode ack: no session_id in context, so plan/.orchestrator-ack holds the UTC timestamp. The strict-mode banner later supplied session ID 121d9a6e-e20f-42b7-a97d-d3c9514c11b7, and the ack now holds it.
+P0 exchange (no-src route): Q: Relax the Change Pipeline prerequisite so it accepts a change with no src/ target, or add a lighter tier? / A: Relax the prerequisites. Changes with no src/ target go to the Change Pipeline or the Feature Pipeline. No lighter tier or other path.
