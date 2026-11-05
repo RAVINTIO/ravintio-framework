@@ -54,7 +54,9 @@ As a human on the loop, I read docs and decisions that describe one track, so th
 | `product.yml` `version` and `feature` | ship agent | P7 Step 5b, through `set-product-release.mjs` only |
 | `docs/about.md` frontmatter and table | ship agent | P7 Step 6b |
 
-- The docs agent writes every other file in this requirement at P6.
+- The codegen agent writes the live-doc rewrites in P3, before the req-006 guard runs, per the execution plan's build order. At P6 the docs agent checks them and writes the decisions-index notes.
+- P1 critic revision: the rewrite list also covers `src/setup-hook-integration/docs/quirks.md` and `src/setup-hook-integration/docs/tech-debt.md` (TD-011). Both name `FAST_PATH_ENFORCEMENT_PATHS` or the scope record.
+- This requirement owns every file in the rewrite list, per the execution plan's file ownership table. It carries the routing, gate, CI, and installed-file text that req-001 to req-004 state.
 - `src/setup-hook-integration/component.yml` keeps its own version. `product-version.mjs` takes the highest component version, which is 0.38.0.
 - Split step: keep. The rewrite, the superseding notes, and the version bump form one outcome. A reader sees one track in every live record of the release. The count stays at three criteria.
 

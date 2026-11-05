@@ -24,6 +24,7 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
   - A source folder is `src/`, or the folder that holds a `component.yml` listed in `product.yml`.
   - The check reads the list from `product.yml` when it runs. It never scans the tree for `component.yml` files. An unlisted `component.yml` doesn't make its folder a source folder.
   - The check reads `product.yml` at the git top level, from both the base commit and `HEAD`, and takes the union. A branch that drops a component from `product.yml` still has that folder checked.
+  - If the base commit can't be read, as in a shallow clone, the check fails closed. Its message names `fetch-depth: 0`. Both CI files already check out with `fetch-depth: 0`, and a test fixture covers the shallow case.
   - It reads each `path:` value under `components:` and takes its folder. It ignores an empty value, an absolute path, and a path with a `..` part, and prints a warning that names each one.
   - If `product.yml` is absent from both commits, the check falls back to `src/` only. It treats an unreadable file the same way and prints a warning.
   - `src/` always counts as a source folder, whatever `product.yml` lists.

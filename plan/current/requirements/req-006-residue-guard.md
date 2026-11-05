@@ -47,6 +47,10 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - Lines in `docs/decisions-index.md` and `docs/architecture-overview.md` that hold `[Ss]upersed`. Reason: superseding notes name the decision they replace.
   - The `0000033` history comment in `ravintio-framework/component.yml`, line regex `Fast Path for no-src changes`. Reason: the dated `Updated by` comments are history.
   - The vendored line in `ravintio-framework/external-skills/plan-eng-review/SKILL.md`, line regex `^\*\*Fast path:\*\* All paths covered`. Reason: vendored third-party text, where the words carry another meaning.
+- P1 critic revision adds these entries, each with its reason:
+  - `test-0000017-req-007-change-agent-archive.sh` in `tests/` and `tests/regression/`, its line in `tests/regression/regression-manifest.json`, and the lines in `test-0000039-req-005-history-and-split-name-protection.sh` that name it. Reason: the suite keeps its name, because no sanctioned step removes a manifest entry (backlog 0000365).
+  - Suites that assert the words are absent: `test-0000040-req-001-one-track-routing.sh`, `test-0000040-req-004-remove-track-files.sh`, and the rewritten `test-0000032-req-003` and `test-0000032-req-004` suites in both folders. Reason: an absence check names the words it checks for.
+  - Every suite in req-002's rewrite table. Reason: those suites prove the gates ignore the scope record, so they name it.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list
@@ -54,6 +58,9 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - skills and templates
   - docs
 - The `.gitignore` block for `plan/.fast-path-scope` goes, because the migration deletes the file and the gates ignore it.
+  - req-002 owns that removal, per the execution plan's file ownership table. This suite only checks it.
+- The guard runs last in P3, after req-007's live-doc rewrites land, per the execution plan's build order.
+- Split step for the third criterion: keep. The three-shard pass is the run condition of the stale-entry check, not a second outcome.
 - If P3 needs an entry this list does not name, log a deviation and add it with a reason. The list stays closed.
 - Fail the suite when an allowlist entry matches no path and no line. A stale entry must not stay.
 - Add planted cases on scratch copies of `README.md`. Plant `Fast Path`, `Change Pipeline`, `PC:`, and `fix(fast-path):` on separate lines. Expect a flag with the file and line number for each.

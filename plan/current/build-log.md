@@ -116,3 +116,8 @@ Decision (P1): test-0000017-req-007-change-agent-archive.sh keeps its name and i
 Decision (P1): P3 lands req-002 and req-004 together / reason: test-0000035-req-001 and test-0000035-req-009 read workflows/fast-path.md
 Decision (P1): wrote other features' ADR references as ADR NNN without the hyphen in design.md and the requirements / reason: consistency-check reads ADR-NNN as a local file (backlog 0000252). Notation only, no meaning changed
 Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-check clean.
+Critic verdict (P1, iteration 1): REJECT. 3 major and 5 minor findings, all on internal consistency. See critic-verdict-1.md.
+Decision (P1): req-007's live-doc rewrites move into P3 before the req-006 guard, and the docs agent checks them at P6 / reason: the guard can't pass over a tree that P6 still rewrites
+Decision (P1): the execution plan's file ownership table gives each file one owner and replaces the earlier ownership Decision line / reason: critic found files with two owners
+Decision (P1): the source folder rule fails closed when the base commit can't be read / reason: stricter than a fallback, and both CI files use fetch-depth 0
+Decision (P1): split step for req-006 criterion 3: keep / reason: the three-shard pass is the run condition of the stale-entry check

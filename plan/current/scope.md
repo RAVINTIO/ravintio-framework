@@ -21,6 +21,7 @@ version: "0.1.0"
 - A residue guard suite with an allowlist for history. Maps to req-006-residue-guard (US-001).
 - Docs, superseding notes on four ADRs, and the 0.38.0 version bump. Maps to req-007-docs-and-adr-supersede (US-001).
 - Fast Path and Change Pipeline tests removed or rewritten test-first. Each requirement names its own suites.
+- P1 clarification for the docs line: the superseding notes cover five ADRs. req-007 adds 0000035 ADR 003, which reads only the scope record.
 
 ## Out of Scope
 

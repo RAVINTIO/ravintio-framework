@@ -31,8 +31,25 @@ Functional requirements are split into individual files, one user story per file
 
 1. req-002 and req-004 land together, because two existing suites read `workflows/fast-path.md`.
 2. req-001, req-003, and req-005 follow. req-005 quotes the exemption block that req-003 removes.
-3. req-006 runs last in P3, over the finished tree.
-4. req-007 runs at P6 and P7, as its owner table states.
+3. req-007's live-doc rewrites land in P3, after req-001 to req-005 and before req-006. The codegen agent writes them, so the guard scans a finished tree.
+4. req-006 runs last in P3, over the finished tree.
+5. At P6 the docs agent checks req-007's rewrites, adds the `component.yml` history comment, and writes the decisions-index notes. P7 sets `product.yml` and `docs/about.md`, as req-007's owner table states.
+
+## File ownership
+
+Each file has one owner requirement. Another requirement may state what a file must say, but only the owner's P3 step edits it.
+
+| File or folder | Owner | Content it carries from other requirements |
+|----------------|-------|--------------------------------------------|
+| `ravintio-framework/skills/` (orchestrator, phase 0 references, ship, adr, optimise), `templates/standard-boot.md`, `templates/component-guide.md`, `templates/domain-glossary-guide.md`, `hooks/enforcement/auto-trigger-orchestrator.mjs` | req-001 | req-002's gate bullets in `standard-boot.md` |
+| `hooks/enforcement/path-rules.mjs`, `gate-write.mjs`, `shell-write-guard.mjs`, `ratchet-check.mjs`, `.gitignore` | req-002 | none |
+| `hooks/pre-push`, `hooks/ravintio.yml`, `.github/workflows/ravintio.yml` | req-003 | none |
+| `setup.sh`, `setup.ps1`, deleted track files | req-004 | none |
+| `skills/ravintio-migrator/SKILL.md`, the 0.38.0 migration | req-005 | none |
+| the residue guard suite, and the brand guard allowlist rows | req-006 | req-004's deletion of `workflows/fast-path.md` |
+| `README.md`, `getting-started.md`, `pipeline-reference.md`, `project-operations.md`, `tool-setup-reference.md`, every `docs/` file, every `src/setup-hook-integration/docs/` file, `component.yml`, `product.yml`, `docs/about.md` | req-007 | the routing text from req-001, the gate text from req-002, the CI text from req-003, and the installed-file listings from req-004 |
+
+This table replaces the P1 ownership Decision line in the build log where the two differ.
 
 ## Non-Functional Requirements
 
