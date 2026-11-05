@@ -106,3 +106,10 @@ Decision (P1): the residue guard also skips plan/_migrations/, plan/current/, pl
 Decision (P1): ADR superseding notes go in docs/decisions-index.md and the new 0000040 ADRs, never in archived ADR files / reason: precedent from 0000033 ADR-010
 Deviation (P1, unclassified): req-007 also supersedes 0000035 ADR-003, scope record staleness from git files, which the design's list of four ADRs omits
 Backlog filed (P1): 0000365, the regression pack has no sanctioned retire step, so removing the test-0000017-req-007 regression copy and its manifest entry needs a recorded hand edit.
+Decision (P1): split step for req-001: keep / reason: one concern, the route a request takes
+Decision (P1): split step for req-004: keep / reason: one concern, no track file survives in the pack or a tool folder
+Decision (P1): req-004 deletes templates/change-summary.template.md / reason: only the change agent reads it
+Decision (P1): ownership split. req-001 owns routing text, req-002 hook code and gate text, req-003 the fix(fast-path): text, req-004 installed-file listings, req-007 ADR notes, architecture docs, and the version bump / reason: no file has two owners
+Decision (P1): the retired list is RETIRED_TRACK_FILES with cleanup_retired_tracks in setup.sh, and $RetiredTrackFiles with Invoke-RetiredTrackCleanup in setup.ps1. It runs with or without a manifest and cleans only the folders of the tool it sets up / reason: this repo's manifest lists stale absolute paths, so the prune removes nothing (backlog 0000255)
+Decision (P1): test-0000017-req-007-change-agent-archive.sh keeps its name and is rewritten to check the change agent is absent / reason: the regression manifest lists it, and no sanctioned step removes an entry (backlog 0000365)
+Decision (P1): P3 lands req-002 and req-004 together / reason: test-0000035-req-001 and test-0000035-req-009 read workflows/fast-path.md
