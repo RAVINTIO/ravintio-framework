@@ -72,3 +72,21 @@ Stack unchanged: yes
 Run mode confirmed: autonomous (2026-11-05T23:36:16Z)
 Credential scan (P0): clean (regex only, gitleaks not found)
 Gate passed: P0 (2026-11-05T23:36:16Z)
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-05T23:37:38Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-spec-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+Skills inbox (P1): ravintio-framework/skills-inbox/ is empty, so nothing to process.
+Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (absent default). parallel_streams reads off.
