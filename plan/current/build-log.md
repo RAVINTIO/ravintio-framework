@@ -121,3 +121,6 @@ Decision (P1): req-007's live-doc rewrites move into P3 before the req-006 guard
 Decision (P1): the execution plan's file ownership table gives each file one owner and replaces the earlier ownership Decision line / reason: critic found files with two owners
 Decision (P1): the source folder rule fails closed when the base commit can't be read / reason: stricter than a fallback, and both CI files use fetch-depth 0
 Decision (P1): split step for req-006 criterion 3: keep / reason: the three-shard pass is the run condition of the stale-entry check
+Critic verdict (P1, iteration 2): REJECT. 2 major and 2 minor findings. 6 of 8 iteration 1 findings resolved. See critic-verdict-2.md.
+Decision (P1): decisions-index Status cells and superseding notes land in P3 after P2 numbers the ADRs / reason: the guard runs at the end of P3
+Decision (P1): req-001 criterion 2 runs after req-007's P3 step, and each requirement states that the ownership table governs / reason: critic found requirement files still claiming files owned elsewhere

@@ -54,6 +54,9 @@ As a human on the loop, I see every request routed to the Feature Pipeline, so t
 - Add `ravintio-framework/tests/test-0000040-req-001-one-track-routing.sh` for the first two criteria.
 - Split step: keep. The one concern is the route a request takes, as every skill, template, hook message, and doc states it. Each file only restates that route, so none could ship alone without leaving two routes on offer.
 
+- P1 critic revision: the execution plan's file ownership table governs who edits each file. This requirement edits only the files the table gives to req-001. For `README.md`, `getting-started.md`, `pipeline-reference.md`, and `src/setup-hook-integration/docs/scope.md`, it states the routing text and req-007 writes it.
+- The second criterion runs after req-007's P3 step, because req-007 writes three of the files it checks.
+
 ## Acceptance Criteria
 - [ ] In `skills/ravintio-orchestrator/SKILL.md`, the Routing Directive sends a request with or without a `src/` target to the Feature Pipeline, unless it meets a standalone skill trigger. The Standalone Skills table names `ravintio-optimise-agent`, `ravintio-refresh-setup`, and retrofit. The file holds no `Three-Track Decision Tree`, no `Fast Path Criteria`, no `PC:` row, no `Invoking the Change Pipeline` section, and no Change Pipeline clause in Hard Limit 10. Verified by: unit
 - [ ] None of these files contains "Fast Path", "fast-path", "Change Pipeline", "change-pipeline", or "change-agent": both phase 0 references, `standard-boot.md`, the ship, adr, and optimise skills, both template guides, `getting-started.md`, and `src/setup-hook-integration/docs/scope.md`. `pipeline-reference.md` holds no `PC:` row, Fast Path section, or `## Change Pipeline` section. The version bump table holds only the Feature Pipeline and Breaking change rows. Ship Hard Limit 6 and Step 11 name the Feature Pipeline. Verified by: unit

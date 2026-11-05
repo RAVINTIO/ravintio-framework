@@ -61,6 +61,8 @@ As a consumer repo owner, I upgrade and lose every Fast Path and Change Pipeline
 - Add `ravintio-framework/tests/test-0000040-req-004-remove-track-files.sh`. It follows `test-0000030-req-004-install-clean-up-and-retired-flags.sh`, and runs the `.ps1` cases when `pwsh` is present.
 - Split step: keep. The one concern is that no Fast Path or Change Pipeline file survives in the pack or in a tool folder. Deleting the pack files without the retired list would leave every installed copy in place, so neither part ships alone. PowerShell parity ships with the Bash list as one pair.
 
+- P1 critic revision: the execution plan's file ownership table governs who edits each file. This requirement states the installed-file listings for `README.md` and `tool-setup-reference.md`, and req-007 writes them.
+
 ## Acceptance Criteria
 - [ ] The pack holds no `workflows/fast-path.md`, `workflows/change-pipeline.md`, `skills/ravintio-change-agent/`, or `templates/change-summary.template.md`. A fresh `setup.sh claude-code` in a scratch repo installs `feature-pipeline.md` and `retrofit.md` in `.claude/commands/`, and no `ravintio-change-agent` skill. The rewritten suites listed above pass in `tests/` and `tests/regression/`. Verified by: integration
 - [ ] In a scratch repo seeded with every path in the per-tool table, `setup.sh` for each listed tool removes that tool's paths and prints one `(retired, removed)` line each. It does so with no manifest, and with a manifest that lists stale paths. A rerun prints no retired line. A linked skills folder whose target sits outside the project stays untouched, and setup exits 0. Verified by: integration

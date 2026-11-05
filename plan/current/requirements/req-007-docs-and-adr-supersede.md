@@ -56,6 +56,8 @@ As a human on the loop, I read docs and decisions that describe one track, so th
 
 - The codegen agent writes the live-doc rewrites in P3, before the req-006 guard runs, per the execution plan's build order. At P6 the docs agent checks them and writes the decisions-index notes.
 - P1 critic revision: the rewrite list also covers `src/setup-hook-integration/docs/quirks.md` and `src/setup-hook-integration/docs/tech-debt.md` (TD-011). Both name `FAST_PATH_ENFORCEMENT_PATHS` or the scope record.
+- P1 critic iteration 2 revision: the decisions-index Status cells, the `**Superseded:**` notes, and the superseding notes in `docs/architecture-overview.md` also land in P3, before the req-006 guard. P2 has numbered the 0000040 ADRs by then. At P6 the docs agent checks them and adds the Feature 0000040 section.
+- Criterion timing: the first and second criteria first run at the end of P3, after this requirement's P3 step. They run again after P6, as they state. The third criterion runs after P7.
 - This requirement owns every file in the rewrite list, per the execution plan's file ownership table. It carries the routing, gate, CI, and installed-file text that req-001 to req-004 state.
 - `src/setup-hook-integration/component.yml` keeps its own version. `product-version.mjs` takes the highest component version, which is 0.38.0.
 - Split step: keep. The rewrite, the superseding notes, and the version bump form one outcome. A reader sees one track in every live record of the release. The count stays at three criteria.

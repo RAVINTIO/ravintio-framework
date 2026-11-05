@@ -51,6 +51,7 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - `test-0000017-req-007-change-agent-archive.sh` in `tests/` and `tests/regression/`, its line in `tests/regression/regression-manifest.json`, and the lines in `test-0000039-req-005-history-and-split-name-protection.sh` that name it. Reason: the suite keeps its name, because no sanctioned step removes a manifest entry (backlog 0000365).
   - Suites that assert the words are absent: `test-0000040-req-001-one-track-routing.sh`, `test-0000040-req-004-remove-track-files.sh`, and the rewritten `test-0000032-req-003` and `test-0000032-req-004` suites in both folders. Reason: an absence check names the words it checks for.
   - Every suite in req-002's rewrite table. Reason: those suites prove the gates ignore the scope record, so they name it.
+  - If P2 or P3 retires a suite from that table, its entry goes in the same change, so no entry goes stale.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list

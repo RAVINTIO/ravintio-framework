@@ -87,6 +87,8 @@ No suite under `ravintio-framework/tests/regression/` asserts scope record behav
 
 - Split step: keep, at three criteria. The one concern is that the gates admit nothing through a scope record. Parity and the unchanged link and root rules are conditions on that one change, not outcomes a reader could ship alone.
 
+- P1 critic revision: the execution plan's file ownership table governs who edits each file. This requirement states the gate bullets for `templates/standard-boot.md`, and req-001 writes them. It states the gate text for the docs, and req-007 writes it. It owns the `.gitignore` removal.
+
 ## Acceptance Criteria
 - [ ] With no design, and with a current, stale, or invalid `plan/.fast-path-scope` in place, `gate-write` and `shell-write-guard` each block a write to `src/a.js`, `README.md`, `ravintio-framework/hooks/enforcement/gate-write.mjs`, and `ravintio-framework/hooks/CLAUDE.md` with exit 2. Each prints the no-design reason and no `Fast Path` text. Each verdict matches the same fixture with no record. The same holds for a non-regular and an oversize `design.md`, each with its extra line. Verified by: integration
 - [ ] A source search of `path-rules.mjs`, `gate-write.mjs`, `shell-write-guard.mjs`, and `ratchet-check.mjs` finds no `fast-path-scope`, `FAST_PATH_SCOPE_FILE`, `parseScopeRecord`, `scopeVerdict`, `loadScope`, `readScope`, or `Fast Path: admitted`. `ratchet-check` gives the same exit code and output for a weakening write with and without a record.

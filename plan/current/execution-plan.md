@@ -33,7 +33,7 @@ Functional requirements are split into individual files, one user story per file
 2. req-001, req-003, and req-005 follow. req-005 quotes the exemption block that req-003 removes.
 3. req-007's live-doc rewrites land in P3, after req-001 to req-005 and before req-006. The codegen agent writes them, so the guard scans a finished tree.
 4. req-006 runs last in P3, over the finished tree.
-5. At P6 the docs agent checks req-007's rewrites, adds the `component.yml` history comment, and writes the decisions-index notes. P7 sets `product.yml` and `docs/about.md`, as req-007's owner table states.
+5. At P6 the docs agent checks req-007's rewrites, adds the `component.yml` history comment, and adds the Feature 0000040 section to the decisions index. The decisions-index Status cells and superseding notes land in P3 with step 3, which replaces the earlier wording of this step. P7 sets `product.yml` and `docs/about.md`, as req-007's owner table states.
 
 ## File ownership
 
