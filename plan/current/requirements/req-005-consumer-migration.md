@@ -52,6 +52,8 @@ As a consumer repo owner, I upgrade and lose any leftover scope record and the C
 - These suites read the migrator text and must stay green. Recheck them in P3: `test-0000005-framework-governance.sh`, `test-0000035-req-007-migration-run-state.sh`, `test-0000036-req-005-hard-limits-cited-by-name.sh`, and `test-0000039-req-009-migration-ordering-and-old-paths.sh`.
 - Split step: keep, at three criteria. The one concern is the consumer's upgrade through this migration. The scope rule widening exists only so this migration can edit the CI file. Without it, step 5 breaks the scope rule (migrator Hard Limit 1). No other migration names an extra path.
 
+- Approach 2 iteration 1 revision: the new suite is `ravintio-framework/tests/test-0000040-req-005-consumer-migration.sh`. It holds the migration text checks, the scratch consumer run, and the migrator rule checks.
+
 ## Acceptance Criteria
 
 - [ ] The migration file holds the `**Target:**`, `**Scope:**`, `**May edit:**`, and `**Safe to skip:**` lines and the four sections. It quotes the exemption block verbatim. That block matches a fixture copy of the 0.37.2 `hooks/ravintio.yml` once, and removing it leaves no `fix\(fast-path\)` or `FAST_PATH_COUNT` text. The instructions name the unfinished-run warning, the setup re-run, and the `skipped` record for a declined or unmatched edit. Verified by: integration

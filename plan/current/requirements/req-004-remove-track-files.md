@@ -71,6 +71,7 @@ As a consumer repo owner, I upgrade and lose every Fast Path and Change Pipeline
 ## Dependencies
 - req-001 (one-track-routing) stops every skill, template, and doc from pointing at the deleted files.
 - req-002 (gates-ignore-scope-record) removes or rewrites the 0000035 req-001 and req-009 suites and drops `workflows/fast-path.md` from the enforcement path list in `path-rules.mjs`.
+  - Correction: the list holds no such entry. Only the comment above the list cites `workflows/fast-path.md`, and req-002 rewrites that comment.
 - req-005 (consumer-migration) tells the human on the loop to re-run setup, which runs this list.
 - req-006 (residue-guard) checks that no live reference to the deleted files remains.
 - Existing pattern: `cleanup_retired_integrations` in `setup.sh` and `Invoke-RetiredIntegrationCleanup` in `setup.ps1` (0000030 ADR 004).

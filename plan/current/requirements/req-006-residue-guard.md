@@ -57,6 +57,12 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - `ravintio-framework/component.yml`: a comment line that starts `# Updated by` or names a feature ID.
   - Reason: decision and release records name the mechanism they add or retire. A line in these files without a feature ID or a superseding note still fails.
 - req-007 writes each new decision and release line so it names its feature ID on the same line, which brings it under this rule.
+- Approach 2 iteration 1 revision. These lines govern the history-line rule above where they differ:
+  - `docs/decisions-index.md` and `docs/architecture-overview.md`: a line passes if it names a feature ID together with `ADR`, or holds `[Ss]upersed`.
+  - `docs/about.md`: a line passes if it names a feature ID. A release row has no ADR.
+  - `ravintio-framework/component.yml`: a comment line passes if it belongs to a history block. A history block starts at a `# Updated by` line and runs over the next `#` lines up to the next `# Updated by` line or the first line that is not a comment. This covers line 264, which continues the 0000033 comment.
+- One entry covers every 0000040 suite for req-001 to req-005. Path regex: `^ravintio-framework/tests/(regression/)?test-0000040-req-00[1-5]-[a-z0-9-]+\.sh$`. Reason: each suite plants or checks for the retired words. The suites are named in their requirements.
+- Correction: `path-rules.mjs` holds no entry for `workflows/fast-path.md`. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list

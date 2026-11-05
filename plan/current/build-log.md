@@ -129,3 +129,6 @@ Decision (P1): design_critic changes approach to 2 of 3 after the iteration cap 
 Decision (P1): req-006 uses a history-line rule keyed on a feature ID or a superseding note for the decisions index, architecture overview, about.md, and component.yml comments / reason: covers new decision lines without growing a closed list
 Decision (P1): the req-002 hooks/CLAUDE.md case is conditional on the P2 answer to Q-001 / reason: it assumes the enforcement path list survives
 Decision (P1): Skill Map row for REQ-007 shows codegen agent at P3 and docs agent at P6 / reason: matches the build order. Skill Map updates at each phase gate.
+Critic verdict (P1, approach 2 iteration 1): REJECT. 1 major and 4 minor findings. See critic-verdict-4.md.
+Decision (P1): component.yml history comments pass as a block from a # Updated by line to the next one / reason: continuation lines name no feature ID
+Decision (P1): new suites are test-0000040-req-002, req-003, and req-005 with named slugs, under one residue guard path entry / reason: the closed allowlist needs their paths

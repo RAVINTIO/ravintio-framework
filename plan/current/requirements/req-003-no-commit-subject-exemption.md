@@ -46,6 +46,8 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
 - The advisory `hooks/pre-commit` is out of scope (backlog 0000308).
 - Split step: keep, at three criteria. The one concern is the verdict that pre-push and CI give on a branch diff. The exemption and the `src/` check sit in the same step, so removing one without the other leaves a half-changed check.
 
+- Approach 2 iteration 1 revision: the new suite is `ravintio-framework/tests/test-0000040-req-003-no-commit-subject-exemption.sh`. It holds the scratch-repo fixtures, including the shallow-clone case.
+
 ## Acceptance Criteria
 
 - [ ] `hooks/pre-push`, `hooks/ravintio.yml`, and `.github/workflows/ravintio.yml` hold no `fast-path` or `FAST_PATH` text. In a scratch repo, a branch whose every commit subject starts `fix(fast-path):` gets the same verdict as one with other subjects. A `src/` change with only a `component.yml` or only a non-plan file fails in both cases. Verified by: integration
