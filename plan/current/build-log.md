@@ -124,3 +124,8 @@ Decision (P1): split step for req-006 criterion 3: keep / reason: the three-shar
 Critic verdict (P1, iteration 2): REJECT. 2 major and 2 minor findings. 6 of 8 iteration 1 findings resolved. See critic-verdict-2.md.
 Decision (P1): decisions-index Status cells and superseding notes land in P3 after P2 numbers the ADRs / reason: the guard runs at the end of P3
 Decision (P1): req-001 criterion 2 runs after req-007's P3 step, and each requirement states that the ownership table governs / reason: critic found requirement files still claiming files owned elsewhere
+Critic verdict (P1, iteration 3): REJECT. 1 major and 3 minor findings. All 4 iteration 2 findings resolved. See critic-verdict-3.md.
+Decision (P1): design_critic changes approach to 2 of 3 after the iteration cap / reason: the enumerated allowlist can't track text the feature writes later
+Decision (P1): req-006 uses a history-line rule keyed on a feature ID or a superseding note for the decisions index, architecture overview, about.md, and component.yml comments / reason: covers new decision lines without growing a closed list
+Decision (P1): the req-002 hooks/CLAUDE.md case is conditional on the P2 answer to Q-001 / reason: it assumes the enforcement path list survives
+Decision (P1): Skill Map row for REQ-007 shows codegen agent at P3 and docs agent at P6 / reason: matches the build order. Skill Map updates at each phase gate.

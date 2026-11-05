@@ -98,7 +98,7 @@ P1 owns the final requirement split. This draft maps the expected requirements.
 | REQ-004 - remove-track-files | ravintio-codegen-agent | Delete workflows and the change agent, setup removes installed copies |
 | REQ-005 - consumer-migration | ravintio-codegen-agent | The migration file, the migrator rule 1 widening, and their tests |
 | REQ-006 - residue-guard | ravintio-test-writer | A search suite with an allowlist for history |
-| REQ-007 - docs-and-adr-supersede | ravintio-docs-agent | Docs, decisions index, and the version bump |
+| REQ-007 - docs-and-adr-supersede | ravintio-codegen-agent at P3, then ravintio-docs-agent at P6 | P3 writes the live-doc rewrites and superseding notes before the residue guard. P6 checks them and adds the Feature 0000040 section. P7 sets the version files. |
 
 ## Repo Instructions
 Five files in `ravintio-overrides/instructions/`, read at P0.

@@ -52,6 +52,11 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - Suites that assert the words are absent: `test-0000040-req-001-one-track-routing.sh`, `test-0000040-req-004-remove-track-files.sh`, and the rewritten `test-0000032-req-003` and `test-0000032-req-004` suites in both folders. Reason: an absence check names the words it checks for.
   - Every suite in req-002's rewrite table. Reason: those suites prove the gates ignore the scope record, so they name it.
   - If P2 or P3 retires a suite from that table, its entry goes in the same change, so no entry goes stale.
+- Approach 2 revision, the history-line rule. It replaces the two `[Ss]upersed` entries and the one `component.yml` entry above. One entry covers every line that records a decision or a release, in these files only:
+  - `docs/decisions-index.md`, `docs/architecture-overview.md`, and `docs/about.md`: a line that names a feature ID such as `0000033` or `0000040` together with `ADR`, or holds `[Ss]upersed`.
+  - `ravintio-framework/component.yml`: a comment line that starts `# Updated by` or names a feature ID.
+  - Reason: decision and release records name the mechanism they add or retire. A line in these files without a feature ID or a superseding note still fails.
+- req-007 writes each new decision and release line so it names its feature ID on the same line, which brings it under this rule.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list
