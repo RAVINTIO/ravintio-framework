@@ -61,7 +61,7 @@
   - the consumer migration, and the migrator rule 1 widening it needs
   - a named retired list in `setup.sh` and `setup.ps1`
   - Fast Path and Change Pipeline tests removed or rewritten, with a residue search suite
-  - superseding notes on 0000033 ADR-009, 0000035 ADR-002, 0000035 ADR-004, and the bump-rules ADR-004
+  - superseding notes on 0000033 ADR 009, 0000035 ADR 002, 0000035 ADR 004, and the bump-rules ADR 004
 - Out:
   - history under `plan/_archive/`, `plan/changelog/`, and released migrations
   - the incident hotfix path (0000359)

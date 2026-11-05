@@ -89,7 +89,8 @@ Gate passed: P0 (2026-11-05T23:36:16Z)
 | Notes | Autonomous run. |
 
 Skills inbox (P1): ravintio-framework/skills-inbox/ is empty, so nothing to process.
-Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (absent default). parallel_streams reads off.
+Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (autonomous default). parallel_streams reads on (autonomous default). p0_completeness reads off (absent default).
+Decision (P1): P1 ran as parallel subagents rather than stream files / reason: the requirement groups shared one design and joined at one commit set. P3 decides on streams per agent-dispatch-standards.
 Agents spawned (P1): 4 spec subagents in 1 parallel batch, primary tier (req-001 and req-004, req-002, req-003 and req-005, req-006 and req-007).
 Decision (P1): split step for req-002: keep / reason: one concern, the gates admit nothing through a scope record
 Decision (P1): FAST_PATH_ENFORCEMENT_PATHS finding for P2 / reason: isAlwaysPermitted still reads it, so removing the list would weaken the permitted-name shortcut block
@@ -113,3 +114,5 @@ Decision (P1): ownership split. req-001 owns routing text, req-002 hook code and
 Decision (P1): the retired list is RETIRED_TRACK_FILES with cleanup_retired_tracks in setup.sh, and $RetiredTrackFiles with Invoke-RetiredTrackCleanup in setup.ps1. It runs with or without a manifest and cleans only the folders of the tool it sets up / reason: this repo's manifest lists stale absolute paths, so the prune removes nothing (backlog 0000255)
 Decision (P1): test-0000017-req-007-change-agent-archive.sh keeps its name and is rewritten to check the change agent is absent / reason: the regression manifest lists it, and no sanctioned step removes an entry (backlog 0000365)
 Decision (P1): P3 lands req-002 and req-004 together / reason: test-0000035-req-001 and test-0000035-req-009 read workflows/fast-path.md
+Decision (P1): wrote other features' ADR references as ADR NNN without the hyphen in design.md and the requirements / reason: consistency-check reads ADR-NNN as a local file (backlog 0000252). Notation only, no meaning changed
+Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-check clean.

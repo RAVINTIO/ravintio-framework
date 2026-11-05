@@ -64,5 +64,5 @@ As a human on the loop, I see every request routed to the Feature Pipeline, so t
 - req-003 (no-commit-subject-exemption) owns the `fix(fast-path):` text in `pipeline-reference.md` and `project-operations.md`.
 - req-004 (remove-track-files) deletes `workflows/fast-path.md`, `workflows/change-pipeline.md`, and `skills/ravintio-change-agent/`, which this requirement stops pointing to.
 - req-006 (residue-guard) checks the whole repo for residue and allowlists the `plan-eng-review` line.
-- req-007 (docs-and-adr-supersede) adds the supersede notes on 0000033 ADR-009 and the bump-rules ADR-004.
+- req-007 (docs-and-adr-supersede) adds the supersede notes on 0000033 ADR 009 and the bump-rules ADR 004.
 - P3 changes each `tests/regression/` copy together with its source suite in `tests/`.

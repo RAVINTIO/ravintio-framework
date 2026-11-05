@@ -71,5 +71,5 @@ As a consumer repo owner, I upgrade and lose every Fast Path and Change Pipeline
 - req-002 (gates-ignore-scope-record) removes or rewrites the 0000035 req-001 and req-009 suites and drops `workflows/fast-path.md` from the enforcement path list in `path-rules.mjs`.
 - req-005 (consumer-migration) tells the human on the loop to re-run setup, which runs this list.
 - req-006 (residue-guard) checks that no live reference to the deleted files remains.
-- Existing pattern: `cleanup_retired_integrations` in `setup.sh` and `Invoke-RetiredIntegrationCleanup` in `setup.ps1` (0000030 ADR-004).
+- Existing pattern: `cleanup_retired_integrations` in `setup.sh` and `Invoke-RetiredIntegrationCleanup` in `setup.ps1` (0000030 ADR 004).
 - Backlog 0000255 covers the manifest prune that trusts listed paths. This requirement doesn't fix that prune. Its list works without the manifest.

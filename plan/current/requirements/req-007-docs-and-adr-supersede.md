@@ -31,19 +31,19 @@ As a human on the loop, I read docs and decisions that describe one track, so th
   - `src/setup-hook-integration/docs/test-coverage.md` (the 0000035 suite list)
   - `ravintio-framework/component.yml` (the capability line from 0000033)
 - If `FAST_PATH_ENFORCEMENT_PATHS` survives under a new name, the docs use the name that P2 decides.
-- Archived ADR files under `plan/_archive/` stay as written. The supersession lives in `docs/decisions-index.md` and in the new 0000040 ADRs, as in earlier features such as 0000033 ADR-010.
+- Archived ADR files under `plan/_archive/` stay as written. The supersession lives in `docs/decisions-index.md` and in the new 0000040 ADRs, as in earlier features such as 0000033 ADR 010.
 - In `docs/decisions-index.md`, change the Status cell and add a `**Superseded:**` note to each of these entries:
 
 | Entry | Source ADR file | New status |
 |-------|-----------------|------------|
-| 0000014 ADR-004, version bump rules by track | `plan/_archive/0000014-improve-adoption-mode-selection-2026-05-19/adr/ADR-004-version-bump-rules-by-track.md` | `partly superseded by 0000040 ADR-{n}`. The Fast Path and Change Pipeline patch rule goes. The minor and major rules stay. |
-| 0000033 ADR-009, Fast Path admits no-src changes | `plan/_archive/0000033-human-on-the-loop-run-mode-2026-10-19/adr/ADR-009-fast-path-admits-no-src-changes.md` | `superseded by 0000040 ADR-{n}` |
-| 0000035 ADR-002, scope record as self-authorisation | `plan/_archive/0000035-write-gate-scope-and-path-hardening-2026-10-22/adr/ADR-002-fast-path-scope-record-self-authorisation.md` | `superseded by 0000040 ADR-{n}` |
-| 0000035 ADR-003, scope record staleness from git files | `ADR-003-scope-record-staleness-from-git-files.md` in the same folder | `superseded by 0000040 ADR-{n}` |
-| 0000035 ADR-004, Fast Path enforcement path list | `ADR-004-fast-path-enforcement-path-list.md` in the same folder | `superseded` if P2 drops the list, or `partly superseded` if the list survives under a new name |
+| 0000014 ADR 004, version bump rules by track | `plan/_archive/0000014-improve-adoption-mode-selection-2026-05-19/adr/`, file `version-bump-rules-by-track` | `partly superseded by 0000040 ADR-{n}`. The Fast Path and Change Pipeline patch rule goes. The minor and major rules stay. |
+| 0000033 ADR 009, Fast Path admits no-src changes | `plan/_archive/0000033-human-on-the-loop-run-mode-2026-10-19/adr/`, file `fast-path-admits-no-src-changes` | `superseded by 0000040 ADR-{n}` |
+| 0000035 ADR 002, scope record as self-authorisation | `plan/_archive/0000035-write-gate-scope-and-path-hardening-2026-10-22/adr/`, file `fast-path-scope-record-self-authorisation` | `superseded by 0000040 ADR-{n}` |
+| 0000035 ADR 003, scope record staleness from git files | file `scope-record-staleness-from-git-files` in the same folder | `superseded by 0000040 ADR-{n}` |
+| 0000035 ADR 004, Fast Path enforcement path list | file `fast-path-enforcement-path-list` in the same folder | `superseded` if P2 drops the list, or `partly superseded` if the list survives under a new name |
 
 - `{n}` is the 0000040 ADR that P2 writes for each decision.
-- 0000035 ADR-003 reads only the scope record, so it falls with ADR-002 although the design does not name it.
+- 0000035 ADR 003 reads only the scope record, so it falls with ADR 002 although the design does not name it.
 - Add a Feature 0000040 section to the decisions index for the new ADRs, and update its `Last updated` line.
 - The release is 0.38.0, a minor bump from 0.37.2, as the design suggests. Each file has one owner:
 

@@ -20,8 +20,8 @@ As a human on the loop, I rely on the write gates to admit nothing on a Fast Pat
 ### Gate behaviour
 - With no confirmed design, `gate-write` blocks with exit 2 every write outside `plan/`, `docs/`, and the always-permitted file names. The block reason is the no-design reason alone.
 - A file at `plan/.fast-path-scope` changes no verdict, whether it is current, stale, invalid, oversize, a folder, or a link. Each gate gives the same exit code and the same output with the file present as with it absent.
-- A missing `design.md`, a non-regular `design.md`, and an oversize `design.md` each take the no-design route. The non-regular and oversize blocks keep their extra line (0000036 ADR-002).
-- An always-permitted file name inside an enforcement path still blocks with no design (0000036 ADR-003). Removing the scope record must not reopen that shortcut.
+- A missing `design.md`, a non-regular `design.md`, and an oversize `design.md` each take the no-design route. The non-regular and oversize blocks keep their extra line (0000036 ADR 002).
+- An always-permitted file name inside an enforcement path still blocks with no design (0000036 ADR 003). Removing the scope record must not reopen that shortcut.
 - No gate prints a `Fast Path: admitted` notice, and no block reason names the scope record, Fast Path, or the Change Pipeline.
 - `shell-write-guard` judges every shell writer through `evaluateWrite`, as it does today, so its verdicts match `gate-write` for the same target (parity).
 - `ratchet-check` reads no scope record today. Its verdicts and output stay the same with or without the file.
@@ -29,7 +29,7 @@ As a human on the loop, I rely on the write gates to admit nothing on a Fast Pat
 ### Code that reads the scope record
 These are the code paths in `ravintio-framework/hooks/enforcement/` that read or serve the scope record. P3 removes each one, or reduces it to the no-design route.
 
-- `path-rules.mjs`, scope record block (0000035 ADR-002 and ADR-003):
+- `path-rules.mjs`, scope record block (0000035 ADR 002 and ADR 003):
   - `FAST_PATH_SCOPE_FILE`, `SCOPE_MAX_BYTES`, `SCOPE_MAX_PATHS`, and `SCOPE_PATH_RE`.
   - `validScopePath` and `parseScopeRecord`, the record grammar.
   - `readGitState` and its helpers, which check record freshness against the branch and HEAD: `readCapped`, `validBranch`, `BRANCH_RE`, `HEAD_RE`, `REF_RE`, `DETACHED`, `GIT_FILE_MAX_BYTES`, and `PACKED_REFS_MAX_BYTES`. The scope record is their only caller.
@@ -50,7 +50,7 @@ P2 decides whether `FAST_PATH_ENFORCEMENT_PATHS` survives under a new name. Thes
 
 - `isEnforcementPath` in `path-rules.mjs`, read by two callers:
   - `scopeVerdict`, which this requirement removes.
-  - `isAlwaysPermitted`, which denies the permitted-name shortcut inside an enforcement path (0000036 ADR-003). This reader survives the scope record's removal. If the list goes, a `CLAUDE.md` below `ravintio-framework/hooks/` becomes always permitted again.
+  - `isAlwaysPermitted`, which denies the permitted-name shortcut inside an enforcement path (0000036 ADR 003). This reader survives the scope record's removal. If the list goes, a `CLAUDE.md` below `ravintio-framework/hooks/` becomes always permitted again.
 - Suites: `test-0000035-req-009-fast-path-enforcement-paths.sh`, `test-0000036-req-009-permitted-names-in-enforcement-paths.sh`, and `test-0000039-req-008-emitted-names.sh`.
 - Docs: `workflows/fast-path.md`, `docs/architecture-overview.md`, and `src/setup-hook-integration/docs/` (`interface-contract.md`, `quirks.md`, and `tech-debt.md` TD-011).
 - Open backlog entries that build on the list: 0000130, 0000179, 0000288, 0000293, 0000297, 0000298, and 0000308.
@@ -98,5 +98,5 @@ No suite under `ravintio-framework/tests/regression/` asserts scope record behav
 - req-004 (remove-track-files) deletes `workflows/fast-path.md`, which `test-0000035-req-009` reads.
 - req-005 (consumer-migration) deletes a consumer's leftover `plan/.fast-path-scope`.
 - req-006 (residue-guard) searches for leftover scope record text.
-- req-007 (docs-and-adr-supersede) updates the docs that describe the record, and supersedes 0000035 ADR-002 and ADR-004.
+- req-007 (docs-and-adr-supersede) updates the docs that describe the record, and supersedes 0000035 ADR 002 and ADR 004.
 - P2 decides the fate and name of `FAST_PATH_ENFORCEMENT_PATHS`.
