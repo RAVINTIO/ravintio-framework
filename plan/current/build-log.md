@@ -93,3 +93,9 @@ Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous
 Agents spawned (P1): 4 spec subagents in 1 parallel batch, primary tier (req-001 and req-004, req-002, req-003 and req-005, req-006 and req-007).
 Decision (P1): split step for req-002: keep / reason: one concern, the gates admit nothing through a scope record
 Decision (P1): FAST_PATH_ENFORCEMENT_PATHS finding for P2 / reason: isAlwaysPermitted still reads it, so removing the list would weaken the permitted-name shortcut block
+Decision (P1): split step for req-003: keep / reason: one concern, the verdict pre-push and CI give on a branch diff
+Decision (P1): split step for req-005: keep / reason: one concern, the consumer upgrade through this migration. The migrator rule 1 widening serves only this migration
+Decision (P1): source folder rule reads product.yml at the git top level from both the base commit and HEAD, taking the union / reason: a branch can't escape the check by dropping a component
+Decision (P1): a migration declares extra paths on a new May edit line, and src/, absolute, .., and linked paths are refused / reason: rule 1 widens only for named paths
+Decision (P1): a declined or unmatched CI edit records outcome skipped with the reason in the body / reason: never report success for a bypass left in place
+Backlog filed (P1): 0000364, setup never refreshes an existing consumer CI file, so upgraded consumers don't get the source folder rule. req-005's notice points to the template.
