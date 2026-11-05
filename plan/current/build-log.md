@@ -90,3 +90,6 @@ Gate passed: P0 (2026-11-05T23:36:16Z)
 
 Skills inbox (P1): ravintio-framework/skills-inbox/ is empty, so nothing to process.
 Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (absent default). parallel_streams reads off.
+Agents spawned (P1): 4 spec subagents in 1 parallel batch, primary tier (req-001 and req-004, req-002, req-003 and req-005, req-006 and req-007).
+Decision (P1): split step for req-002: keep / reason: one concern, the gates admit nothing through a scope record
+Decision (P1): FAST_PATH_ENFORCEMENT_PATHS finding for P2 / reason: isAlwaysPermitted still reads it, so removing the list would weaken the permitted-name shortcut block
