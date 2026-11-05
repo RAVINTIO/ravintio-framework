@@ -99,3 +99,10 @@ Decision (P1): source folder rule reads product.yml at the git top level from bo
 Decision (P1): a migration declares extra paths on a new May edit line, and src/, absolute, .., and linked paths are refused / reason: rule 1 widens only for named paths
 Decision (P1): a declined or unmatched CI edit records outcome skipped with the reason in the body / reason: never report success for a bypass left in place
 Backlog filed (P1): 0000364, setup never refreshes an existing consumer CI file, so upgraded consumers don't get the source folder rule. req-005's notice points to the template.
+Decision (P1): split step for req-006: keep / reason: the pattern scan, path check, and stale-entry check share one allowlist and one pass
+Decision (P1): split step for req-007: keep / reason: one outcome, every live record of the release shows one track
+Decision (P1): the residue guard joins the regression pack through promote-to-regression.sh at P7 / reason: same treatment as the 0000039 brand guard
+Decision (P1): the residue guard also skips plan/_migrations/, plan/current/, plan/backlog/, and plan/reports/, and strips the feature ID and migration slug before matching / reason: those hold history or name the retired tracks as their subject
+Decision (P1): ADR superseding notes go in docs/decisions-index.md and the new 0000040 ADRs, never in archived ADR files / reason: precedent from 0000033 ADR-010
+Deviation (P1, unclassified): req-007 also supersedes 0000035 ADR-003, scope record staleness from git files, which the design's list of four ADRs omits
+Backlog filed (P1): 0000365, the regression pack has no sanctioned retire step, so removing the test-0000017-req-007 regression copy and its manifest entry needs a recorded hand edit.
