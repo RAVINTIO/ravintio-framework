@@ -15,7 +15,7 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Tool | `claude-code` |
 | Primary model | `claude-opus-5-5` |
 | Cheaper model | `sonnet` |
-| Run mode | pending (P0 writes it at the pick) |
+| Run mode | autonomous |
 | Parallel streams | pending |
 
 ---
@@ -27,17 +27,17 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-01T02:39:39Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-05T23:36:16Z` |
+| Wall-clock | 4d 20h 57m (includes idle time between sessions) |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-orchestrator |
-| Agents spawned | 0 |
+| Agents spawned | 4 |
 | MCP calls | 0 |
-| Parallel task batches | 0 |
-| P0 questions asked | pending |
-| Brief complete | pending |
-| Stack unchanged | pending |
+| Parallel task batches | 1 |
+| P0 questions asked | 9 |
+| Brief complete | no |
+| Stack unchanged | yes |
 | Notes | F1 from backlog 0000355 section 5. |
 
 P0 references loaded: ravintio-framework/skills/ravintio-orchestrator/references/phase-0-assess-and-coach.md, ravintio-framework/skills/ravintio-orchestrator/references/adoption-modes.md
@@ -56,3 +56,19 @@ P0 exchange (CI exemption): Q: The human asked whether the consumer CI template 
 P0 exchange (source folders): Q: The human said the check must cover any folder that works as source, such as ravintio-framework/ in this repo. Add a rule that reads component folders from product.yml? / A: Yes. Each source folder holds a versioned component.yml, and src/ is the default but not the only one. The manifest counts as source, not as a record.
 P0 exchange (fit and setup): Q: Does it all fit, and does setup need the folder list? / A (agent): It fits in US-002, so three stories hold. Setup needs no list, because CI reads product.yml at run time and gate-write already judges every path outside plan/ and docs/ against the design. Found: design.md had no ## Component Paths section, so gate-write would allow every write with a warning. Added the section.
 P0 exchange (vendored pack): Q: The human asked how a copied ravintio-framework/ in a consumer is handled, and said consumer runs have counted it as source. / A (agent): Confirmed. The codegen close-out and the ship fallback name ravintio-framework/component.yml. The human proposed moving the pack source under src/ and releasing the folder without the manifest. Filed backlog 0000361, because the move needs its own design. The 0000040 source folder rule stays valid after the move.
+P0 exchange (combined confirmation): Q: Confirm the design, accept, edit, or reject each Scope Lock draft, and pick a run mode. / A: Design yes. All four Scope Lock drafts accepted. Run mode autonomous.
+Scope Lock (happy path): any change, with or without a src/ target, routes to the Feature Pipeline, and a consumer upgrade removes the old commands, skill, and scope record with a notice. [source: agent-draft-accepted]
+Scope Lock (first-run path): a fresh install never receives either track or the CI exemption, and a first upgrade from 0.37.x removes them through the setup retired list and the migration. [source: agent-draft-accepted]
+Scope Lock (error path): an unmatched or declined CI edit makes the migration name the file and lines and record the outcome with its reason, never as success. A declined edit is the consumer's recorded choice. [source: agent-draft-accepted]
+Scope Lock (cross-session path): an interrupted migration runs again because every step is safe to repeat, and an unfinished consumer run gets a restart warning. A skipped setup re-run leaves old commands until setup runs. [source: agent-draft-accepted]
+Scope Lock complete. All four scenario paths captured.
+Adoption mode: standard-iterative, confirmed by human on 2026-11-05
+Version confirmed: 0.38.0
+Backlog pickup: deleted plan/backlog/0000358, 0000152, and 0000200 in the P0 confirmation commit.
+Autonomous checks: branch is feat/0000040-retire-fast-path, and ravintio-overrides/loop-toggles.yml is absent, so every checker reads on.
+P0 questions asked: 9
+Brief complete: no
+Stack unchanged: yes
+Run mode confirmed: autonomous (2026-11-05T23:36:16Z)
+Credential scan (P0): clean (regex only, gitleaks not found)
+Gate passed: P0 (2026-11-05T23:36:16Z)
