@@ -176,3 +176,4 @@ Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-007 by six par
 Decision (P2): ADR-003 treats a product.yml with no readable path value as src/ only, with a warning / reason: matches req-003's rule for an unreadable file, and the check never drops below src/. The P2 critic reviews it.
 Decision (P2): ADR-003 takes the merge base with origin/main as the base commit / reason: the hooks already diff with three dots
 Decision (P2): ADR-005 status accepted and component ravintio-framework / reason: the human on the loop let the req-004 two-array form stand on 2026-11-06, and the design names ravintio-framework as the only component. The manifest prune path gap the subagent raised is backlog 0000255.
+Deviation (P2, unclassified): req-005 step 3 changes from the migrator deleting plan/.fast-path-scope to the human on the loop running the delete, with the migrator checking the result. Hard Limit 8 names no delete route. Filed backlog 0000366.

@@ -34,6 +34,7 @@ As a consumer repo owner, I upgrade and lose any leftover scope record and the C
   5. If the block matches once, show it and ask the human on the loop to confirm its removal. On confirmation, remove those lines and nothing else.
   6. Tell the human on the loop that Fast Path and the Change Pipeline are gone, and that every change now runs the Feature Pipeline. Ask for a setup re-run for each tool the project uses, so setup removes the installed copies (req-004).
 - Every step is safe to repeat. A deleted scope record, a removed block, and an absent CI file each count as done. An interrupted run applies again cleanly, and a second full run changes no file.
+- P2 revision for step 3, which governs it: the migrator doesn't delete the scope record itself, because boot Hard Limit 8 names no delete route (backlog 0000366). It shows the human on the loop the command `rm -- plan/.fast-path-scope` and asks them to run it. In Claude Code they can type `! rm -- plan/.fast-path-scope`. The migrator then checks that the path is gone. If the path still exists, the migrator names it in the record body, and the outcome doesn't change. The gates ignore the file under req-002, so a leftover record admits nothing.
 - If the CI file holds `fix\(fast-path\)` or `FAST_PATH_COUNT` but the block doesn't match once, the migration edits nothing in that file. The same holds when the human on the loop declines. In both cases the migrator does these things:
   - It names the file and the line numbers to delete by hand.
   - It counts the edit in `corrections-skipped`.

@@ -67,12 +67,12 @@ Rewrite each suite test-first. Each rewrite fails against the current hooks befo
 | Suite (under `ravintio-framework/tests/`) | Action |
 |---|---|
 | `test-0000035-req-001-fast-path-scope-record.sh` | Retire. Replace it with a req-002 suite for this feature that asserts a record of each kind admits nothing in both gates. `test-0000039-req-005-history-and-split-name-protection.sh` names this file three times, in `SUITES` and twice in `PREFIX_FILES`, and must drop those entries. |
-| `test-0000035-req-009-fast-path-enforcement-paths.sh` | Rewrite or retire after the P2 list decision. Its section that matches `fast-path.md` goes with req-004. |
+| `test-0000035-req-009-fast-path-enforcement-paths.sh` | Rewrite or retire after the P2 list decision. Its section that matches `fast-path.md` goes with req-004. P2 revision: ADR-004 keeps the list as `ENFORCEMENT_PATHS`. If P3 retires this suite, it first moves direct `isEnforcementPath` coverage into another suite. That covers the per-group matches and the long s folding check at lines 174 to 181. The suite's req-006 allowlist entry goes in the same change. |
 | `test-0000036-req-008-non-regular-design-md.sh` | Rewrite the two scope record sections to expect the no-design block. Keep every non-regular and oversize case. |
 | `test-0000036-req-009-permitted-names-in-enforcement-paths.sh` | Rewrite the "current record" section to expect a block. Keep the no-record, design, and prefix sections. |
 | `test-0000035-req-003-links-judged-by-real-target.sh` | Rewrite the "under a current scope record" block. It must still prove that the text-collapsed `..` placement blocks `.claude/settings.json`, with no record. |
 | `test-0000035-req-005-ratchet-check-shared-root.sh` | Change the forged text `Fast Path: admitted` to a neutral forged line. Keep the forgery checks. |
-| `test-0000039-req-008-emitted-names.sh` | Rename its `isEnforcementPath` calls if P2 renames the list. |
+| `test-0000039-req-008-emitted-names.sh` | Rename its `isEnforcementPath` calls if P2 renames the list. P2 revision: ADR-004 keeps the function name, so this suite needs no change. |
 | `test-0000039-req-005-history-and-split-name-protection.sh` | Drop the retired suite names from its lists. |
 
 These suites must stay green with no change to their assertions:
