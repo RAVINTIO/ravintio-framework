@@ -14,11 +14,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `1` of cap `3` (approach 2) |
+| Iteration | `2` of cap `3` (approach 2) |
 | Approach | `2 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
 | Last decision | `continue` |
-| Last updated | `2026-11-05T23:58:06Z` |
+| Last updated | `2026-11-06T00:00:08Z` |
 
 ---
 
@@ -53,6 +53,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** a new fresh-context critic reviewed the approach 2 revision. Verdict in `critic-verdict-4.md`.
 - **Observation:** REJECT. Mechanical check clean. Three iteration 3 findings resolved, and one partly resolved. One new major finding: `component.yml` line 264 continues a history comment but matches no rule. Four minor findings: an ambiguous rule for `docs/about.md`, unnamed new suites for req-002, req-003, and req-005, the `path-rules.mjs` comment above the list, and a wrong claim that the list holds a `workflows/fast-path.md` entry.
 - **Decision:** continue. Measurable progress, and the major finding is new, so the no-progress rule does not fire. Revised by addition: per-file tests for the history-line rule, a history-block rule for `component.yml`, named suites and one path entry for them, the comment rewrite in req-002, and corrections in req-004 and req-006.
+
+### Iteration 2, approach 2 (2026-11-06T00:00:08Z)
+- **Approach:** 2
+- **Action:** a new fresh-context critic reviewed the revision. Verdict in `critic-verdict-5.md`. The orchestrator's spawn prompt for this pass held a calibration note on severity and on when to approve. The skill text holds no such note, so the next pass runs without it.
+- **Observation:** REJECT. Mechanical check clean. All five iteration 4 findings resolved. One new major finding: the new decisions-index heading `### Feature 0000040: retire-fast-path` would fail the guard. One minor finding: suite entries had no line regex.
+- **Decision:** continue. Revised by addition: the heading uses the full ID `0000040-retire-fast-path`, which the strip step removes, and suite entries use the line regex `.*` with a path-based stale check.
 
 ---
 

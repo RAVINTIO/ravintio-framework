@@ -132,3 +132,6 @@ Decision (P1): Skill Map row for REQ-007 shows codegen agent at P3 and docs agen
 Critic verdict (P1, approach 2 iteration 1): REJECT. 1 major and 4 minor findings. See critic-verdict-4.md.
 Decision (P1): component.yml history comments pass as a block from a # Updated by line to the next one / reason: continuation lines name no feature ID
 Decision (P1): new suites are test-0000040-req-002, req-003, and req-005 with named slugs, under one residue guard path entry / reason: the closed allowlist needs their paths
+Critic verdict (P1, approach 2 iteration 2): REJECT. 1 major and 1 minor finding. All 5 iteration 4 findings resolved. See critic-verdict-5.md.
+Decision (P1): the decisions-index heading and every new line naming the feature use the full ID 0000040-retire-fast-path / reason: the guard strips that exact ID
+Decision (P1): the next critic pass runs on the skill text alone, without the orchestrator's calibration note / reason: the note set an approval threshold the skill doesn't state, which weakens the maker-checker split

@@ -62,6 +62,7 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - `docs/about.md`: a line passes if it names a feature ID. A release row has no ADR.
   - `ravintio-framework/component.yml`: a comment line passes if it belongs to a history block. A history block starts at a `# Updated by` line and runs over the next `#` lines up to the next `# Updated by` line or the first line that is not a comment. This covers line 264, which continues the 0000033 comment.
 - One entry covers every 0000040 suite for req-001 to req-005. Path regex: `^ravintio-framework/tests/(regression/)?test-0000040-req-00[1-5]-[a-z0-9-]+\.sh$`. Reason: each suite plants or checks for the retired words. The suites are named in their requirements.
+- Approach 2 iteration 2 revision: each suite entry, including the req-002 rewrite table entries and the `test-0000040` path entry, uses the line regex `.*`. For these entries, the stale-entry check fails when no tracked path matches the path regex.
 - Correction: `path-rules.mjs` holds no entry for `workflows/fast-path.md`. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
 - No other file gets an entry. That rule covers these:
   - hooks
