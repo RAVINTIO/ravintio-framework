@@ -211,3 +211,8 @@ TDD (P3, req-005): RED exit 1 (12 passed, 71 failed), GREEN exit 0 (83 passed) o
 Deviation (P3, unclassified): req-005 migration adds a seventh step, Record the outcome, and a section that holds the quoted exemption block.
 Deviation (P3, unclassified): req-005 edits test-0000035-req-007 and test-0000035-req-010, which count migration files, to add the 0.38.0 migration.
 Deviation (P3, unclassified): req-005 no match case names each line holding the exemption markers, because an edited block has no known bounds.
+TDD (P3, req-001): RED exit 1 (30 of 43 failed), then 38 of 43 pass. The 5 left read req-007 docs and wait for batch 2. Rewritten 0000032 req-003 and req-004 suites RED then GREEN in both copies.
+Decision (P3): the orchestrator removed test-0000033-req-011 with git rm / reason: req-001 retires it, and git rm is the route req-004 uses for tracked pack files (backlog 0000366)
+Deviation (P3, unclassified): req-001 re-pinned the baseline hashes in test-0000038-req-004 and test-0000038-req-007, which pin files req-001 changes.
+Deviation (P3, unclassified): req-001 adds to ship Hard Limit 6 that a step meeting a standalone skill trigger names that skill.
+Deviation (P3, unclassified): the req-001 suite also checks that the orchestrator SKILL.md holds no retired-track words, which is stricter than criterion 1.
