@@ -138,3 +138,6 @@ Decision (P1): the next critic pass runs on the skill text alone, without the or
 Critic verdict (P1, approach 2 iteration 3): REJECT. 1 major and 1 minor finding. Both iteration 5 findings resolved. See critic-verdict-6.md.
 Decision (P1): design_critic changes approach to 3 of 3 after the approach 2 cap / reason: prose guard rules kept interacting, so one ordered algorithm now governs, tested first as a scratchpad prototype on 13 fixtures
 Decision (P1): the guard tests rules against the unstripped line, after a pattern match on the stripped copy / reason: the full feature ID must count as a feature ID for the history-line rule
+Critic verdict (P1, approach 3 iteration 1): REJECT. 1 major and 4 minor findings. The iteration 6 major finding resolved. See critic-verdict-7.md.
+Decision (P1): a root-level path component.yml makes every path outside plan/ and docs/ source / reason: stricter than ignoring it, and a diff with a record still passes
+Decision (P1): every residue guard allowlist entry names a line regex, and the setup entry matches only quoted retired-list items / reason: a .* regex on setup.sh would admit lines outside the retired list

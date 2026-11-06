@@ -98,7 +98,29 @@ Fixture cases for the suite. Each gives a path, a line, and the expected verdict
 | `README.md` | `Run the Change Pipeline for small changes.` | fail |
 | `product.yml` | `feature: "0000040-retire-fast-path"` | pass, no match after the strip |
 
-The suite runs these cases as planted lines in scratch copies of each file, alongside the planted cases above. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
+The suite runs these cases as planted lines in scratch copies of each file, alongside the planted cases above.
+
+The correction before this section continues here: `path-rules.mjs` holds no entry for `workflows/fast-path.md`. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
+
+### Line regexes for the remaining entries (approach 3 iteration 1)
+
+Every allowlist entry names a line regex. These govern the entries listed earlier that gave none:
+
+| Entry | Path regex | Line regex |
+|-------|-----------|------------|
+| Released migrations | `^ravintio-framework/migrations/migrate-0\.3[47]\.0-` | `.*`. Released files never change, so the whole file is covered. |
+| The new migration and its helpers | `^ravintio-framework/migrations/migrate-0\.38\.0-retire-fast-path-and-change-pipeline` | `.*`. The migration names both tracks throughout. |
+| Suites that test released migrations | `^ravintio-framework/tests/(regression/)?test-0000036-req-001-` and `test-0000039-req-006-` | `.*` |
+| The setup retired list | `^ravintio-framework/setup\.(sh\|ps1)$` | `^\s*['"][^'"]*(fast-path\|change-pipeline\|ravintio-change-agent)[^'"]*['"],?\s*$`. It matches a line that holds only one quoted retired name, as a list item does. |
+
+In this table, `\|` is the Markdown escape for the regex alternation `|`. The orchestrator tested the setup line regex on both fixture lines below, and it gave the expected result.
+
+Two more fixture cases cover the setup entry:
+
+| Path | Line | Verdict |
+|------|------|---------|
+| `ravintio-framework/setup.sh` | `  "commands/fast-path.md"` | pass, setup entry |
+| `ravintio-framework/setup.sh` | `echo "Use Fast Path for small fixes"` | fail |
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list

@@ -14,11 +14,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `0` of cap `3` (approach 3) |
+| Iteration | `1` of cap `3` (approach 3) |
 | Approach | `3 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `change-approach` |
-| Last updated | `2026-11-06T00:03:09Z` |
+| Last decision | `continue` |
+| Last updated | `2026-11-06T00:07:05Z` |
 
 ---
 
@@ -69,6 +69,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 ### Approach 3 (2026-11-06T00:03:09Z)
 - **How it differs from approach 2:** approach 2 kept the guard rules as separate prose lines and patched each interaction. Its hypothesis was that the rule set lacked one case at a time. Approach 3 holds that the prose rules interact in ways a paper review keeps finding, one at a time. It writes one ordered algorithm that governs every earlier rule line. The orchestrator ran that algorithm as a scratchpad prototype on 13 fixture cases before review, and every case gave its expected verdict. The fixtures are now part of the suite.
 - **Revisions:** the "Guard algorithm" section and fixture table in req-006. A matching line in req-007.
+
+### Iteration 1, approach 3 (2026-11-06T00:07:05Z)
+- **Approach:** 3
+- **Action:** a new fresh-context critic reviewed the approach 3 revision. Verdict in `critic-verdict-7.md`.
+- **Observation:** REJECT. Mechanical check clean. The iteration 6 major finding resolved. The critic's own residue check found every match owned. One new major finding: R-005 promised a root-level `component.yml` test that req-003 didn't define. Four minor findings: entries with no line regex, an orphan sentence in req-006, a wording mismatch in req-007, and the known four-versus-five ADR note.
+- **Decision:** continue. Revised by addition: req-003 defines a root-level `component.yml` and adds the case to criterion 2, R-005 updated, a line regex table and two setup fixtures in req-006, the orphan sentence restated, and req-007 aligned with the history-line rule.
 
 ---
 

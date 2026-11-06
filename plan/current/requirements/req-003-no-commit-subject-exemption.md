@@ -26,6 +26,7 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
   - The check reads `product.yml` at the git top level, from both the base commit and `HEAD`, and takes the union. A branch that drops a component from `product.yml` still has that folder checked.
   - If the base commit can't be read, as in a shallow clone, the check fails closed. Its message names `fetch-depth: 0`. Both CI files already check out with `fetch-depth: 0`, and a test fixture covers the shallow case.
   - It reads each `path:` value under `components:` and takes its folder. It ignores an empty value, an absolute path, and a path with a `..` part, and prints a warning that names each one.
+  - A root-level `path: "component.yml"` gives the folder `.`, the whole repo. Every path outside `plan/` and `docs/` is then source. The check stays strict: a diff with a record still passes, and a diff under only `plan/` or `docs/` has no source change.
   - If `product.yml` is absent from both commits, the check falls back to `src/` only. It treats an unreadable file the same way and prints a warning.
   - `src/` always counts as a source folder, whatever `product.yml` lists.
 - A record is a file under the top-level `plan/` or `docs/` folder. A record never counts as source, even when a listed folder holds it.
@@ -59,6 +60,7 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
   - A branch that removes a component from `product.yml` still has that folder checked.
   - With no `product.yml`, only `src/` counts as source.
   - An absolute or `..` path value is ignored with a warning.
+  - With a root-level `path: "component.yml"`, every path outside `plan/` and `docs/` is source. A code change with no record fails, and a change under `plan/` or `docs/` alone passes.
 - [ ] The `validate-branch` job in `.github/workflows/ravintio.yml` matches the one in `hooks/ravintio.yml` line for line. Pre-push and the CI step give the same exit code on every fixture in the second criterion. Verified by: integration
 
 ## Dependencies
