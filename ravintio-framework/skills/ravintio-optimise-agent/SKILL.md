@@ -62,7 +62,7 @@ After each response, add confirmations to a running list and show it: `Confirmed
 
 ### Phase 4: Summary
 
-When all suggestions have been reviewed, report "Review complete" with the counts (`{N} suggestions presented. {M} confirmed. {P} rejected.`) and list the confirmed changes as Change Pipeline input: `1. Remove from {file}, section "{section}": {description}`; then point to starting a Change Pipeline run with this list as the change request.
+When all suggestions have been reviewed, report "Review complete" with the counts (`{N} suggestions presented. {M} confirmed. {P} rejected.`) and list the confirmed changes as Feature Pipeline input: `1. Remove from {file}, section "{section}": {description}`; then point to starting a Feature Pipeline run with this list as the change request.
 
 ---
 

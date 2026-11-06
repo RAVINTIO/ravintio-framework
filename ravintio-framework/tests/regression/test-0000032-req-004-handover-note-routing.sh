@@ -2,10 +2,10 @@
 # Tests for feature 0000032-governance-continuity-and-write-gate-scope.
 #
 # req-004: a ship Hard Limit routes every next step in a P9 handover note,
-#          next-steps list, or runbook pointer through Fast Path, Change
-#          Pipeline, or Feature Pipeline. A note never says a code change needs
-#          no P0, and never points to a runbook that pushes to main. Step 11
-#          names the track for each next step it lists.
+#          next-steps list, or runbook pointer through the Feature Pipeline
+#          (0000040 req-001). A note never says a code change needs no P0,
+#          and never points to a runbook that pushes to main. Step 11 names
+#          the Feature Pipeline, or the standalone skill, for each next step.
 #
 # REGRESSION-CANDIDATE: covers the ship handover-note routing rule, tagged by test-writer for human review at P7
 
@@ -16,6 +16,11 @@ source "$SCRIPT_DIR/../helpers/assert.sh"
 
 SHIP="$SCRIPT_DIR/../../skills/ravintio-ship-agent/SKILL.md"
 
+# lacks <needle> <haystack> <label>: passes when the haystack omits the needle.
+lacks() {
+  assert_equals "absent" "$([[ "$2" == *"$1"* ]] && echo present || echo absent)" "$3"
+}
+
 HARD_LIMITS=$(sed -n '/^## Hard Limits/,/^## P7/p' "$SHIP")
 RULE=$(grep -i 'handover note' <<< "$HARD_LIMITS")
 STEP11=$(sed -n '/^### Step 11: Confirm to human/,/^### Step 12/p' "$SHIP")
@@ -25,17 +30,21 @@ echo "=== req-004: handover-note Hard Limit ==="
 assert_equals "yes" "$([ -n "$RULE" ] && echo yes || echo no)" "req-004: Hard Limits holds a handover-note rule"
 assert_contains "next-steps list" "$RULE" "req-004: rule covers next-steps lists"
 assert_contains "runbook" "$RULE" "req-004: rule covers runbook pointers"
-assert_contains "Fast Path" "$RULE" "req-004: rule names Fast Path"
-assert_contains "Change Pipeline" "$RULE" "req-004: rule names Change Pipeline"
 assert_contains "Feature Pipeline" "$RULE" "req-004: rule names Feature Pipeline"
-assert_contains "code change always needs a track" "$RULE" "req-004: rule states a code change always needs a track"
+lacks "Fast Path" "$RULE" "req-004: rule names no Fast Path (0000040 req-001)"
+lacks "Change Pipeline" "$RULE" "req-004: rule names no Change Pipeline (0000040 req-001)"
+assert_contains "code change always needs a Feature Pipeline run" "$RULE" \
+  "req-004: rule states a code change always needs a Feature Pipeline run (0000040 req-001)"
 assert_contains "never says a code change needs no P0" "$RULE" "req-004: rule forbids saying a code change needs no P0"
 assert_contains "pushes to \`main\`" "$RULE" "req-004: rule forbids runbooks that push to main"
 
 echo ""
-echo "=== req-004: Step 11 names a track per next step ==="
+echo "=== req-004: Step 11 names the Feature Pipeline per next step ==="
 
 assert_contains "next steps" "$STEP11" "req-004: Step 11 addresses listed next steps"
-assert_contains "names its track" "$STEP11" "req-004: Step 11 requires each next step to name its track"
+assert_contains "names the Feature Pipeline, or the standalone skill it needs" "$STEP11" \
+  "req-004: Step 11 requires each next step to name the Feature Pipeline or a standalone skill (0000040 req-001)"
+lacks "Fast Path" "$STEP11" "req-004: Step 11 names no Fast Path (0000040 req-001)"
+lacks "Change Pipeline" "$STEP11" "req-004: Step 11 names no Change Pipeline (0000040 req-001)"
 
 print_summary

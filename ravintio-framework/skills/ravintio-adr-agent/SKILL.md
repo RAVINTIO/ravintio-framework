@@ -42,7 +42,7 @@ A decision does **not** require an ADR if it is already documented in the design
 - Consequences must include at least one positive and one negative consequence.
 - Write one ADR that records the stack choice itself, referencing the design.
 - Number sequentially from ADR-001.
-- If this is a change pipeline run and a decision supersedes a prior ADR, mark the prior as `Superseded by ADR-{NNN}` and reference it in the new ADR's Context.
+- If a decision supersedes a prior ADR, mark the prior as `Superseded by ADR-{NNN}` and reference it in the new ADR's Context.
 - Write each ADR to disk as you complete it. Do not hold them all in memory.
 
 ## Parallelism Directive

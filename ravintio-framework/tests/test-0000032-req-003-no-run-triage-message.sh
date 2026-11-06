@@ -3,8 +3,9 @@
 #
 # req-003: with ravintio-framework/ present and no sentinel, the auto-trigger
 #          hook says no RAVINTIO run is active, names ravintio-orchestrator,
-#          and asks for triage into Fast Path, Change Pipeline, or Feature
-#          Pipeline. It no longer claims the skill "has not been loaded". The
+#          and asks for triage as the Routing Directive says. The message
+#          names the Feature Pipeline and no retired track (0000040 req-001).
+#          It no longer claims the skill "has not been loaded". The
 #          orchestrator Routing Directive covers every request after P9.
 #
 # REGRESSION-CANDIDATE: covers the auto-trigger no-run message and post-P9 triage rule, tagged by test-writer for human review at P7
@@ -59,9 +60,10 @@ run_hook "{\"cwd\":\"$NO_RUN\"}"
 assert_equals "0" "$CODE" "req-003: hook exits 0 with no sentinel"
 assert_contains "no RAVINTIO run is active" "$OUT" "req-003: message says no RAVINTIO run is active"
 assert_contains "ravintio-orchestrator" "$OUT" "req-003: message names ravintio-orchestrator"
-assert_contains "Fast Path" "$OUT" "req-003: message names Fast Path"
-assert_contains "Change Pipeline" "$OUT" "req-003: message names Change Pipeline"
-assert_contains "Feature Pipeline" "$OUT" "req-003: message names Feature Pipeline"
+assert_contains "Feature Pipeline" "$OUT" "req-003: message names Feature Pipeline (0000040 req-001)"
+assert_contains "Routing Directive" "$OUT" "req-003: message routes as the Routing Directive says (0000040 req-001)"
+lacks "Fast Path" "$OUT" "req-003: message names no Fast Path (0000040 req-001)"
+lacks "Change Pipeline" "$OUT" "req-003: message names no Change Pipeline (0000040 req-001)"
 assert_contains "triage" "$OUT" "req-003: message asks for triage before acting"
 assert_contains "resume detection" "$OUT" "req-003: message still starts with resume detection"
 lacks "has not been loaded" "$OUT" "req-003: message drops the has-not-been-loaded claim"
@@ -91,6 +93,9 @@ HEADER=$(sed -n '1,/\*\//p' "$HOOK")
 assert_contains "no run is active" "$HEADER" "req-003: header describes check 2 as no run is active"
 lacks "orchestrator not yet loaded" "$HEADER" "req-003: header drops orchestrator not yet loaded"
 lacks "process.exit(2)" "$(cat "$HOOK")" "req-003: hook never exits 2"
+assert_contains "Routing Directive" "$HEADER" "req-003: header routes the request as the Routing Directive says (0000040 req-001)"
+lacks "Fast Path" "$(cat "$HOOK")" "req-003: hook names no Fast Path (0000040 req-001)"
+lacks "Change Pipeline" "$(cat "$HOOK")" "req-003: hook names no Change Pipeline (0000040 req-001)"
 
 ROUTING=$(sed -n '/^## Routing Directive/,/^### /p' "$ORCH")
 assert_contains "Every request must be triaged before any action is taken." "$ROUTING" \

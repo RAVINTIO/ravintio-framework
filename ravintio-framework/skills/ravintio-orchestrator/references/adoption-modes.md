@@ -31,7 +31,7 @@ Each mode's discovery-pass field shape is defined in `discovery.template.md` (on
 - Coach from the Feature Brief directly
 
 **Standard Iterative**: This system has been through at least one RAVINTIO Framework pipeline run. `plan/_archive/` or `docs/about.md` exists. Writes to `discovery.md` per its own template subsection.
-- Read `docs/about.md` for current version; suggest minor bump for Feature Pipeline, patch for Change Pipeline
+- Read `docs/about.md` for current version; suggest a minor bump for a Feature Pipeline run
 - Prior decisions are constraints unless an ADR supersedes them
 
 **Retrofit**: Source code exists but has never been through a RAVINTIO pipeline run. No archive, no `docs/about.md`. Read other markers (version strings in `package.json`, `go.mod`, git tags, README) and suggest a version reflecting the project's current maturity; human confirms. The structured codebase scan that populates `discovery.md` is defined in `workflows/retrofit.md`; run it now.

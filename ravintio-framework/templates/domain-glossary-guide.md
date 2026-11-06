@@ -53,7 +53,7 @@ The agent should use the **Term**, never the alias. If existing code uses an ali
 
 ## The Used In Column
 
-Track which components use each term. This helps the change-agent understand ripple effects - if "Order" changes meaning, every component that uses it needs updating.
+Track which components use each term. This helps the `codegen-agent` understand ripple effects in a Feature Pipeline run - if "Order" changes meaning, every component that uses it needs updating.
 
 ---
 
