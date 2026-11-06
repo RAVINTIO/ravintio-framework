@@ -220,3 +220,7 @@ TDD (P3, req-003): RED exit 1 (64 passed, 44 failed), GREEN exit 0 (108 passed).
 Deviation (P3, unclassified): req-003 CI fails closed when origin/{base_ref} is missing. Only pre-push warns and passes on a missing ref.
 Deviation (P3, unclassified): req-003 treats a product.yml path starting with a backslash or a drive letter as absolute, and ignores it with a warning.
 Deviation (P3, unclassified): req-003 ends the components block at a column 1 comment line, and a blank line doesn't end it.
+TDD (P3, req-002 and req-004): RED exit 1 (183 and 72 failed), GREEN exit 0 (487 and 128 passed), with the ps1 cases run under pwsh. The req-002 no-assertion-change suites pass unchanged.
+Deviation (P3, unclassified): req-004 adds a Windows skip table row for its suite in tests/README.md, which test-0000037-req-010 needs.
+Deviation (P3, unclassified): req-004 changes the skill count in test-0000039-req-001 from 21 to 20.
+Deviation (P3, unclassified): req-004 cleanup functions skip an empty skills folder, so opencode never checks a path at the project root.
