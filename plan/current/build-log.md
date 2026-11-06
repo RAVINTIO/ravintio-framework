@@ -216,3 +216,7 @@ Decision (P3): the orchestrator removed test-0000033-req-011 with git rm / reaso
 Deviation (P3, unclassified): req-001 re-pinned the baseline hashes in test-0000038-req-004 and test-0000038-req-007, which pin files req-001 changes.
 Deviation (P3, unclassified): req-001 adds to ship Hard Limit 6 that a step meeting a standalone skill trigger names that skill.
 Deviation (P3, unclassified): the req-001 suite also checks that the orchestrator SKILL.md holds no retired-track words, which is stricter than criterion 1.
+TDD (P3, req-003): RED exit 1 (64 passed, 44 failed), GREEN exit 0 (108 passed). Rewritten test-0000019-req-002 RED then GREEN in both copies.
+Deviation (P3, unclassified): req-003 CI fails closed when origin/{base_ref} is missing. Only pre-push warns and passes on a missing ref.
+Deviation (P3, unclassified): req-003 treats a product.yml path starting with a backslash or a drive letter as absolute, and ignores it with a warning.
+Deviation (P3, unclassified): req-003 ends the components block at a column 1 comment line, and a blank line doesn't end it.
