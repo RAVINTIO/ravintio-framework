@@ -11,8 +11,8 @@ The setup script activates a **three-tier Progressive Guardrail System** that pr
 | Tier | When | Effect |
 |------|------|--------|
 | **1 — Advisory pre-commit** | Every local commit | Warns if code was staged without docs. Commit **succeeds**. |
-| **2 — Branch pre-push** | Every `git push` | Fails if `src/` changed with no update to `plan/`, `docs/`, or `component.yml` — unless all commits use `fix(fast-path):`, which requires only a `component.yml` or changelog update. |
-| **3 — CI/CD pipeline** | Every Pull Request | Same check in GitHub Actions. Blocks the merge button on violation. Recognises `fix(fast-path):` with the same relaxed rule. |
+| **2 — Branch pre-push** | Every `git push` | Fails if the diff touches a source folder with no update to `plan/` or `docs/`. A source folder is `src/` or the folder of a `component.yml` that `product.yml` lists. A `component.yml` counts as source, not as a record. |
+| **3 — CI/CD pipeline** | Every Pull Request | Same source folder rule in GitHub Actions. Blocks the merge button on violation. No commit subject relaxes the rule. |
 
 Hooks live in `ravintio-framework/hooks/` and are wired via `git config core.hooksPath`. No `.git/` modifications required. The CI workflow is copied to `.github/workflows/ravintio.yml` on first setup.
 
@@ -26,7 +26,7 @@ When Phase 0 starts, the orchestrator writes `plan/.orchestrator-active` contain
 
 | Hook | What it does |
 |------|-------------|
-| **gate-write** (PreToolUse) | Blocks writes outside always-permitted paths unless `plan/current/design.md` exists and the target path is a declared component. With no design, a current Fast Path scope record at `plan/.fast-path-scope` admits the paths it lists |
+| **gate-write** (PreToolUse) | Blocks writes outside always-permitted paths unless `plan/current/design.md` exists and the target path is a declared component. With no design, it blocks every write outside `plan/`, `docs/`, and the always-permitted names |
 | **check-orchestrator-presence** (UserPromptSubmit) | Injects a reminder banner on every prompt while a pipeline is active, so the orchestrator skill reloads after context compaction or session resume |
 | **check-design** (UserPromptSubmit) | Injects a hard STOP message if neither the sentinel nor a `feature-brief.md` is present |
 

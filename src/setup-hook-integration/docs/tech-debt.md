@@ -61,4 +61,4 @@ These items covered tests of a hook integration that setup no longer installs.
 ## TD-011: old-name reads removed at 1.0.0 (0000039-ADR-003, ADR-004)
 
 **File:** `ravintio-framework/setup.sh`, `ravintio-framework/setup.ps1`, `ravintio-framework/hooks/adapters/opencode/index.ts`, `ravintio-framework/hooks/enforcement/em-dash-guard.mjs`, `ravintio-framework/hooks/enforcement/path-rules.mjs`
-**Status:** Open. Every old-name read and its brand guard allowlist entry is removed at 1.0.0 (backlog 0000261). Also add the em dash sentinel and the old paths in `FAST_PATH_ENFORCEMENT_PATHS` to the ADR-004 list, or remove them.
+**Status:** Open. Every old-name read and its brand guard allowlist entry is removed at 1.0.0 (backlog 0000261). Also add the em dash sentinel and the old paths in `ENFORCEMENT_PATHS` to the ADR-004 list, or remove them.

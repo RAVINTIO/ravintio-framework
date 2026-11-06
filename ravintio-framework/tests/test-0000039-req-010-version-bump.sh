@@ -24,10 +24,11 @@ REPO="$(cd "$FRAMEWORK/.." && pwd)"
 # --- AC1 ---------------------------------------------------------------
 PRODUCT_V="$(sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' "$REPO/product.yml" | head -n 1)"
 COMP_V="$(sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' "$FRAMEWORK/component.yml" | head -n 1)"
-# The component version sets the release, and it must be a 0.37 patch.
+# The component version sets the release. It must be 0.37 or a later 0.x
+# release, since 0000040-retire-fast-path moved the pack to 0.38.0.
 WANT="$COMP_V"
-if [[ "$COMP_V" =~ ^0\.37\.[0-9]+$ ]]; then R=ok; else R="not a 0.37 version: $COMP_V"; fi
-assert_equals "ok" "$R" "req-010 AC1: ravintio-framework/component.yml version is a 0.37 release"
+if [[ "$COMP_V" =~ ^0\.(3[7-9]|[4-9][0-9])\.[0-9]+$ ]]; then R=ok; else R="not a 0.37 or later 0.x version: $COMP_V"; fi
+assert_equals "ok" "$R" "req-010 AC1: ravintio-framework/component.yml version is a 0.37 or later 0.x release"
 ABOUT_FM_V="$(awk 'NR==1 && /^---$/ {fm=1; next} fm && /^---$/ {exit} fm && /^version:/ {gsub(/^version: *"?|"? *$/, ""); print; exit}' "$REPO/docs/about.md")"
 ABOUT_TABLE_V="$(sed -n 's/^| Version | `\([0-9.]*\)` |.*$/\1/p' "$REPO/docs/about.md" | head -n 1)"
 

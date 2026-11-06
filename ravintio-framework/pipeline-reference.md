@@ -20,7 +20,6 @@ Every agent response begins with a phase prefix. You always know where you are.
 | `P7:` | Archive | Changelog, skips, `product.yml` release fields, archive plan/current/, regression confirmation, test report |
 | `P8:` | Build Assessment | Efficiency audit: model routing, parallelism, self-corrections (sub-agent of ship-agent) |
 | `P9:` | Ship | Git tag, push/PR decision, PR raised or PR description output |
-| `PC:` | Change Pipeline | Change to an existing feature |
 
 Standard response formats:
 - Entering a phase: `Px: Starting — {one-liner}`
@@ -116,74 +115,22 @@ The orchestrator consults the **Model Tier Decision Table** before spawning ever
 
 ---
 
-## Trivial Fixes — Fast Path
+## One track: the Feature Pipeline
 
-For isolated, low-risk changes the orchestrator can bypass the full pipeline.
+Every change runs the Feature Pipeline, from P0 to P9. That covers these changes:
 
-### Criteria (ALL must be met)
+- a bug fix or a copy change
+- a change to an existing feature
+- a change with no `src/` target, such as a documentation, governance, or tooling change
 
-1. Does **not** introduce new external dependencies
-2. Does **not** alter, add, or remove database schemas or data models
-3. Does **not** change security parameters, authentication, or routing logic
-4. Confined to: UI styling, copy changes, or isolated pure-function logic bugs
+No lighter route skips a phase or its record.
 
-If **any** criterion fails, the orchestrator routes to the Change Pipeline instead.
+The orchestrator triages each request before it acts. Triage has two outcomes:
 
-### Execution
+- A request that meets a standalone skill trigger invokes that skill. The standalone skills are `ravintio-optimise-agent`, `ravintio-refresh-setup`, and the retrofit workflow.
+- Every other request goes to the Feature Pipeline.
 
-1. Write the scope record. List every target path in `plan/.fast-path-scope` with **Write**.
-2. Implement the fix directly. It needs no Feature Brief, Execution Plan, or ADR.
-3. Validate: lint, typecheck, test, and build.
-4. Update `component.yml`: bump the patch version and update `metadata.updatedAt`.
-5. Log the change. Append an entry to `plan/changelog/{feature-id}-{YYYY-MM-DD}.md` that lists every record path.
-6. Commit. Remove the record with `rm -f plan/.fast-path-scope`, then commit `fix(fast-path): {description}`.
-
-The pre-push hook and CI workflow recognise the `fix(fast-path):` prefix and relax the documentation check: only `component.yml` or a changelog update required (not full `plan/` or `docs/` changes).
-
-### The scope record
-
-With no `plan/current/design.md`, the scope record is how a Fast Path change gets past `gate-write` and the shell-write guard. Both hooks admit a write to a listed path and block every other gated path with exit 2. A design always wins over a record. `workflows/fast-path.md` holds the full steps.
-
-The record has this format:
-
-```
-branch: feat/0000040-fix-typo
-head: 3f2a9c1d8e7b6a5f4e3d2c1b0a9f8e7d6c5b4a39
-paths:
-- ravintio-overrides/instructions/review.md
-- docs-site/
-```
-
-- `branch` comes from `git rev-parse --abbrev-ref HEAD`, or is `(detached)` when that prints `HEAD`.
-- `head` comes from `git rev-parse HEAD`.
-- Each `- ` line names a root-relative file or folder. A trailing `/` names a folder. The record has no glob syntax.
-- An invalid record admits nothing. The gate never repairs one.
-
-The gate ignores a stale record. A record goes stale when its `branch` or `head` no longer matches the repository, for example after a commit. If you commit or switch branch mid-change, rewrite the record before the next write.
-
-The record never admits these targets:
-
-- An enforcement path, such as `ravintio-framework/hooks/`, `ravintio-framework/scripts/`, a hook wiring file, or `.git/`. `FAST_PATH_ENFORCEMENT_PATHS` in `path-rules.mjs` and the `fast-path.md` prerequisites list the same entries. The gate checks them before the record, ignoring case.
-- A path that holds a non-ASCII character. Some file systems fold a lookalike character onto a plain letter, so the gate can't judge one safely.
-
-The record is self-authorisation, because the agent that makes the change also writes it. Each admitted write prints one notice on stderr, such as `[RAVINTIO] Fast Path: admitted 'docs-site/index.md' through plan/.fast-path-scope.` Claude Code keeps that output out of the main view. The human on the loop sees the admitted paths in the changelog entry instead.
-
-Step 6 removes the record before `git commit`, so no commit holds it. The root `.gitignore` also lists it.
-
----
-
-## Change Pipeline
-
-For modifications to an existing feature — bug fixes, targeted changes to 1–2 components, or new user stories within existing scope:
-
-```
-Execute the confirmed design Change Pipeline.
-Feature ID: my-feature
-Component ID: auth-service
-Change request: Add refresh token rotation
-```
-
-The `ravintio-change-agent` handles it without re-running the full Feature Pipeline. It loads the domain context from the archived plan, implements the minimum necessary change, validates, checks for contract or schema changes, and updates documentation.
+The version bump follows the run. A Feature Pipeline run takes a minor bump, and a breaking change takes a major bump. The human on the loop confirms the version at P0.
 
 ---
 
@@ -194,14 +141,28 @@ The setup script activates RAVINTIO's **Progressive Guardrail System** — a thr
 | Tier | When | What happens |
 |------|------|--------------|
 | **1 — Advisory pre-commit** | Every local commit | Checks whether code was staged without docs. Prints a warning if so. Commit **succeeds** regardless. |
-| **2 — Branch pre-push** | Every `git push` | Checks the cumulative branch diff. Push **fails** if `src/` was changed with no corresponding update to `plan/`, `docs/`, or `component.yml`. |
+| **2 — Branch pre-push** | Every `git push` | Checks the cumulative branch diff. Push **fails** if the diff touches a source folder with no file under `plan/` or `docs/`. |
 | **3 — CI/CD pipeline** | Every Pull Request | Same check in GitHub Actions. Blocks the merge button if the rule is violated. |
 
-### fast-path prefix
+### Source folder rule
 
-All tiers recognise the `fix(fast-path):` commit prefix and apply a relaxed rule: only a `component.yml` update or a `plan/changelog/` entry is required — not full `plan/` or `docs/` changes.
+Tier 2 and Tier 3 apply one source folder rule (0000040 ADR-003). No commit subject relaxes it.
 
-If **all** commits on a branch use the `fix(fast-path):` prefix, Tier 2 and Tier 3 apply the relaxed rule to the entire push/PR.
+A source folder is one of these:
+
+- `src/`, which always counts
+- the folder of each `component.yml` that `product.yml` lists
+
+The rule reads `product.yml` from the base commit and from `HEAD`, and takes the union of both lists. A branch that drops a component from `product.yml` still has that folder checked. The rule never scans the tree for `component.yml` files.
+
+A record is a file under the top-level `plan/` or `docs/` folder. A `component.yml` counts as source, not as a record. If the diff touches a source folder, the same diff must touch a record.
+
+| Case | What happens |
+|------|--------------|
+| The base commit can't be resolved, as in a shallow clone | The check fails closed. The message names `fetch-depth: 0`. |
+| Pre-push finds no `origin/main` ref | Pre-push checks nothing and prints a warning. CI still runs the rule on the pull request. |
+| `product.yml` is absent | Only `src/` is checked. |
+| `product.yml` is unreadable, or lists no component the rule can read | Only `src/` is checked, with a warning that names the file. |
 
 ### Hook file locations
 
@@ -216,18 +177,21 @@ Hooks are wired via `git config core.hooksPath ravintio-framework/hooks` — no 
 ### What happens on a Tier 2 violation
 
 ```
-❌ Push rejected: documentation gate failed
-
-  src/ was modified but no corresponding update was found in:
-    - plan/
-    - docs/
-    - component.yml (any component)
-
-  To bypass: use fix(fast-path): prefix on all commits, then only
-  component.yml or plan/changelog/ update is required.
-
-  To fix: update plan/ or docs/ to reflect the src/ change, then push again.
+❌ RAVINTIO ENFORCEMENT FAILED: Push Rejected.
+----------------------------------------------------------------
+Your branch changes these source folders, but no file under
+plan/ or docs/ was also touched in this diff:
+  - src/
+A component.yml counts as source, not as a record.
+This is a presence check, not a correspondence guarantee. It
+does not verify the content actually matches your change.
+You cannot push this branch until you commit updates to:
+  - plan/ (current or archived feature docs)
+  - docs/ (living documentation)
+----------------------------------------------------------------
 ```
+
+To fix it, update `plan/` or `docs/` to record the change, then push again.
 
 ---
 
@@ -248,7 +212,7 @@ P7 complete  → plan/.orchestrator-active deleted (final cleanup step)
 
 | Hook | Trigger | What it does |
 |------|---------|-------------|
-| **gate-write** (PreToolUse: Write, Edit) | Every file write or edit | Blocks writes outside always-permitted paths (`plan/`, `docs/`, and named files such as `CLAUDE.md`) unless `plan/current/design.md` exists AND the target path matches a declared component in the design. With no design, a Fast Path scope record can admit listed paths instead |
+| **gate-write** (PreToolUse: Write, Edit) | Every file write or edit | Blocks writes outside always-permitted paths (`plan/`, `docs/`, and named files such as `CLAUDE.md`) unless `plan/current/design.md` exists AND the target path matches a declared component in the design. With no design, the gate blocks every write outside `plan/`, `docs/`, and the always-permitted names |
 | **check-orchestrator-presence** (UserPromptSubmit) | Every user prompt while sentinel is present | Injects a reminder banner so the orchestrator skill reloads after context compaction or session resume. Advisory by default — see Strict Mode below |
 | **check-design** (UserPromptSubmit) | Every user prompt | If neither the sentinel nor a `feature-brief.md` is present, injects a hard STOP message before the agent can act. Prevents free-form changes outside the pipeline |
 
@@ -259,7 +223,7 @@ P7 complete  → plan/.orchestrator-active deleted (final cleanup step)
 1. `plan/current/design.md` must exist
 2. The target file path must be under a component directory declared in the design's `## Engineering Layer → Components` section
 
-Writes to `plan/` and `docs/` are always permitted. So are named files such as `CLAUDE.md`, `AGENTS.md`, `.gitignore`, and `pause.md`, wherever they sit. `gate-write` never blocks documentation or plan artifact writes. Other paths, `ravintio-framework/` and `ravintio-overrides/` included, need a design that lists them, or a Fast Path scope record.
+Writes to `plan/` and `docs/` are always permitted. So are named files such as `CLAUDE.md`, `AGENTS.md`, `.gitignore`, and `pause.md`, wherever they sit. `gate-write` never blocks documentation or plan artifact writes. Other paths, `ravintio-framework/` and `ravintio-overrides/` included, need a design that lists them. An always-permitted name inside a path that `ENFORCEMENT_PATHS` lists gets no shortcut, so it takes the normal route. `ENFORCEMENT_PATHS` in `path-rules.mjs` covers the hook folders, hook wiring, tool-local settings, setup scripts, the CI workflow, and `.git/`.
 
 ### How the gates judge a path
 

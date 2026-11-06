@@ -41,7 +41,7 @@ flowchart TD
     subgraph Enforcement["Enforcement Scripts (hooks/enforcement/)"]
         GW["gate-write.mjs\n(path allowlist + sentinel check,\nreason on stderr, 0000032)"]
         SWG["shell-write-guard.mjs\n(Bash shell writers judged by\nthe same rules, Claude Code only, 0000032)"]
-        PR["path-rules.mjs\n(shared gated-path rules, repository root,\nlink resolution, scope record, 0000032/0000035)"]
+        PR["path-rules.mjs\n(shared gated-path rules, repository root,\nlink resolution, ENFORCEMENT_PATHS, 0000032/0000035/0000040)"]
         CD["check-design.mjs\n(scope injection)"]
         RC["ratchet-check.mjs\n(criteria/scope weakening block,\narmed while a loop is active,\nshared root rules, 0000035)"]
         ED["em-dash-guard.mjs\n(U+2014 rejected in RAVINTIO prose,\nsentinel bypass, 0000028)"]
@@ -250,10 +250,6 @@ In `autonomous`, every phase gate runs as a loop under `ravintio-loop-runner` wi
 
 `standards/p0-question-policy.md` limits P0 to real forks (0000033-ADR-007). Adoption mode, version, stack, and similar items go into the design draft for one confirmation. The design, the Scope Lock batch, and the run mode confirm in one turn. The build log records the question count. When a design depends on existing records, discovery samples recent rows and the design states the usable rate as an assumption. `standards/release-sizing.md` sizes each requirement as small (1), medium (2), or large (3). P0 fills the release from the backlog up to the target in `ravintio-overrides/release-budget.yml` (0000033-ADR-008). Without that file, the three-story rule applies.
 
-### Fast Path for changes with no src target
-
-Fast Path now admits a change with no `src/` target (0000033-ADR-009). Its four criteria are unchanged, and the orchestrator's track table says so.
-
 ### Parallel streams and join reconciliation
 
 Parallel dispatch is the default in every phase (`standards/agent-dispatch-standards.md`). Independent requirements move through P1 to P4 as separate streams. Each stream has a state file under `plan/current/streams/`, from `templates/stream-state.template.md`. The `parallel_streams` toggle in `loop-toggles.yml` defaults to `on` in `autonomous` and `off` otherwise (0000033-ADR-013). The orchestrator owns every join. After each join, `scripts/stream-reconcile.mjs` checks that every artifact one stream declares is consumed by another stream or by a requirement (0000033-ADR-014).
@@ -287,16 +283,11 @@ A link loop, a chain past 40 links, or a resolution error blocks with exit 2 whe
 
 `markedRoot` distrusts a `.git` or `ravintio-framework` marker that sits below an always-permitted name, such as `plan/w/.git` (0000035-ADR-008). The walk goes on to the next trusted marker above, so a moved folder can't become a new root.
 
-### Fast Path scope record
+### `ENFORCEMENT_PATHS`
 
-A Fast Path change lists its target paths in `plan/.fast-path-scope` (0000035-ADR-002). Both write gates accept a valid, current record when `design.md` is absent. The record stores the branch and `HEAD` it was written at. The gate reads both from `.git` files with no spawn, and ignores a stale record (0000035-ADR-003).
+`path-rules.mjs` exports a frozen list, `ENFORCEMENT_PATHS` (0000040 ADR-004). It covers hook folders, hook wiring, tool-local settings, setup scripts, the CI workflow, and `.git/`. `isEnforcementPath` matches a path against it. The match folds case and NFKC lookalikes, and it reads a `**/` entry at any depth.
 
-The record is self-authorisation, so the gates add two controls:
-
-- Each admitted write prints one stderr notice that names the record and the path.
-- The Fast Path changelog entry lists every record path.
-
-`FAST_PATH_ENFORCEMENT_PATHS` lists the paths a record never admits (0000035-ADR-004). The list covers hook folders, hook wiring, tool-local settings, setup scripts, the CI workflow, and `.git/`. `fast-path.md` names the same entries, and a suite checks both lists match. Fast Path removes the record before its commit, and `.gitignore` lists it.
+The list has one caller, `isAlwaysPermitted`. An always-permitted name such as `CLAUDE.md` inside a listed path gets no shortcut, so it takes the normal route (0000036-ADR-003). With no design, that write blocks. With a design, the component-path check judges it.
 
 ### ratchet-check shares the root rules
 
@@ -489,7 +480,6 @@ Clarified in 0000033: `ravintio-framework` owns `plan/.run-mode`, `plan/current/
 New in 0000035 (plain Markdown and text):
 
 - `plan/_migrations/` run records: owned by `ravintio-migrator`, read by orchestrator resume detection, git-tracked, never archived (0000035-ADR-017).
-- `plan/.fast-path-scope`: owned by the Fast Path workflow, read by `gate-write.mjs` and the shell-write guard, gitignored and removed before each Fast Path commit.
 - `product.yml`: the ship agent owns it and writes it only through `set-product-release.mjs`. `product-version.mjs` reads it.
 
 Clarified in 0000032: `ravintio-framework` owns the three committed session markers, `plan/.orchestrator-active`, `plan/.orchestrator-ack`, and `plan/.run-mode`. The orchestrator writes them at P0, and the ship skill deletes them in the P9 marker step. Hooks read them only.
@@ -544,12 +534,12 @@ Reference `docs/decisions-index.md` for the full ADR list.
 - **ADR-005 (0000033):** A loop that hits its cap tries up to 3 different approaches before it becomes an exception.
 - **ADR-007 (0000033):** P0 asks only real forks and confirms the design, Scope Lock batch, and run mode in one turn.
 - **ADR-008 (0000033):** The release budget counts size points, not stories.
-- **ADR-009 (0000033):** Fast Path admits a change with no `src/` target.
+- **ADR-009 (0000033):** Fast Path admits a change with no `src/` target. Superseded by 0000040 ADR-002.
 - **ADR-010 (0000033):** `archive-current.mjs` replaces the glob delete in the P7 archive.
 - **ADR-013 (0000033):** Parallel streams use a `parallel_streams` toggle and per-stream state files.
 - **ADR-014 (0000033):** The orchestrator owns joins and runs `stream-reconcile.mjs` after each.
-- **ADR-002 (0000035):** A Fast Path scope record at `plan/.fast-path-scope` stands in for `design.md`, with a stderr notice on each admitted write.
-- **ADR-004 (0000035):** A scope record never admits a path in `FAST_PATH_ENFORCEMENT_PATHS`.
+- **ADR-002 (0000035):** A Fast Path scope record at `plan/.fast-path-scope` stands in for `design.md`, with a stderr notice on each admitted write. Superseded by 0000040 ADR-002.
+- **ADR-004 (0000035):** A scope record never admits a path in the enforcement path list. Partly superseded by 0000040 ADR-004, which keeps the list as `ENFORCEMENT_PATHS`.
 - **ADR-005 (0000035):** The gates resolve links segment by segment and judge both placements. A resolution error inside the root fails closed.
 - **ADR-006 (0000035):** The root lookup works when `cwd` no longer exists.
 - **ADR-007 (0000035):** `ratchet-check.mjs` uses the shared root and target rules.
