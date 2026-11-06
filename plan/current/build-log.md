@@ -259,3 +259,8 @@ Progress: P3 complete at 2026-11-06T03:39:02Z: all seven requirements built unde
 | Notes | Autonomous run. Resumed after a session break at the P3 gate. |
 
 Decision (P4): the full suite, the coverage table, and verify-by-execution run in one parallel batch / reason: each reads the tree and writes to its own output, and none changes code
+Static checks (P4): bash -n on every tracked shell script and pre-push, node --check on every .mjs and .js file, the setup.ps1 parse under pwsh, consistency-check, self-description-check, and skill-drift-check all pass.
+Coverage (P4): 21 criteria across 7 requirements. 18 pass, 2 execution criteria go to verify-by-execution, and req-004 criterion 3 fails: no test runs setup.ps1 under PowerShell 5.1. All seven 0000040 suites pass.
+Coverage (P4): two setup cleanup branches have no behavioural test, a retired path that is a link and the failed-delete message.
+Coverage (P4): req-002 criterion 3 and req-006 criterion 3 pass on macOS and wait on the CI matrix for Linux and Windows.
+Cycle 1 (P4): Check: test (semantic). Error: req-004 criterion 3 has no PowerShell 5.1 test, and two cleanup branches have no test. Root cause: the req-004 suite hard-codes pwsh, and no fixture makes a link or a failed delete. Fix: a TDD subagent adds RAVINTIO_TEST_PWSH, a 5.1 CI step, and link and failed-delete cases.
