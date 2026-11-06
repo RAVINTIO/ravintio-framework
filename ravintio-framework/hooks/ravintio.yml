@@ -14,32 +14,136 @@ jobs:
 
       - name: Validate Code/Doc Parity
         run: |
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          COMMIT_MESSAGES=$(git log origin/${{ github.base_ref }}...HEAD --format="%s")
+          # Source folder rule (feature 0000040, ADR-003). A source folder is
+          # src/, or the folder of a component.yml that product.yml lists. A
+          # diff that touches a source folder must also touch a record, a file
+          # under plan/ or docs/. hooks/pre-push applies the same rule. Keep
+          # the two in step by hand.
 
-          # Fast Path exemption: if all commits are fix(fast-path): only require component.yml or changelog
-          FAST_PATH_COUNT=$(echo "$COMMIT_MESSAGES" | grep -cE "^fix\(fast-path\):" || true)
-          TOTAL_COUNT=$(echo "$COMMIT_MESSAGES" | grep -c "." || true)
-
-          if [ "$FAST_PATH_COUNT" -gt 0 ] && [ "$FAST_PATH_COUNT" -eq "$TOTAL_COUNT" ]; then
-            if echo "$CHANGED_FILES" | grep -q "^src/"; then
-              if ! echo "$CHANGED_FILES" | grep -qE "(component\.yml|plan/changelog/)"; then
-                echo "::error title=RAVINTIO Fast Path Violation::Fast Path commits must update component.yml or plan/changelog/."
-                exit 1
-              fi
-            fi
-            echo "✅ RAVINTIO fast-path pipeline passed."
-            exit 0
+          # The base commit is the merge base. Without full history, fail closed.
+          if ! BASE=$(git merge-base origin/${{ github.base_ref }} HEAD 2>/dev/null); then
+            echo "::error title=RAVINTIO Strict Violation::CI can't read the merge base of the base branch and HEAD. Check out with fetch-depth: 0 so the full history is present."
+            exit 1
           fi
 
-          # Standard check. This is a presence check, not a correspondence
-          # guarantee: it confirms a file under plan/, docs/, or a
-          # component.yml also changed in this diff — it does not verify
-          # that file's content actually corresponds to the src/ change.
-          if echo "$CHANGED_FILES" | grep -q "^src/"; then
-            if ! echo "$CHANGED_FILES" | grep -qE "^(plan/|docs/|.*component\.yml)"; then
-              echo "::error title=RAVINTIO Strict Violation::Code under src/ changed with no plan/, docs/, or component.yml file also touched in this diff. This checks presence only — it does not verify that content corresponds to your change."
-              exit 1
+          CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
+
+          warn() {
+            echo "::warning title=RAVINTIO source folder rule::$1"
+          }
+
+          # list_path_values: prints each path: value under components: in the
+          # product.yml text on stdin. Each line starts with = so an empty value survives.
+          list_path_values() {
+            awk -v sq="'" '
+              /^components:/ { on = 1; next }
+              on && /^[^[:space:]]/ { on = 0 }
+              on && /^[[:space:]]*(-[[:space:]]+)?path:/ {
+                v = $0
+                sub(/\r$/, "", v)
+                sub(/^[[:space:]]*(-[[:space:]]+)?path:[[:space:]]*/, "", v)
+                q = substr(v, 1, 1)
+                if (q == "\"" || q == sq) {
+                  v = substr(v, 2)
+                  i = index(v, q)
+                  if (i > 0) v = substr(v, 1, i - 1)
+                } else {
+                  sub(/[[:space:]]+#.*$/, "", v)
+                  sub(/[[:space:]]+$/, "", v)
+                }
+                print "=" v
+              }
+            '
+          }
+
+          # folder_of <path>: prints the folder part of a path, or . for a root file.
+          folder_of() {
+            local p="$1"
+            while [ "${p#./}" != "$p" ]; do p="${p#./}"; done
+            case "$p" in
+              */*) printf '%s\n' "${p%/*}" ;;
+              *) printf '.\n' ;;
+            esac
+          }
+
+          SOURCE_FOLDERS="src"
+          SEEN_BLOBS=""
+
+          # add_listed_folders <commit> <label>: adds the folders that product.yml at
+          # that commit lists. An absent file adds nothing and prints nothing.
+          add_listed_folders() {
+            local rev="$1" label="$2" blob content value folder found=0
+            if ! git cat-file -e "$rev:product.yml" 2>/dev/null; then
+              return 0
             fi
+            blob=$(git rev-parse "$rev:product.yml" 2>/dev/null || true)
+            if [ -n "$blob" ] && grep -qxF -- "$blob" <<< "$SEEN_BLOBS"; then
+              return 0
+            fi
+            SEEN_BLOBS="$SEEN_BLOBS
+          $blob"
+            if [ "$(git cat-file -t "$rev:product.yml" 2>/dev/null || true)" != "blob" ] \
+              || ! content=$(git show "$rev:product.yml" 2>/dev/null); then
+              warn "can't read product.yml at $label, so only src/ is checked for it."
+              return 0
+            fi
+            while IFS= read -r value; do
+              value="${value#=}"
+              case "$value" in
+                "")
+                  warn "product.yml at $label has an empty path: value. The rule ignores it." ;;
+                /*|\\*|[A-Za-z]:*)
+                  warn "product.yml at $label path \"$value\" is an absolute path. The rule ignores it." ;;
+                ..|../*|*/..|*/../*)
+                  warn "product.yml at $label path \"$value\" has a .. part. The rule ignores it." ;;
+                *)
+                  folder=$(folder_of "$value")
+                  SOURCE_FOLDERS="$SOURCE_FOLDERS
+          $folder"
+                  found=1 ;;
+              esac
+            done <<< "$(list_path_values <<< "$content")"
+            if [ "$found" = 0 ]; then
+              warn "product.yml at $label lists no components the rule can read, so only src/ is checked for it."
+            fi
+          }
+
+          # Read both commits, so a branch that drops a component still has it checked.
+          add_listed_folders "$BASE" "the base commit"
+          add_listed_folders HEAD "HEAD"
+
+          # Records are files under plan/ or docs/. A component.yml is source, not a record.
+          HAS_RECORD=0
+          TOUCHED=""
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            case "$file" in
+              plan/*|docs/*) HAS_RECORD=1; continue ;;
+            esac
+            while IFS= read -r folder; do
+              [ -z "$folder" ] && continue
+              case "$file" in
+                "$folder"/*) ;;
+                *) [ "$folder" = "." ] || continue ;;
+              esac
+              if ! grep -qxF -- "$folder" <<< "$TOUCHED"; then
+                TOUCHED="$TOUCHED
+          $folder"
+              fi
+            done <<< "$SOURCE_FOLDERS"
+          done <<< "$CHANGED_FILES"
+
+          if [ -n "$TOUCHED" ] && [ "$HAS_RECORD" = 0 ]; then
+            NAMES=""
+            while IFS= read -r folder; do
+              [ -z "$folder" ] && continue
+              if [ "$folder" = "." ]; then
+                NAMES="$NAMES the whole repository (product.yml lists a root component.yml),"
+              else
+                NAMES="$NAMES $folder/,"
+              fi
+            done <<< "$TOUCHED"
+            echo "::error title=RAVINTIO Strict Violation::These source folders changed with no plan/ or docs/ file also touched in this diff:${NAMES%,}. A component.yml counts as source, not as a record. This is a presence check, not a correspondence guarantee. It does not verify that content corresponds to your change."
+            exit 1
           fi
           echo "✅ RAVINTIO pipeline passed."

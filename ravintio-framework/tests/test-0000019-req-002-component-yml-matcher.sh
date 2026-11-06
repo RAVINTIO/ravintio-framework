@@ -6,9 +6,10 @@
 # repo's own CI.
 #
 # Two scenarios, run against both hooks:
-#   PASS case: a change touching only src/ plus a component.yml update, with
-#     no plan/ or docs/ change — this is the case that was falsely rejected
-#     before the fix (matcher looked for component.json, never present).
+#   MANIFEST case: a change touching only src/ plus a component.yml update,
+#     with no plan/ or docs/ change. Feature 0000040 req-003 counts a
+#     component.yml as source, not as a record. So pre-push now rejects this
+#     case. The advisory pre-commit still accepts it (backlog 0000308).
 #   FAIL case: a change touching only src/, with no manifest, plan, or docs
 #     change at all — this must still be rejected; the fix must not have
 #     turned an over-strict matcher into a hole.
@@ -54,11 +55,12 @@ setup_repo() {
 }
 
 # -----------------------------------------------------------------------
-# PASS case: src/ + component.yml, no plan/ or docs/ — must be allowed.
+# MANIFEST case: src/ + component.yml, no plan/ or docs/. Since 0000040
+# req-003, pre-push rejects it, because a component.yml is not a record.
 # -----------------------------------------------------------------------
 
 echo ""
-echo "=== req-002: PASS case — src/ change with component.yml, no plan/docs ==="
+echo "=== req-002: MANIFEST case, src/ change with component.yml, no plan/docs ==="
 
 BASE_PASS=$(mktemp -d -t ravintio_req002_pass_XXXXXX)
 WORK_PASS=$(setup_repo "$BASE_PASS")
@@ -77,7 +79,9 @@ EOF
 
 PASS_PUSH_OUTPUT=$(cd "$WORK_PASS" && bash "$PRE_PUSH" 2>&1)
 PASS_PUSH_EXIT=$?
-assert_exit_zero "$PASS_PUSH_EXIT" "pre-push: src/ + component.yml (no plan/docs) passes"
+assert_equals "1" "$PASS_PUSH_EXIT" "pre-push: src/ + component.yml (no plan/docs) rejected, 0000040 req-003 (exit 1)"
+assert_equals "yes" "$(grep -q "RAVINTIO ENFORCEMENT FAILED" <<<"$PASS_PUSH_OUTPUT" && echo yes || echo no)" \
+  "pre-push: rejection message printed for the manifest case (0000040 req-003)"
 
 PASS_COMMIT_OUTPUT=$(cd "$WORK_PASS" && git diff --cached --name-only > /dev/null; bash "$PRE_COMMIT" 2>&1)
 # pre-commit's advisory check reads `git diff --cached`, which is empty right
