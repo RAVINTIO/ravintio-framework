@@ -63,7 +63,42 @@ As a human on the loop, I get a failing test when a live file brings back Fast P
   - `ravintio-framework/component.yml`: a comment line passes if it belongs to a history block. A history block starts at a `# Updated by` line and runs over the next `#` lines up to the next `# Updated by` line or the first line that is not a comment. This covers line 264, which continues the 0000033 comment.
 - One entry covers every 0000040 suite for req-001 to req-005. Path regex: `^ravintio-framework/tests/(regression/)?test-0000040-req-00[1-5]-[a-z0-9-]+\.sh$`. Reason: each suite plants or checks for the retired words. The suites are named in their requirements.
 - Approach 2 iteration 2 revision: each suite entry, including the req-002 rewrite table entries and the `test-0000040` path entry, uses the line regex `.*`. For these entries, the stale-entry check fails when no tracked path matches the path regex.
-- Correction: `path-rules.mjs` holds no entry for `workflows/fast-path.md`. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
+- Correction: `path-rules.mjs` holds no entry for `workflows/fast-path.md`.
+
+### Guard algorithm (approach 3, governing)
+
+This section governs every earlier line in this file about stripping, the history-line rule, and allowlist matching. Where an earlier line differs, this section wins. A scratchpad prototype ran this algorithm on the 13 fixture cases below, and every case gave its expected verdict.
+
+1. List tracked files with `git ls-files`, and drop each path under an excluded prefix.
+2. For each path, and for each line of each file, make a stripped copy. The strip removes `0000040-retire-fast-path` and `retire-fast-path-and-change-pipeline`.
+3. If no pattern matches the stripped copy, the line passes.
+4. If a pattern matches, test the original, unstripped line against the rules below. If any rule covers it, the line passes. Otherwise the guard fails with the file and line number.
+   - An allowlist entry covers the line when its path regex matches the path and its line regex matches the unstripped line.
+   - The history-line rule covers the line in these files only. A feature ID is seven digits with no digit on either side, so `0000040-retire-fast-path` holds one.
+     - `docs/decisions-index.md` and `docs/architecture-overview.md`: the line holds a feature ID and `ADR`, or holds `[Ss]upersed`.
+     - `docs/about.md`: the line holds a feature ID.
+     - `ravintio-framework/component.yml`: the line sits in a history block. A block starts at a `# Updated by` line and runs over the following `#` lines, up to the next `# Updated by` line or the first line that isn't a comment.
+5. Paths follow the same steps, with the path itself as the line. Only allowlist entries can cover a path.
+
+Fixture cases for the suite. Each gives a path, a line, and the expected verdict:
+
+| Path | Line | Verdict |
+|------|------|---------|
+| `docs/decisions-index.md` | `### Feature 0000040-retire-fast-path` | pass, no match after the strip |
+| `docs/decisions-index.md` | `\| ADR 001 \| Fast Path retired (0000040-retire-fast-path) \| accepted \|` | pass, history-line rule |
+| `docs/decisions-index.md` | `\| 0000033 ADR 009 \| Fast Path admits no-src \| superseded by 0000040 ADR 001 \|` | pass, history-line rule |
+| `docs/decisions-index.md` | `Fast Path is the quick route.` | fail |
+| `docs/architecture-overview.md` | `- **ADR 009 (0000033):** Fast Path admits a change. superseded by 0000040 ADR 001` | pass, history-line rule |
+| `docs/architecture-overview.md` | `### Fast Path for changes with no src target` | fail |
+| `docs/about.md` | `\| 0.38.0 \| 0000040-retire-fast-path \| Retired Fast Path and the Change Pipeline \|` | pass, history-line rule |
+| `docs/about.md` | `Use Fast Path for small fixes.` | fail |
+| `ravintio-framework/component.yml` | `# budget, Fast Path for no-src changes`, inside a history block | pass, history-line rule |
+| `ravintio-framework/component.yml` | `# budget, Fast Path for no-src changes`, outside any history block | fail |
+| `README.md` | `Feature 0000040-retire-fast-path removed both tracks.` | pass, no match after the strip |
+| `README.md` | `Run the Change Pipeline for small changes.` | fail |
+| `product.yml` | `feature: "0000040-retire-fast-path"` | pass, no match after the strip |
+
+The suite runs these cases as planted lines in scratch copies of each file, alongside the planted cases above. Only the comment above `FAST_PATH_ENFORCEMENT_PATHS` cites it, and req-002 rewrites that comment. The brand guard's stale-entry risk concerns only its `workflows/fast-path.md` row.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list

@@ -14,11 +14,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `2` of cap `3` (approach 2) |
-| Approach | `2 of 3 (autonomous only)` |
+| Iteration | `0` of cap `3` (approach 3) |
+| Approach | `3 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `continue` |
-| Last updated | `2026-11-06T00:00:08Z` |
+| Last decision | `change-approach` |
+| Last updated | `2026-11-06T00:03:09Z` |
 
 ---
 
@@ -59,6 +59,16 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** a new fresh-context critic reviewed the revision. Verdict in `critic-verdict-5.md`. The orchestrator's spawn prompt for this pass held a calibration note on severity and on when to approve. The skill text holds no such note, so the next pass runs without it.
 - **Observation:** REJECT. Mechanical check clean. All five iteration 4 findings resolved. One new major finding: the new decisions-index heading `### Feature 0000040: retire-fast-path` would fail the guard. One minor finding: suite entries had no line regex.
 - **Decision:** continue. Revised by addition: the heading uses the full ID `0000040-retire-fast-path`, which the strip step removes, and suite entries use the line regex `.*` with a path-based stale check.
+
+### Iteration 3, approach 2 (2026-11-06T00:03:09Z)
+- **Approach:** 2
+- **Action:** a new fresh-context critic reviewed the revision, on the skill text alone. Verdict in `critic-verdict-6.md`.
+- **Observation:** REJECT. Mechanical check clean. Both iteration 5 findings resolved. The critic listed every tracked match outside the excluded prefixes and found each one owned. One new major finding: the strip runs before the history-line rule, so a new line with only the full ID and a retired-track word would fail. One minor finding, already governed by the scope clarification.
+- **Decision:** change-approach. Iteration cap 3 reached at approach 2 of 3.
+
+### Approach 3 (2026-11-06T00:03:09Z)
+- **How it differs from approach 2:** approach 2 kept the guard rules as separate prose lines and patched each interaction. Its hypothesis was that the rule set lacked one case at a time. Approach 3 holds that the prose rules interact in ways a paper review keeps finding, one at a time. It writes one ordered algorithm that governs every earlier rule line. The orchestrator ran that algorithm as a scratchpad prototype on 13 fixture cases before review, and every case gave its expected verdict. The fixtures are now part of the suite.
+- **Revisions:** the "Guard algorithm" section and fixture table in req-006. A matching line in req-007.
 
 ---
 

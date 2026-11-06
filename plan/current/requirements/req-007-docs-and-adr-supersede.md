@@ -64,6 +64,7 @@ As a human on the loop, I read docs and decisions that describe one track, so th
   - If P2 keeps the enforcement path list under a new name, add a short section under that name, with no retired-track words.
 - Each new line in the decisions index, the architecture overview, `docs/about.md`, and the `component.yml` history comment names its feature ID on the same line, as req-006's history-line rule needs.
 - Approach 2 iteration 2 revision: the new decisions-index section heading reads `### Feature 0000040-retire-fast-path`, with the hyphen. The req-006 strip step removes that exact ID, so the heading passes the guard. Every other new line that names the feature uses the same full ID.
+- Approach 3 revision: req-006's guard algorithm governs how the guard reads these lines. Its history-line rule reads the unstripped line, so the full ID counts as a feature ID. Each new decisions-index and architecture-overview line that names a retired track also holds `ADR` or a superseding note.
 - Criterion timing: the first and second criteria first run at the end of P3, after this requirement's P3 step. They run again after P6, as they state. The third criterion runs after P7.
 - This requirement owns every file in the rewrite list, per the execution plan's file ownership table. It carries the routing, gate, CI, and installed-file text that req-001 to req-004 state.
 - `src/setup-hook-integration/component.yml` keeps its own version. `product-version.mjs` takes the highest component version, which is 0.38.0.

@@ -135,3 +135,6 @@ Decision (P1): new suites are test-0000040-req-002, req-003, and req-005 with na
 Critic verdict (P1, approach 2 iteration 2): REJECT. 1 major and 1 minor finding. All 5 iteration 4 findings resolved. See critic-verdict-5.md.
 Decision (P1): the decisions-index heading and every new line naming the feature use the full ID 0000040-retire-fast-path / reason: the guard strips that exact ID
 Decision (P1): the next critic pass runs on the skill text alone, without the orchestrator's calibration note / reason: the note set an approval threshold the skill doesn't state, which weakens the maker-checker split
+Critic verdict (P1, approach 2 iteration 3): REJECT. 1 major and 1 minor finding. Both iteration 5 findings resolved. See critic-verdict-6.md.
+Decision (P1): design_critic changes approach to 3 of 3 after the approach 2 cap / reason: prose guard rules kept interacting, so one ordered algorithm now governs, tested first as a scratchpad prototype on 13 fixtures
+Decision (P1): the guard tests rules against the unstripped line, after a pattern match on the stripped copy / reason: the full feature ID must count as a feature ID for the history-line rule
