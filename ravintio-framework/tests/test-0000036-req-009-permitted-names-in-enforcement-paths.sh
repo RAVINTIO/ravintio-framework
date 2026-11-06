@@ -3,9 +3,10 @@
 #
 # req-009: the always-permitted file-name shortcut in evaluateWrite applies
 #          only when isEnforcementPath is false. A permitted name such as
-#          CLAUDE.md inside an enforcement path takes the normal design or
-#          scope route. A permitted name outside every enforcement path still
-#          passes at step 1 (ADR-003).
+#          CLAUDE.md inside an enforcement path takes the normal design
+#          route. A permitted name outside every enforcement path still
+#          passes at step 1 (ADR-003). A file at plan/.fast-path-scope
+#          changes no verdict (0000040 req-002).
 #
 # Every fixture lives under mktemp -d. The suite uses git to build fixtures.
 
@@ -51,7 +52,7 @@ design() {
   printf '# Design\n\n## Component Paths\n\n- %s\n' "$1" > "$DESIGN"
 }
 
-# record <path>: a current scope record that lists <path>.
+# record <path>: a current record at plan/.fast-path-scope that lists <path>.
 record() {
   printf 'branch: %s\nhead: %s\npaths:\n- %s\n' "$BRANCH" "$HEAD_ID" "$1" > "$FX/plan/.fast-path-scope"
 }
@@ -100,12 +101,14 @@ expect 0 "$OUTSIDE_TARGET" "no design and no record"
 echo ""
 echo "=== req-009: no design.md and a current record that lists the target ==="
 
+# 0000040 req-002: no gate reads the record, so the no-design block applies.
 for target in "${ENFORCEMENT_TARGETS[@]}"; do
   reset_state
   record "$target"
   expect 2 "$target" "a record that lists it"
   run_gate "$target"
-  assert_contains "is an enforcement path, so Fast Path never admits it" "$ERR" "req-009: the block for $target gives the enforcement-path reason"
+  assert_contains "No confirmed design at plan/current/design.md" "$ERR" "req-009: the block for $target gives the no-design reason"
+  assert_equals "no" "$([[ "$ERR" == *"Fast Path"* ]] && echo yes || echo no)" "req-009: the block for $target names no Fast Path"
 done
 reset_state
 record "$OUTSIDE_TARGET"

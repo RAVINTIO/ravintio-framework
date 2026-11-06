@@ -19,11 +19,6 @@ GEMINI.md
 .planifest-setup-flags
 .ravintio-setup-flags
 
-# Fast Path scope record (0000035 req-001) - a session marker that step 6 of
-# workflows/fast-path.md removes before git commit. Listed here as well, so
-# a mid-change git add -A can't commit it.
-plan/.fast-path-scope
-
 # Temporary local dirs
 _temp/*
 !_temp/.gitkeep

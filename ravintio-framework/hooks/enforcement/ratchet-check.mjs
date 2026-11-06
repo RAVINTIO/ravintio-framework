@@ -264,8 +264,8 @@ function checkWeakening(toolInput, projectRoot, planCurrent, relPath) {
   } else {
     reason = [
       `Ratchet: this write weakens ${pathShown(relPath)} while a loop is active.`,
-      // Each removed criterion goes through shown() as well, capped like the
-      // Fast Path notice (0000036 ADR-004).
+      // Each removed criterion goes through shown() as well, capped at 200
+      // characters (0000036 ADR-004).
       ...removed.map((l) => `  removed: "${shown(l, 200)}"`),
       "Loops may strengthen criteria/scope but never weaken them (ADR-007).",
       "If this weakening is intentional, add a line to plan/current/.ratchet-approve:",

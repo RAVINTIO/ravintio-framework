@@ -116,9 +116,7 @@ test-0000032-req-009-shell-guard-path-parity.sh
 test-0000033-req-001-run-mode-script.sh
 test-0000033-req-012-archive-script-without-glob-delete.sh
 test-0000033-req-013-clean-close-out.sh
-test-0000035-req-001-fast-path-scope-record.sh
 test-0000035-req-002-product-yml-in-p7.sh
-test-0000035-req-009-fast-path-enforcement-paths.sh
 test-0000036-req-003-ship-commit-subjects.sh
 test-0000037-req-001-p9-ci-check.sh
 test-0000037-req-003-archive-held-back.sh
@@ -164,9 +162,9 @@ done
 
 # planifest-{a,b,...} brace expansion
 BR="$T/test-0000030-req-003-telemetry-pipeline-text-removal.sh"
-assert_equals "yes" "$(has "$BR" 'skills/ravintio-{adr-agent,change-agent,')" "req-005: the brace expansion uses the ravintio- prefix"
+assert_equals "yes" "$(has "$BR" 'skills/ravintio-{adr-agent,codegen-agent,')" "req-005: the brace expansion uses the ravintio- prefix"
 assert_equals "no" "$(has "$BR" "${OLD}-{")" "req-005: no ${OLD}-{ brace expansion remains in the telemetry suite"
-for n in adr-agent change-agent codegen-agent design-critic docs-agent loop-runner orchestrator refresh-setup reversal-assessor scope-lock-agent security-agent ship-agent spec-agent validate-agent verify-by-execution; do
+for n in adr-agent codegen-agent design-critic docs-agent loop-runner orchestrator refresh-setup reversal-assessor scope-lock-agent security-agent ship-agent spec-agent validate-agent verify-by-execution; do
   assert_equals "yes" "$([ -f "$FW/skills/ravintio-$n/SKILL.md" ] && echo yes || echo no)" "req-005: skills/ravintio-$n/SKILL.md exists"
 done
 
@@ -202,9 +200,7 @@ setup.ps1
 setup/opencode.sh
 setup/opencode.ps1
 tests/test-0000032-req-007-stderr-block-reasons.sh
-tests/test-0000035-req-001-fast-path-scope-record.sh
 tests/regression/test-0000032-req-007-stderr-block-reasons.sh
-tests/regression/test-0000035-req-001-fast-path-scope-record.sh
 "
 while IFS= read -r p; do
   [ -z "$p" ] && continue

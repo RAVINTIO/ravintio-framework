@@ -107,7 +107,7 @@ echo "=== req-004: skill boilerplate removal ==="
 
 # Phase skills — must declare bundle_standards
 for skill in ravintio-adr-agent ravintio-spec-agent ravintio-security-agent \
-             ravintio-docs-agent ravintio-validate-agent ravintio-change-agent \
+             ravintio-docs-agent ravintio-validate-agent \
              ravintio-codegen-agent ravintio-ship-agent; do
   SKILL_CONTENT=$(cat "$SKILLS/$skill/SKILL.md")
   assert_contains "bundle_standards" "$SKILL_CONTENT" "req-004: $skill has bundle_standards in frontmatter"
@@ -120,7 +120,7 @@ done
 
 # Hard Limits section should be absent from phase skills (not ship-agent which retains Hard Limits)
 for skill in ravintio-adr-agent ravintio-spec-agent ravintio-security-agent \
-             ravintio-docs-agent ravintio-validate-agent ravintio-change-agent \
+             ravintio-docs-agent ravintio-validate-agent \
              ravintio-codegen-agent; do
   SKILL_CONTENT=$(cat "$SKILLS/$skill/SKILL.md")
   assert_not_contains "## Hard Limits" "$SKILL_CONTENT" "req-004: $skill has no Hard Limits section"

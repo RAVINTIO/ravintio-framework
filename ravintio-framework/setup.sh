@@ -739,6 +739,59 @@ cleanup_retired_integrations() {
 }
 # END retired-integrations (0000030)
 
+# Retired track files (0000040 req-004, ADR-005). Every setup run removes
+# these names from the tool it sets up, with or without a skill manifest.
+# Workflow names sit in the tool's workflow folder, and skill names sit in
+# its skills folder. Keep one quoted name per line.
+RETIRED_TRACK_WORKFLOWS=(
+  "fast-path.md"
+  "change-pipeline.md"
+)
+RETIRED_TRACK_SKILLS=(
+  "ravintio-change-agent"
+)
+
+# cleanup_retired_tracks <skills folder> <workflow folder>: removes each
+# retired name that exists and prints one line for each removal. It prints
+# nothing when nothing is found. A tool with no workflow folder passes an
+# empty second argument. It needs no Node.js. The delete rules match
+# cleanup_retired_integrations:
+#   - the parent folder resolves physically and must sit inside the project
+#   - a link is removed as a link, never its target
+#   - a failed delete warns, and setup carries on
+cleanup_retired_tracks() {
+  local skills_rel="$1"
+  local workflows_rel="$2"
+  local retired=() name
+  if [ -n "$workflows_rel" ]; then
+    for name in "${RETIRED_TRACK_WORKFLOWS[@]}"; do retired+=("$workflows_rel/$name"); done
+  fi
+  if [ -n "$skills_rel" ]; then
+    for name in "${RETIRED_TRACK_SKILLS[@]}"; do retired+=("$skills_rel/$name"); done
+  fi
+  # Bash 3.2 treats an empty array as unset under set -u.
+  [ "${#retired[@]}" -gt 0 ] || return 0
+
+  local p phys_root phys_parent
+  phys_root=$(cd -P "$PROJECT_ROOT" && pwd -P)
+  for p in "${retired[@]}"; do
+    [ -e "$PROJECT_ROOT/$p" ] || [ -L "$PROJECT_ROOT/$p" ] || continue
+    phys_parent=$(cd -P "$(dirname "$PROJECT_ROOT/$p")" 2>/dev/null && pwd -P) || phys_parent=""
+    case "$phys_parent" in
+      "$phys_root"|"$phys_root"/*) ;;
+      *)
+        echo "  ! $p resolves outside the project - not removed"
+        continue
+        ;;
+    esac
+    if rm -rf "${phys_parent:?}/$(basename "$p")" 2>/dev/null; then
+      echo "  - $p (retired, removed)"
+    else
+      echo "  ! could not remove $p - left in place, delete it by hand"
+    fi
+  done
+}
+
 activate_guardrails() {
   echo ""
   echo "  Activating RAVINTIO Git Guardrails"
@@ -1073,6 +1126,9 @@ setup_tool() {
     done < "$manifest"
     rm -f "$manifest"
   fi
+
+  # Remove the retired track copies, whatever the manifest held (0000040 ADR-005)
+  cleanup_retired_tracks "$TOOL_SKILLS_DIR" "${TOOL_WORKFLOWS_DIR:-}"
 
   # Copy skills (now automatically bundles supporting files)
   copy_skills "$skills_dir"
