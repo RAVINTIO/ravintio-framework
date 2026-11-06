@@ -91,3 +91,5 @@ Each is a risk item with likelihood: medium.
 | ID | Question | Blocking |
 |----|----------|----------|
 | Q-001 | Does `FAST_PATH_ENFORCEMENT_PATHS` survive under a new name? `isAlwaysPermitted` still reads it, and the residue guard matches the current name. | P2 decides. It blocks req-002 and req-006 at P3. |
+
+P2 answer to Q-001: the list survives, renamed `ENFORCEMENT_PATHS`. ADR-004 records the decision and lists every reader that P3 renames.
