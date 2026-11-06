@@ -105,3 +105,4 @@ Populated only when `status: escalated`.
   1. Accept P1 as it stands, with the four unreviewed fixes. P2 then starts.
   2. Grant one more critic pass over the fixes.
   3. Move the guard's matching detail out of P1, and let the P3 TDD fixtures settle it. The P3 suite runs on all three CI shards, which a paper review can't do.
+- **Resolution (2026-11-06T01:41:47Z):** the human on the loop chose option 3. P1 passes, and the loop stays closed.

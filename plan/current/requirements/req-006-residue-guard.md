@@ -140,6 +140,14 @@ These lines answer critic verdict 9 and govern the earlier lines they name. No c
 - The retired list items follow req-004's two-array form. So the setup pass fixture becomes `  "fast-path.md"`.
 - The first criterion counts three covers for a match: an excluded prefix, an allowlist entry, and the history-line rule from the guard algorithm.
 
+### P3 fixtures settle the matching rules
+
+The human on the loop chose this route on 2026-11-06, after the P1 critic budget ran out.
+
+- The P3 TDD fixtures settle the guard's matching rules, and paper review does not. The fixtures run on the Linux, macOS Bash 3.2, and Windows CI shards.
+- If a fixture shows a fault in a rule above, P3 fixes the rule under TDD. The fix logs `Deviation (P3, unclassified)` and updates this file to match.
+- The four fixes in the section above stand as written until a fixture shows a fault.
+
 ### Functional Requirements, continued
 
 The lines below continue the main Functional Requirements list. They are not part of the line regex section above.

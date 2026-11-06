@@ -78,15 +78,15 @@ Gate passed: P0 (2026-11-05T23:36:16Z)
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-05T23:37:38Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-06T01:41:47Z` |
+| Wall-clock | 2h 4m, including about 1h 29m waiting on exception item 6 |
 | Streams | n/a |
 | Model tier | primary |
-| Skills loaded | ravintio-spec-agent |
-| Agents spawned | pending |
+| Skills loaded | ravintio-spec-agent, ravintio-loop-runner |
+| Agents spawned | 13: 4 spec subagents and 9 design critics |
 | MCP calls | 0 |
-| Parallel task batches | pending |
-| Notes | Autonomous run. |
+| Parallel task batches | 1 |
+| Notes | Autonomous run. The critic budget ran out, and the human on the loop chose option 3. |
 
 Skills inbox (P1): ravintio-framework/skills-inbox/ is empty, so nothing to process.
 Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (autonomous default). parallel_streams reads on (autonomous default). p0_completeness reads off (absent default).
@@ -150,3 +150,7 @@ Decision (P1): after escalation, wrote fixes for the four verdict 9 findings and
 Exception waiting (P1, 6): design_critic budget exhausted after nine passes. Pick one: accept P1 with the four unreviewed fixes, grant one more critic pass, or leave the guard's matching detail to the P3 fixtures.
 Human touchpoint (P1): the run waits for the human on the loop on the exhausted critic budget [exception: 6]
 Progress: P1 blocked at 2026-11-06T00:12:39Z: seven requirements and the P1 set written, critic budget exhausted, waiting on exception item 6
+Exception resolved (P1, 6): the human on the loop chose option 3 at 2026-11-06T01:41:47Z. P1 passes as it stands, and the P3 TDD fixtures settle the guard's matching rules.
+Decision (P1): req-006 records that its P3 fixtures, run on all three CI shards, govern the guard's matching rules / reason: human choice on exception item 6
+Gate passed: P1
+Progress: P1 complete at 2026-11-06T01:41:47Z: seven requirements, critic loop escalated and resolved by the human on the loop, P2 next
