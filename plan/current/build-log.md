@@ -295,3 +295,8 @@ Progress: P4 complete at 2026-11-06T17:10:09Z: one self-correct cycle, verify-by
 
 Decision (P5): three security reviewers run in parallel, one each for the enforcement hooks, pre-push with both CI files, and setup with the migration and migrator. The orchestrator runs the secrets and dependency scan inline / reason: the three areas share no code, and the scan is a few grep calls
 Secrets and dependencies (P5): credential-scan passes on all 120 added or changed files. The secret-pattern matches are prose and test tokens. No dependency manifest changed, and the branch adds no new GitHub Action.
+Security (P5, hooks): no finding. Every verdict that changed between main and the branch went from allow to block. R-002 mitigated.
+Security (P5, pre-push and CI): no injection and no new bypass. 7 Low or Info findings, all predating the feature or Low. R-011 mitigated, R-012 mitigated as designed, R-005 open.
+Security (P5, setup and migrator): setup cleanup held in every escape test. One Medium finding, S-1: gate-write blocks the migration's CI edit in a hooked consumer, and the record then reads applied. 5 Low findings.
+Decision (P5): filed defect report 001 against req-005 and ADR-006 for S-1, S-4, and S-5, and spawned a fresh reversal assessor / reason: the requirement and ADR define no outcome for a blocked or refused edit, so no fix fits the confirmed artifacts
+Decision (P5): filed backlog 0000372 to 0000377 for the Low and Info findings outside the defect report / reason: each predates the feature, is Info, or changes a standard outside the confirmed scope
