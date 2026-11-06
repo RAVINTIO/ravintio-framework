@@ -248,14 +248,14 @@ Progress: P3 complete at 2026-11-06T03:39:02Z: all seven requirements built unde
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-06T16:17:52Z` |
-| End | |
-| Wall-clock | |
+| End | `2026-11-06T17:10:09Z` |
+| Wall-clock | 52m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (in subagent) |
-| Agents spawned | |
+| Agents spawned | 3: coverage table, verify-by-execution, cycle 1 TDD |
 | MCP calls | 0 |
-| Parallel task batches | |
+| Parallel task batches | 2 |
 | Notes | Autonomous run. Resumed after a session break at the P3 gate. |
 
 Decision (P4): the full suite, the coverage table, and verify-by-execution run in one parallel batch / reason: each reads the tree and writes to its own output, and none changes code
@@ -272,3 +272,8 @@ Deviation (P4, unclassified): the setup.sh and setup.ps1 manifest prunes skip na
 Deviation (P4, unclassified): the 5.1 CI run of the req-004 suite skips the link and failed-delete cases under Git Bash on Windows. PowerShell 7 covers them for setup.ps1.
 Decision (P4): keep the setup-powershell-51 timeout at 10 minutes and add risk R-013 / reason: 0000037 req-011 pins the cap, and the first CI run gives the real time
 Decision (P4): filed backlog 0000370 for a false empty path warning in pre-push and the CI step, and 0000371 for the missing v0.37.2 tag / reason: neither changes a verdict or a criterion
+Verify-by-execution (P4, after cycle 1): the linked skills folder repro, run on commit f6cbf141, keeps the outside folder across two setup.sh runs and two setup.ps1 runs.
+Full suite (P4, after cycle 1): 130 feature suites passed and 1 failed, 36 of 36 regression suites passed. The only failures are the 3 expected version checks in test-0000039-req-010 (backlog 0000368).
+Decision (P4): pass the gate with the 3 version checks red and 4 criteria not verifiable here / reason: P7 sets the version, and CI covers Linux, Windows, and PowerShell 5.1. The P9 check read confirms them.
+Gate passed: P4
+Progress: P4 complete at 2026-11-06T17:10:09Z: one self-correct cycle, verify-by-execution 17 verified and 0 failed, P5 next
