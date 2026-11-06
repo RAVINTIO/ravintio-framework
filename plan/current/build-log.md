@@ -141,3 +141,6 @@ Decision (P1): the guard tests rules against the unstripped line, after a patter
 Critic verdict (P1, approach 3 iteration 1): REJECT. 1 major and 4 minor findings. The iteration 6 major finding resolved. See critic-verdict-7.md.
 Decision (P1): a root-level path component.yml makes every path outside plan/ and docs/ source / reason: stricter than ignoring it, and a diff with a record still passes
 Decision (P1): every residue guard allowlist entry names a line regex, and the setup entry matches only quoted retired-list items / reason: a .* regex on setup.sh would admit lines outside the retired list
+Critic verdict (P1, approach 3 iteration 2): REJECT. 1 major and 3 minor findings. See critic-verdict-8.md.
+Decision (P1): no residue guard path regex holds a pipe, so the setup and released-migration suite entries split into two each / reason: the brand guard parser ends the path regex at the first pipe
+Decision (P1): the retired list holds one quoted path per line in both setup scripts / reason: the guard's setup entry matches only that layout

@@ -14,11 +14,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `1` of cap `3` (approach 3) |
+| Iteration | `2` of cap `3` (approach 3) |
 | Approach | `3 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
 | Last decision | `continue` |
-| Last updated | `2026-11-06T00:07:05Z` |
+| Last updated | `2026-11-06T00:09:22Z` |
 
 ---
 
@@ -75,6 +75,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** a new fresh-context critic reviewed the approach 3 revision. Verdict in `critic-verdict-7.md`.
 - **Observation:** REJECT. Mechanical check clean. The iteration 6 major finding resolved. The critic's own residue check found every match owned. One new major finding: R-005 promised a root-level `component.yml` test that req-003 didn't define. Four minor findings: entries with no line regex, an orphan sentence in req-006, a wording mismatch in req-007, and the known four-versus-five ADR note.
 - **Decision:** continue. Revised by addition: req-003 defines a root-level `component.yml` and adds the case to criterion 2, R-005 updated, a line regex table and two setup fixtures in req-006, the orphan sentence restated, and req-007 aligned with the history-line rule.
+
+### Iteration 2, approach 3 (2026-11-06T00:09:22Z)
+- **Approach:** 3
+- **Action:** a new fresh-context critic reviewed the revision. Verdict in `critic-verdict-8.md`.
+- **Observation:** REJECT. Mechanical check clean. Four iteration 7 findings resolved, and the fifth needs no fix. One new major finding: the setup entry's path regex held `|`, which the brand guard parser can't read. Three minor findings: closing bullets read as part of the line regex section, req-004 didn't fix the retired list layout, and the known ADR count note.
+- **Decision:** continue. Revised by addition: a governing path regex rule that splits the setup and released-migration suite entries in two, a parser fixture, a heading that returns the closing bullets to the main list, and a one-item-per-line layout rule in req-004. The orchestrator checked that no other path regex holds `|`.
 
 ---
 

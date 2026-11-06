@@ -121,6 +121,19 @@ Two more fixture cases cover the setup entry:
 |------|------|---------|
 | `ravintio-framework/setup.sh` | `  "commands/fast-path.md"` | pass, setup entry |
 | `ravintio-framework/setup.sh` | `echo "Use Fast Path for small fixes"` | fail |
+
+### Path regex rule (approach 3 iteration 2, governing)
+
+The brand guard parser takes the text before the first `|` as the path regex. So no path regex holds `|`. The line regex may hold `|`. This rule replaces two rows in the table above:
+
+- The setup retired list becomes two entries. Their path regexes are `^ravintio-framework/setup\.sh$` and `^ravintio-framework/setup\.ps1$`. Both keep the line regex from the table.
+- Suites that test released migrations become two entries. Their path regexes are `^ravintio-framework/tests/(regression/)?test-0000036-req-001-` and `^ravintio-framework/tests/(regression/)?test-0000039-req-006-`. Both use the line regex `.*`.
+- Every other path regex in this file holds no `|`. The orchestrator checked each one.
+- Add a parser fixture. For each allowlist entry, the suite checks that the text before the first `|` is the intended path regex, and fails on any entry whose path regex part is empty or holds `(` without a matching `)`.
+
+### Functional Requirements, continued
+
+The lines below continue the main Functional Requirements list. They are not part of the line regex section above.
 - No other file gets an entry. That rule covers these:
   - hooks
   - setup lines outside the retired list
