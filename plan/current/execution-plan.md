@@ -57,7 +57,7 @@ This table replaces the P1 ownership Decision line in the build log where the tw
 |----|----------|------------|--------|-------------|
 | NFR-001 | Reliability | The test suite passes on every CI shard | 0 failures on the Linux, macOS, and Windows shards | CI on the PR |
 | NFR-002 | Compliance | No live reference to either retired track | 0 unallowed matches | The req-006 residue guard |
-| NFR-003 | Security | The write gates stay at least as strict | 0 cases that blocked before 0000040 and pass after it | The link, root, and parity suites named in req-002, unchanged |
+| NFR-003 | Security | The write gates stay at least as strict | 0 cases that blocked before 0000040 and pass after it | The suites in req-002's "must stay green with no assertion changes" list, unchanged. Rewritten suites such as `test-0000035-req-003` keep every case that uses no scope record. |
 | NFR-004 | Portability | Setup behaves the same on both shells | Same removals, output, and exit codes from `setup.sh` and `setup.ps1` | The req-004 parity suite |
 
 ## API Summary

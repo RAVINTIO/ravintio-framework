@@ -1,7 +1,7 @@
 ---
 title: "Loop State: design_critic"
 summary: "Persisted state for one loop instance; survives context resets and session interrupts."
-status: "active"
+status: "escalated"
 ---
 # Loop State: design_critic
 
@@ -14,11 +14,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `2` of cap `3` (approach 3) |
+| Iteration | `3` of cap `3` (approach 3) |
 | Approach | `3 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `continue` |
-| Last updated | `2026-11-06T00:09:22Z` |
+| Last decision | `escalate` |
+| Last updated | `2026-11-06T00:12:39Z` |
 
 ---
 
@@ -82,8 +82,26 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Observation:** REJECT. Mechanical check clean. Four iteration 7 findings resolved, and the fifth needs no fix. One new major finding: the setup entry's path regex held `|`, which the brand guard parser can't read. Three minor findings: closing bullets read as part of the line regex section, req-004 didn't fix the retired list layout, and the known ADR count note.
 - **Decision:** continue. Revised by addition: a governing path regex rule that splits the setup and released-migration suite entries in two, a parser fixture, a heading that returns the closing bullets to the main list, and a one-item-per-line layout rule in req-004. The orchestrator checked that no other path regex holds `|`.
 
+### Iteration 3, approach 3 (2026-11-06T00:12:39Z)
+- **Approach:** 3
+- **Action:** a new fresh-context critic reviewed the revision. Verdict in `critic-verdict-9.md`.
+- **Observation:** REJECT. Mechanical check clean. Three iteration 8 findings resolved, and the fourth needs no fix. The critic's residue check found no orphan file. One new major finding: the setup line regex uses `\s`, which Bash 3.2 doesn't read, so every real retired-list line would fail on the macOS shard. The orchestrator confirmed it under `/bin/bash` 3.2.57. Three minor findings: the retired list item form, NFR-003 wording, and req-006 criterion 1 omitting the history-line rule.
+- **Decision:** escalate. Iteration cap 3 reached at approach 3 of 3, so the approach budget is exhausted. After escalation, the orchestrator wrote fixes for all four findings, marked "not yet reviewed". No critic has reviewed them.
+
 ---
 
 ## Escalation Context
 
 Populated only when `status: escalated`.
+
+- **Stop rule hit:** iteration cap at approach 3 of 3, so the approach budget is exhausted.
+- **Outstanding gap/finding:** none open in the artifacts, as far as the orchestrator knows. The four critic verdict 9 findings have fixes that no critic has reviewed. The known four-versus-five ADR count note in `design.md` needs no fix, per verdicts 6 to 9.
+- **What was attempted:** nine critic passes. Each pass resolved the previous pass's findings and found new ones. Most new findings came from the residue guard's matching rules in req-006 and how they interact with other requirements.
+- **Approaches tried:**
+  1. Patch each finding with an added line or an enumerated allowlist entry.
+  2. Replace per-line entries for history documents with one history-line rule.
+  3. Write one ordered guard algorithm that governs every earlier rule line, test it first as a scratchpad prototype, and add its cases as fixtures.
+- **Recommended next step:** the human on the loop picks one of these:
+  1. Accept P1 as it stands, with the four unreviewed fixes. P2 then starts.
+  2. Grant one more critic pass over the fixes.
+  3. Move the guard's matching detail out of P1, and let the P3 TDD fixtures settle it. The P3 suite runs on all three CI shards, which a paper review can't do.

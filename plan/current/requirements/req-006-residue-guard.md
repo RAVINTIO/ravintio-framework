@@ -131,6 +131,15 @@ The brand guard parser takes the text before the first `|` as the path regex. So
 - Every other path regex in this file holds no `|`. The orchestrator checked each one.
 - Add a parser fixture. For each allowlist entry, the suite checks that the text before the first `|` is the intended path regex, and fails on any entry whose path regex part is empty or holds `(` without a matching `)`.
 
+### Regex dialect and retired list form (after escalation, not yet reviewed)
+
+These lines answer critic verdict 9 and govern the earlier lines they name. No critic has reviewed them yet.
+
+- Every regex in this file is POSIX extended regex, as Bash `[[ =~ ]]` reads it on Bash 3.2. No regex uses `\s`, `\d`, or `\b`.
+- The setup line regex becomes `^[[:space:]]*['"][^'"]*(fast-path|change-pipeline|ravintio-change-agent)[^'"]*['"],?[[:space:]]*$`. The orchestrator ran it under `/bin/bash` 3.2.57. It matched `  "commands/fast-path.md"` and `  'skills/ravintio-change-agent',`, and it rejected `echo "Use Fast Path for small fixes"`. The `\s` form rejected all three.
+- The retired list items follow req-004's two-array form. So the setup pass fixture becomes `  "fast-path.md"`.
+- The first criterion counts three covers for a match: an excluded prefix, an allowlist entry, and the history-line rule from the guard algorithm.
+
 ### Functional Requirements, continued
 
 The lines below continue the main Functional Requirements list. They are not part of the line regex section above.

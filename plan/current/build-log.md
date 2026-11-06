@@ -144,3 +144,9 @@ Decision (P1): every residue guard allowlist entry names a line regex, and the s
 Critic verdict (P1, approach 3 iteration 2): REJECT. 1 major and 3 minor findings. See critic-verdict-8.md.
 Decision (P1): no residue guard path regex holds a pipe, so the setup and released-migration suite entries split into two each / reason: the brand guard parser ends the path regex at the first pipe
 Decision (P1): the retired list holds one quoted path per line in both setup scripts / reason: the guard's setup entry matches only that layout
+Critic verdict (P1, approach 3 iteration 3): REJECT. 1 major and 3 minor findings. See critic-verdict-9.md.
+Loop escalated (P1): design_critic, approach budget exhausted at 3 of 3. Escalation context: plan/current/loop-state-design_critic.md
+Decision (P1): after escalation, wrote fixes for the four verdict 9 findings and marked them not yet reviewed / reason: each is a clear defect, and the setup regex failure was confirmed under /bin/bash 3.2.57
+Exception waiting (P1, 6): design_critic budget exhausted after nine passes. Pick one: accept P1 with the four unreviewed fixes, grant one more critic pass, or leave the guard's matching detail to the P3 fixtures.
+Human touchpoint (P1): the run waits for the human on the loop on the exhausted critic budget [exception: 6]
+Progress: P1 blocked at 2026-11-06T00:12:39Z: seven requirements and the P1 set written, critic budget exhausted, waiting on exception item 6
