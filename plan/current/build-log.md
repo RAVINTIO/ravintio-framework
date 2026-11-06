@@ -188,3 +188,22 @@ Loop closed (P2): design_critic-p2, status done after iteration 2.
 Decision (P2): Skill Map unchanged at the P2 gate / reason: no ADR moves a requirement to another skill
 Gate passed: P2
 Progress: P2 complete at 2026-11-06T01:58:00Z: seven ADRs, critic approved at iteration 2, P3 next
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-06T01:58:42Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-codegen-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+Decision (P3): batch 1 runs four TDD subagents in parallel: req-002 with req-004, req-001, req-003, and req-005. Batch 2 is req-007's P3 step. Batch 3 is req-006 / reason: the file ownership table gives each batch 1 unit its own files. req-005 quotes the 0.37.2 exemption block from git, so it needn't wait for req-003. req-007 rewrites docs that state batch 1 results, and req-006 scans the finished tree.
+Decision (P3): each TDD subagent runs the test-writer, implementer, and refactor steps in its own context, loading each step skill in turn / reason: one requirement per context keeps the red and green evidence together. Each subagent runs only its own suites, and the orchestrator runs the full suite at each join.
+Decision (P3): subagents write files but never commit. The orchestrator scans and commits each requirement's TDD cycle after it returns / reason: parallel commits in one working tree would race on the git index.
