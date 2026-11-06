@@ -194,14 +194,14 @@ Progress: P2 complete at 2026-11-06T01:58:00Z: seven ADRs, critic approved at it
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-06T01:58:42Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-06T03:39:02Z` |
+| Wall-clock | 1h 40m |
 | Streams | n/a |
 | Model tier | primary |
-| Skills loaded | ravintio-codegen-agent |
-| Agents spawned | pending |
+| Skills loaded | ravintio-codegen-agent, ravintio-test-writer, ravintio-implementer, ravintio-refactor (in subagents) |
+| Agents spawned | 6: 4 in batch 1, 1 in batch 2, 1 in batch 3 |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 3 |
 | Notes | Autonomous run. |
 
 Decision (P3): batch 1 runs four TDD subagents in parallel: req-002 with req-004, req-001, req-003, and req-005. Batch 2 is req-007's P3 step. Batch 3 is req-006 / reason: the file ownership table gives each batch 1 unit its own files. req-005 quotes the 0.37.2 exemption block from git, so it needn't wait for req-003. req-007 rewrites docs that state batch 1 results, and req-006 scans the finished tree.
@@ -239,3 +239,6 @@ Deviation (P3, unclassified): req-006 fixes a stale Fast Path comment in test-00
 Decision (P3): req-006 records the P3 rules in a governing section "What P3 built" / reason: Hard Limit 7, the docs match what was built. Filed backlog 0000369 for the req-007 suite's copy of the guard logic.
 Decision (P3): the req-001 suite gains a Verified by: unit header line / reason: req-001 criteria 1 and 2 declare unit, and the scan blocks a type mismatch
 Requirement-ID scan (P3): 7 requirements, 0 unmapped. Execution criteria in req-005 and req-007 are deferred to P4.
+Decision (P3): framework component.yml close-out done in the req-007 commit, with version 0.38.0 and feature 0000040-retire-fast-path. Skill Map unchanged / reason: every requirement ran on the skill the map names
+Gate passed: P3
+Progress: P3 complete at 2026-11-06T03:39:02Z: all seven requirements built under TDD, full suite red only on the 3 expected 0000039 req-010 checks (backlog 0000368), P4 next
