@@ -224,3 +224,4 @@ TDD (P3, req-002 and req-004): RED exit 1 (183 and 72 failed), GREEN exit 0 (487
 Deviation (P3, unclassified): req-004 adds a Windows skip table row for its suite in tests/README.md, which test-0000037-req-010 needs.
 Deviation (P3, unclassified): req-004 changes the skill count in test-0000039-req-001 from 21 to 20.
 Deviation (P3, unclassified): req-004 cleanup functions skip an empty skills folder, so opencode never checks a path at the project root.
+Join (P3, batch 1): full suite 128 feature suites passed and 1 failed, 36 of 36 regression suites passed. The failing suite is test-0000040-req-001, on 5 checks that read req-007 docs.
