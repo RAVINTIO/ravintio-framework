@@ -173,3 +173,5 @@ Progress: P1 complete at 2026-11-06T01:41:47Z: seven requirements, critic loop e
 Decision (P2): seven ADRs. ADR-001 stack unchanged, ADR-002 one track, ADR-003 source folder rule, ADR-004 enforcement path list kept as ENFORCEMENT_PATHS, ADR-005 setup retired list, ADR-006 migrator named paths, ADR-007 residue guard / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
 Decision (P2): Q-001 answer: the list survives, renamed ENFORCEMENT_PATHS / reason: isAlwaysPermitted reads it, so dropping it would admit a permitted file name inside hooks/ and break NFR-003
 Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-007 by six parallel subagents / reason: ADR-001 needs no reads, under the size floor
+Decision (P2): ADR-003 treats a product.yml with no readable path value as src/ only, with a warning / reason: matches req-003's rule for an unreadable file, and the check never drops below src/. The P2 critic reviews it.
+Decision (P2): ADR-003 takes the merge base with origin/main as the base commit / reason: the hooks already diff with three dots
