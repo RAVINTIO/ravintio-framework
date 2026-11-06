@@ -264,3 +264,7 @@ Coverage (P4): 21 criteria across 7 requirements. 18 pass, 2 execution criteria 
 Coverage (P4): two setup cleanup branches have no behavioural test, a retired path that is a link and the failed-delete message.
 Coverage (P4): req-002 criterion 3 and req-006 criterion 3 pass on macOS and wait on the CI matrix for Linux and Windows.
 Cycle 1 (P4): Check: test (semantic). Error: req-004 criterion 3 has no PowerShell 5.1 test, and two cleanup branches have no test. Root cause: the req-004 suite hard-codes pwsh, and no fixture makes a link or a failed delete. Fix: a TDD subagent adds RAVINTIO_TEST_PWSH, a 5.1 CI step, and link and failed-delete cases.
+Full suite (P4, before cycle 1): 130 feature suites passed and 1 failed, 36 of 36 regression suites passed. The failing suite is test-0000039-req-010, on the 3 expected version checks (backlog 0000368).
+Verify-by-execution (P4): 21 criteria, 17 verified, 0 failed, 4 not-verifiable. The 4 need Linux, Windows, PowerShell 5.1, or P7. req-005 criterion 2 verified in a scratch consumer built from main, because no v0.37.2 tag exists.
+Decision (P4): treat the linked skills folder rerun deletion as a req-004 criterion 2 failure and add it to cycle 1 / reason: after two setup runs, the outside folder doesn't stay. The manifest lists the folder that the cleanup refused, and the prune then deletes it.
+Decision (P4): filed backlog 0000370 for a false empty path warning in pre-push and the CI step, and 0000371 for the missing v0.37.2 tag / reason: neither changes a verdict or a criterion
