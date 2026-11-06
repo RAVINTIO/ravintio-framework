@@ -230,3 +230,12 @@ Deviation (P3, unclassified): req-007 widens the 0.37-only version check in test
 Deviation (P3, unclassified): req-007 capitalises the superseding notes in the architecture overview decision list, and adds one component.yml responsibility line for 0000040 routing.
 Decision (P3): accept the 3 equality failures in test-0000039-req-010 until P7 sets product.yml and docs/about.md to 0.38.0. P4 must not fix them / reason: set-product-release.mjs is sanctioned only at P7 Step 5b, and req-007 gives both files to the ship agent. Filed backlog 0000368.
 Setup run (P3): ravintio-framework/setup.sh claude-code --strict-orchestrator, with the flags from .claude/.ravintio-setup-flags. Installed commands are feature-pipeline and retrofit, the change agent skill is gone, and the regenerated CLAUDE.md holds no scope record text. Only ravintio-overrides/setup-config/claude-code.md changed in git.
+TDD (P3, req-006): RED exit 1 on the real tree (12 lines flagged, 2 stale entries) and on a planted README line. GREEN exit 0 with 29 passed and 0 offences under /bin/bash 3.2. 7 matches pass by the history-line rule and 199 by allowlist entries. All 13 algorithm fixtures and the setup line regex passed as written.
+Deviation (P3, unclassified): req-006 widens the 0000040 suite entry to test-0000040-req-00[1-57]-.
+Deviation (P3, unclassified): req-006 adds an entry for one 0000038 req-004 history comment that req-001 wrote.
+Deviation (P3, unclassified): req-006 gives entries only to req-002 rewrite-table suites that still name a track.
+Deviation (P3, unclassified): req-006 makes every entry, .* included, go stale when it covers no match.
+Deviation (P3, unclassified): req-006 fixes a stale Fast Path comment in test-0000039-req-008-emitted-names.sh, a req-002 table file.
+Decision (P3): req-006 records the P3 rules in a governing section "What P3 built" / reason: Hard Limit 7, the docs match what was built. Filed backlog 0000369 for the req-007 suite's copy of the guard logic.
+Decision (P3): the req-001 suite gains a Verified by: unit header line / reason: req-001 criteria 1 and 2 declare unit, and the scan blocks a type mismatch
+Requirement-ID scan (P3): 7 requirements, 0 unmapped. Execution criteria in req-005 and req-007 are deferred to P4.

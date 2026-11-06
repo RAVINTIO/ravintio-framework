@@ -148,6 +148,17 @@ The human on the loop chose this route on 2026-11-06, after the P1 critic budget
 - If a fixture shows a fault in a rule above, P3 fixes the rule under TDD. The fix logs `Deviation (P3, unclassified)` and updates this file to match.
 - The four fixes in the section above stand as written until a fixture shows a fault.
 
+### What P3 built (governing)
+
+The P3 fixtures and the real tree settled these rules. They govern every earlier line they name. The 13 guard-algorithm fixtures and the setup line regex passed as written.
+
+- The 0000040 suite entry's path regex is `test-0000040-req-00[1-57]-`. The req-007 suite plants history-line cases, so it names the retired words.
+- A new entry covers one history comment in `test-0000038-req-004-phase-scoped-orchestrator.sh`, in both folders. Its line regex is `^# Feature 0000040 req-001 then dropped the Fast Path and Change Pipeline bump`. The comment records why req-001 re-pinned the hashes.
+- The req-002 rewrite-table rule changes. Entries exist only for the suites that still name a track: `test-0000035-req-003` and `test-0000036-req-00[89]`. The retired suites get no entry, and neither do suites that name no track.
+- The stale-entry rule changes. Every entry, `.*` included, goes stale when it covers no match. This replaces the approach 2 iteration 2 rule for `.*` entries.
+- The guard adds its own path to the scan when git doesn't list it yet, so its own entry isn't stale before the first commit.
+- The parser fixture requires each path regex to be non-empty, anchored with `^`, balanced in its parentheses, and valid. Each line regex must be valid, and each reason non-empty.
+
 ### Functional Requirements, continued
 
 The lines below continue the main Functional Requirements list. They are not part of the line regex section above.
