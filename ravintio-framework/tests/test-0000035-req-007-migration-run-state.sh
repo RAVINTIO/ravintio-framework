@@ -30,7 +30,8 @@ SELF="$(basename "$0")"
 # 0000036 req-001 adds the 0.34.0 re-run-setup migration, so there were nine.
 # 0000037 adds the 0.35.0 re-run-setup migration, so there were ten.
 # 0000038 adds the 0.36.0 re-run-setup migration, so there were eleven.
-# 0000039 adds the 0.37.0 rename migration, so there are twelve.
+# 0000039 adds the 0.37.0 rename migration, so there were twelve.
+# 0000040 req-005 adds the 0.38.0 retire migration, so there are thirteen.
 NINE=(
   0001-date-format.md
   0002-british-english.md
@@ -40,6 +41,7 @@ NINE=(
   migrate-0.35.0-rerun-setup.md
   migrate-0.36.0-rerun-setup.md
   migrate-0.37.0-ravintio-rename.md
+  migrate-0.38.0-retire-fast-path-and-change-pipeline.md
   migrate-adoption-mode-and-about-md.md
   migrate-product-yml-component-paths.md
   migrate-remove-context-mode-and-telemetry.md
@@ -79,7 +81,7 @@ for f in "${NINE[@]}"; do
 done
 
 TOP_COUNT="$(find "$MIGRATIONS" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
-assert_equals "12" "$TOP_COUNT" "req-007: migrations/ holds exactly twelve top-level migration files"
+assert_equals "13" "$TOP_COUNT" "req-007: migrations/ holds exactly thirteen top-level migration files"
 
 for s in migrate-archive-dirname.sh migrate-archive-dirname.ps1; do
   assert_equals "yes" "$(yes_no test -f "$MIGRATIONS/$s")" "req-007: helper script $s stays beside 0003-archive-dirname.md"
