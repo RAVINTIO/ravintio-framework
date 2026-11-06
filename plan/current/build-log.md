@@ -160,14 +160,14 @@ Progress: P1 complete at 2026-11-06T01:41:47Z: seven requirements, critic loop e
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-06T01:43:51Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-06T01:58:00Z` |
+| Wall-clock | 14m |
 | Streams | n/a |
 | Model tier | primary |
-| Skills loaded | ravintio-adr-agent |
-| Agents spawned | pending |
+| Skills loaded | ravintio-adr-agent, ravintio-loop-runner |
+| Agents spawned | 8: 6 ADR subagents and 2 design critics |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 1 |
 | Notes | Autonomous run. |
 
 Decision (P2): seven ADRs. ADR-001 stack unchanged, ADR-002 one track, ADR-003 source folder rule, ADR-004 enforcement path list kept as ENFORCEMENT_PATHS, ADR-005 setup retired list, ADR-006 migrator named paths, ADR-007 residue guard / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
@@ -182,3 +182,9 @@ Loop armed (P2): design_critic-p2, toggle on, cap 3, approach 1 of 3. consistenc
 Critic verdict (P2, iteration 1): REJECT. 3 major and 4 minor findings. See critic-verdict-p2-1.md.
 Decision (P2): pre-push checks nothing and warns when origin/main is missing, and fails closed only on an unreadable merge base / reason: keeps today's verdict for a master repo or first push, which CI still checks. Filed backlog 0000367 for the hard-coded ref.
 Decision (P2): the req-004 two-array form governs, which replaces the P1 Decision line naming RETIRED_TRACK_FILES / reason: ADR-005 accepts it
+Critic verdict (P2, iteration 2): APPROVE. 4 minor findings. All 7 iteration 1 findings resolved. See critic-verdict-p2-2.md.
+Decision (P2): fixed the 4 minor findings by addition before the gate: criterion cases in req-003 and req-005, ADR-003 wording, and the delete wording in the glossary, design.md, and ADR-002 / reason: each is a clear wording gap, and none changes a decision
+Loop closed (P2): design_critic-p2, status done after iteration 2.
+Decision (P2): Skill Map unchanged at the P2 gate / reason: no ADR moves a requirement to another skill
+Gate passed: P2
+Progress: P2 complete at 2026-11-06T01:58:00Z: seven ADRs, critic approved at iteration 2, P3 next

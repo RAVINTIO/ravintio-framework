@@ -19,7 +19,7 @@ version: "0.1.0"
 | Feature Pipeline | The P0 to P9 pipeline. After this feature, it is the only track for every change. | full pipeline | ravintio-framework |
 | Fast Path | The retired track that applied a change without a Feature Brief, an execution plan, or ADRs. This feature removes it. | fast-path (retired) | ravintio-framework |
 | Change Pipeline | The retired track for targeted changes to existing features, run by `ravintio-change-agent` with the `PC:` prefix. This feature removes it. | change-pipeline (retired) | ravintio-framework |
-| scope record | The file `plan/.fast-path-scope`. It listed the paths a Fast Path change could write without a design. After this feature, no gate reads it, and the migration deletes it. | Fast Path scope record | ravintio-framework |
+| scope record | The file `plan/.fast-path-scope`. It listed the paths a Fast Path change could write without a design. After this feature, no gate reads it, and the human on the loop deletes it when the migration asks. | Fast Path scope record | ravintio-framework |
 | commit subject exemption | The CI and pre-push rule that skipped the record check for a branch whose commits use the `fix(fast-path):` subject. This feature removes it. | Fast Path exemption | ravintio-framework |
 | source folder | `src/`, or the folder of any `component.yml` that `product.yml` lists. A diff that touches one needs a file under `plan/` or `docs/` in the same diff. | | ravintio-framework |
 | source folder rule | The CI and pre-push check for source folders. It reads `product.yml` at run time and never scans for manifests. If `product.yml` is absent, it covers `src/` only. | | ravintio-framework |

@@ -82,7 +82,7 @@ If the diff touches a source folder, the same diff must touch a record. Otherwis
 | `product.yml` exists but git can't read it | Check `src/` only, and print a warning that names the file. |
 | `product.yml` exists but yields no valid `path:` value, for example a flow-style list or no `components:` key | Check `src/` only, and print a warning that names the file and says the rule found no components. |
 
-The first row follows req-003 and R-011. The second and third rows follow req-003. The last row is a decision this ADR adds, because req-003 doesn't name a layout the line match can't read. It treats that case like an unreadable file. The rule never checks less than `src/`, so the fallback is never weaker than the check it replaces. The warning tells the human on the loop that the listed folders went unchecked.
+The first row follows req-003 and R-011. The second row follows req-003 and R-012. The third and fourth rows follow req-003. The last row is a decision this ADR adds, because req-003 doesn't name a layout the line match can't read. It treats that case like an unreadable file. The rule never checks less than `src/`, so the fallback is never weaker than the check it replaces. The warning tells the human on the loop that the listed folders went unchecked.
 
 ## Alternatives Considered
 
@@ -119,7 +119,7 @@ The first row follows req-003 and R-011. The second and third rows follow req-00
 
 **Risks:**
 - A hand-edited `product.yml` in an unusual layout leaves only `src/` checked. The warning names the file, but a busy reader can miss a warning in a passing run (R-005).
-- A shallow clone or a failed `git fetch` in pre-push blocks the push until the base commit is present (R-011).
+- A shallow clone blocks the push until the base commit is present (R-011). A failed `git fetch` that leaves no `origin/main` ref skips the check with a warning instead (R-012).
 - In a consumer repo, a copied `ravintio-framework/` counts as source only if that repo's `product.yml` lists it. Backlog 0000361 moves the pack source under `src/` and releases the pack without its manifest. This rule stays valid after that move, once `product.yml` points at the new path.
 
 ## Related ADRs

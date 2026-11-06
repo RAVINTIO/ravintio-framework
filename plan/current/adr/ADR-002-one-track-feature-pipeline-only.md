@@ -51,7 +51,7 @@ The confirmed design records the routing, the hook change, and the CI change. re
 - **Drop the commit-subject exemption:** `hooks/pre-push`, `hooks/ravintio.yml`, and `.github/workflows/ravintio.yml` lose the `fix(fast-path):` block and its `COMMIT_MESSAGES` line. ADR-003 states the source folder rule that replaces the old `src/` check.
 - **Trim the version bump table:** The table in `references/phase-0-assess-and-coach.md` loses its Fast Path and Change Pipeline patch rows. The Feature Pipeline row (minor) and the Breaking change row (major) stay. The Greenfield start and the External Anchor rule from 0000014 ADR 004 stay unchanged. This run takes 0.38.0, a minor bump from 0.37.2.
 - **Keep the enforcement path list:** The list survives for the permitted-name rule in `isAlwaysPermitted`. ADR-004 records its new name.
-- **Migrate consumers:** A consumer upgrade deletes a leftover `plan/.fast-path-scope` and removes the CI exemption block once the human on the loop confirms. ADR-006 covers the migrator paths for the CI edit.
+- **Migrate consumers:** On a consumer upgrade, the human on the loop deletes a leftover `plan/.fast-path-scope` when the migration asks. The migration removes the CI exemption block once the human on the loop confirms. ADR-006 covers the migrator paths for the CI edit.
 - **Leave history alone:** Archived ADRs, `plan/changelog/`, and released migrations stay as written. `docs/decisions-index.md` and this ADR record the supersession.
 
 ## Alternatives Considered

@@ -61,6 +61,7 @@ As a consumer repo owner, I upgrade and lose any leftover scope record and the C
 - [ ] In a scratch consumer repo on 0.37.2, with `plan/.fast-path-scope` and `plan/current/change-summary.md`, a migrator run behaves as follows. Verified by: execution
   - With every confirmation given, it warns about the unfinished run and deletes the scope record. It removes the block and leaves the rest of the CI file byte-identical. It asks for a setup re-run, and records `applied`.
   - P2 revision, which governs this criterion: "deletes the scope record" means the migrator asks the human on the loop to run the delete and then finds the path gone. The test fixture plays the human on the loop and runs the delete.
+  - P2 revision: a run where the human on the loop doesn't run the delete leaves `plan/.fast-path-scope` in place. The record body names that path, and the outcome stays as the other steps set it.
   - A second run changes no file and leaves the record unchanged.
   - A run where the human on the loop declines the CI edit leaves the CI file byte-identical. It names the file and the lines, and records `skipped` with the reason `declined`.
   - A run on an edited block does the same with the reason `no match`.

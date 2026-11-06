@@ -67,6 +67,8 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
   - With no `product.yml`, only `src/` counts as source.
   - An absolute or `..` path value is ignored with a warning.
   - With a root-level `path: "component.yml"`, every path outside `plan/` and `docs/` is source. A code change with no record fails, and a change under `plan/` or `docs/` alone passes.
+  - P2 revision: in a repo with no `origin/main` ref, pre-push exits 0 and prints a warning that names the missing ref. This case runs for pre-push only.
+  - P2 revision: in a shallow clone where the base ref exists but its merge base can't be read, the check fails with exit 1 and names `fetch-depth: 0`.
 - [ ] The `validate-branch` job in `.github/workflows/ravintio.yml` matches the one in `hooks/ravintio.yml` line for line. Pre-push and the CI step give the same exit code on every fixture in the second criterion. Verified by: integration
 
 ## Dependencies
