@@ -1387,6 +1387,9 @@ function Invoke-RavintioSetup {
     if (Test-Path $manifest) {
         Write-Host "  Re-run detected — removing previously installed directories"
         Get-Content -Path $manifest | Where-Object { $_ -ne '' } | ForEach-Object {
+            # A retired skill name is left to Invoke-RetiredTrackCleanup, which
+            # keeps the link and outside-project rules (0000040 req-004).
+            if ($RetiredTrackSkills -contains (Split-Path -Leaf $_)) { return }
             if (Test-Path $_) {
                 Remove-Item -Path $_ -Recurse -Force
                 Write-Host "  - removed: $(Split-Path -Leaf $_)"

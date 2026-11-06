@@ -8,7 +8,17 @@
 #          tool they set up, with or without a skill manifest (ADR-005).
 #
 # The suite follows test-0000030-req-004-install-clean-up-and-retired-flags.sh.
-# It runs the setup.ps1 cases when pwsh is on PATH.
+# It runs the setup.ps1 cases when PowerShell is on PATH.
+#
+# Environment (P4, after test-0000039-req-006-consumer-migration.sh):
+#   RAVINTIO_TEST_PWSH         the PowerShell binary for the .ps1 pass. The
+#                              default is pwsh. When set, a missing binary
+#                              fails the suite instead of printing SKIP.
+#   RAVINTIO_TEST_REQ004_ONLY  set to ps1 to skip the setup.sh runs. The
+#                              static checks and the .ps1 pass still run.
+# The test-suite CI job runs the whole suite on pwsh (PowerShell 7). The
+# setup-powershell-51 job runs the .ps1 pass under powershell.exe (Windows
+# PowerShell 5.1) with RAVINTIO_TEST_REQ004_ONLY=ps1.
 
 set -uo pipefail
 
@@ -20,15 +30,20 @@ source "$SCRIPT_DIR/helpers/assert.sh"
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
 SETUP_SH="$FRAMEWORK/setup.sh"
 SETUP_PS1="$FRAMEWORK/setup.ps1"
+WORKFLOW="$FRAMEWORK/../.github/workflows/ravintio.yml"
+PS_BIN="${RAVINTIO_TEST_PWSH:-pwsh}"
+ONLY="${RAVINTIO_TEST_REQ004_ONLY:-}"
 
 WORK="$(mktemp -d -t ravintio_0000040_req004_XXXXXX)"
 OUTSIDE="$(mktemp -d -t ravintio_0000040_req004_outside_XXXXXX)"
-trap 'rm -rf "$WORK" "$OUTSIDE"' EXIT
+# The failed-delete case makes a folder read-only, so restore write access
+# before the delete. An interrupted run still removes both folders.
+trap 'chmod -R u+w "$WORK" "$OUTSIDE" 2>/dev/null; rm -rf "$WORK" "$OUTSIDE"' EXIT
 
 yes_no() { if "$@"; then echo "yes"; else echo "no"; fi; }
 
 HAS_PWSH=no
-command -v pwsh >/dev/null 2>&1 && HAS_PWSH=yes
+command -v "$PS_BIN" >/dev/null 2>&1 && HAS_PWSH=yes
 
 IS_WIN=no
 case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) IS_WIN=yes ;; esac
@@ -50,7 +65,8 @@ make_workspace() {
 # run_setup <sh|ps1> <workspace> <tool>: runs setup and sets OUT and RC.
 run_setup() {
   if [ "$1" = "ps1" ]; then
-    OUT="$(cd "$2" && pwsh -NoProfile -File ravintio-framework/setup.ps1 "$3" 2>&1)"
+    # powershell.exe under Git Bash ends each line with CR, so strip it.
+    OUT="$(cd "$2" && "$PS_BIN" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File ravintio-framework/setup.ps1 "$3" 2>&1 | tr -d '\r')"
   else
     OUT="$(cd "$2" && bash ravintio-framework/setup.sh "$3" 2>&1)"
   fi
@@ -151,29 +167,76 @@ assert_contains "ReparsePoint" "$PS_FN" "req-004: Invoke-RetiredTrackCleanup rem
 
 # =============================================================================
 echo ""
+echo "=== req-004 AC3: the 5.1 CI job runs the .ps1 pass under Windows PowerShell 5.1 ==="
+
+# job_block ID prints one job from the workflow, up to the next job.
+job_block() {
+  awk -v id="  $1:" '
+    $0 == id { on = 1; print; next }
+    on && /^  [^ ]/ { exit }
+    on { print }
+  ' "$WORKFLOW"
+}
+# step_with TEXT prints the step in stdin that holds TEXT, up to the next step.
+step_with() {
+  awk -v t="$1" '
+    /^      - / { if (hit) exit; buf = "" }
+    { buf = buf $0 "\n" }
+    index($0, t) { hit = 1 }
+    END { if (hit) printf "%s", buf }
+  '
+}
+in_text() { grep -E -- "$1" <<< "$2" >/dev/null && echo yes || echo no; }
+
+SUITE_NAME="test-0000040-req-004-remove-track-files.sh"
+S51="$(job_block setup-powershell-51 | step_with "$SUITE_NAME")"
+assert_equals "yes" "$(in_text "bash ravintio-framework/tests/$SUITE_NAME\$" "$S51")" "req-004 AC3: the 5.1 job runs the req-004 suite"
+assert_equals "yes" "$(in_text 'shell:[[:space:]]*bash$' "$S51")" "req-004 AC3: the req-004 step runs the suite through Git Bash"
+assert_equals "yes" "$(in_text 'RAVINTIO_TEST_PWSH:[[:space:]]*powershell\.exe$' "$S51")" "req-004 AC3: the req-004 step sets RAVINTIO_TEST_PWSH to powershell.exe"
+assert_equals "yes" "$(in_text 'RAVINTIO_TEST_REQ004_ONLY:[[:space:]]*ps1$' "$S51")" "req-004 AC3: the req-004 step runs the .ps1 pass only"
+assert_equals "yes" "$(in_text 'PSVersion\.Major' "$S51")" "req-004 AC3: the req-004 step reads the PowerShell major version"
+assert_equals "yes" "$(in_text '"\$major" != 5' "$S51")" "req-004 AC3: the req-004 step fails unless the major version is 5"
+assert_equals "no" "$(in_text 'secrets\.' "$S51")" "req-004 AC3: the req-004 step references no secrets"
+
+if [ "$HAS_PWSH" = "no" ] && [ -n "${RAVINTIO_TEST_PWSH:-}" ]; then
+  echo "  FAIL: req-004 AC3: RAVINTIO_TEST_PWSH names $PS_BIN, which is not on PATH"; FAIL=$((FAIL + 1))
+fi
+
+SHELLS=""
+if [ "$ONLY" = "ps1" ]; then
+  echo "  SKIP: req-004: the setup.sh runs, because RAVINTIO_TEST_REQ004_ONLY=ps1"
+else
+  SHELLS="sh"
+fi
+if [ "$HAS_PWSH" = "yes" ]; then
+  echo "  PowerShell: $PS_BIN $("$PS_BIN" -NoProfile -NonInteractive -Command '$PSVersionTable.PSVersion.ToString()' 2>&1 | tr -d '\r')"
+  SHELLS="${SHELLS:+$SHELLS }ps1"
+elif [ -z "${RAVINTIO_TEST_PWSH:-}" ]; then
+  echo "  SKIP: req-004: pwsh is not on PATH, so the setup.ps1 runs don't happen"
+fi
+
+# =============================================================================
+echo ""
 echo "=== req-004: a fresh setup.sh claude-code installs only the kept tracks ==="
 
-WS="$(make_workspace fresh)"
-run_setup sh "$WS" claude-code
-assert_equals "0" "$RC" "req-004: fresh claude-code: setup exits 0"
-for wf in feature-pipeline.md retrofit.md; do
-  assert_equals "yes" "$(yes_no test -f "$WS/.claude/commands/$wf")" "req-004: fresh claude-code: .claude/commands/$wf is installed"
-done
-for p in .claude/commands/fast-path.md .claude/commands/change-pipeline.md .claude/skills/ravintio-change-agent; do
-  assert_equals "no" "$(yes_no test -e "$WS/$p")" "req-004: fresh claude-code: no $p"
-done
-assert_equals "" "$(retired_lines)" "req-004: fresh claude-code: no (retired, removed) line"
+if [ "$ONLY" = "ps1" ]; then
+  echo "  SKIP: req-004: the fresh setup.sh run, because RAVINTIO_TEST_REQ004_ONLY=ps1"
+else
+  WS="$(make_workspace fresh)"
+  run_setup sh "$WS" claude-code
+  assert_equals "0" "$RC" "req-004: fresh claude-code: setup exits 0"
+  for wf in feature-pipeline.md retrofit.md; do
+    assert_equals "yes" "$(yes_no test -f "$WS/.claude/commands/$wf")" "req-004: fresh claude-code: .claude/commands/$wf is installed"
+  done
+  for p in .claude/commands/fast-path.md .claude/commands/change-pipeline.md .claude/skills/ravintio-change-agent; do
+    assert_equals "no" "$(yes_no test -e "$WS/$p")" "req-004: fresh claude-code: no $p"
+  done
+  assert_equals "" "$(retired_lines)" "req-004: fresh claude-code: no (retired, removed) line"
+fi
 
 # =============================================================================
 echo ""
 echo "=== req-004: setup removes every retired copy for each tool ==="
-
-SHELLS="sh"
-if [ "$HAS_PWSH" = "yes" ]; then
-  SHELLS="sh ps1"
-else
-  echo "  SKIP: req-004: pwsh is not on PATH, so the setup.ps1 runs don't happen"
-fi
 
 for shell in $SHELLS; do
   for tool in claude-code antigravity copilot codex cursor windsurf cline; do
@@ -215,6 +278,77 @@ else
     assert_equals "0" "$RC" "req-004: $shell linked skills folder: setup exits 0"
     assert_equals "yes" "$(yes_no test -f "$TARGET/ravintio-change-agent/SKILL.md")" "req-004: $shell linked skills folder: the folder outside the project stays"
     assert_contains ".claude/skills/ravintio-change-agent resolves outside the project - not removed" "$OUT" "req-004: $shell linked skills folder: the refusal is reported"
+    # The first run writes a manifest that lists the refused folder. The
+    # second run's manifest prune must not delete it through the link (P4).
+    run_setup "$shell" "$WS" claude-code
+    assert_equals "0" "$RC" "req-004: $shell linked skills folder rerun: setup exits 0"
+    assert_equals "yes" "$(yes_no test -f "$TARGET/ravintio-change-agent/SKILL.md")" "req-004: $shell linked skills folder rerun: the folder outside the project and its SKILL.md stay"
+    assert_equals "no" "$(yes_no grep -q 'removed: ravintio-change-agent' <<< "$OUT")" "req-004: $shell linked skills folder rerun: no removed line for the refused folder"
+    assert_contains ".claude/skills/ravintio-change-agent resolves outside the project - not removed" "$OUT" "req-004: $shell linked skills folder rerun: the refusal is reported again"
+  done
+fi
+
+# =============================================================================
+echo ""
+echo "=== req-004: a retired path that is itself a link goes as a link ==="
+
+# The retired skill folder links to a folder outside the project, and the
+# retired workflow links to a file outside it. Setup removes each link and
+# leaves its target and the target's contents in place.
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): ln -s makes a copy under Git Bash, so a retired path cannot be a link"
+else
+  for shell in $SHELLS; do
+    WS="$(make_workspace "retired-link-$shell")"
+    DIR_TARGET="$OUTSIDE/change-agent-$shell"
+    FILE_TARGET="$OUTSIDE/fast-path-$shell.md"
+    mkdir -p "$DIR_TARGET/references" "$WS/.claude/skills" "$WS/.claude/commands"
+    echo "keep me" > "$DIR_TARGET/SKILL.md"
+    echo "keep me too" > "$DIR_TARGET/references/notes.md"
+    echo "keep this file" > "$FILE_TARGET"
+    ln -s "$DIR_TARGET" "$WS/.claude/skills/ravintio-change-agent"
+    ln -s "$FILE_TARGET" "$WS/.claude/commands/fast-path.md"
+    run_setup "$shell" "$WS" claude-code
+    L="req-004: $shell retired link"
+    assert_equals "0" "$RC" "$L: setup exits 0"
+    for p in .claude/skills/ravintio-change-agent .claude/commands/fast-path.md; do
+      assert_equals "no" "$(yes_no test -L "$WS/$p")" "$L: the link $p is gone"
+      assert_equals "no" "$(yes_no test -e "$WS/$p")" "$L: nothing stands at $p"
+    done
+    assert_equals "yes" "$(yes_no test -f "$DIR_TARGET/SKILL.md")" "$L: the linked folder's SKILL.md survives"
+    assert_equals "yes" "$(yes_no test -f "$DIR_TARGET/references/notes.md")" "$L: the linked folder's nested file survives"
+    assert_equals "keep this file" "$(cat "$FILE_TARGET" 2>/dev/null)" "$L: the linked file survives with its content"
+    assert_equals "$(printf '%s\n%s' '  - .claude/commands/fast-path.md (retired, removed)' '  - .claude/skills/ravintio-change-agent (retired, removed)')" \
+      "$(retired_lines)" "$L: one (retired, removed) line per link"
+  done
+fi
+
+# =============================================================================
+echo ""
+echo "=== req-004: a failed delete warns, leaves the path, and setup exits 0 ==="
+
+# A read-only folder inside the retired skill folder blocks its delete. The
+# skills folder itself stays writable, so the rest of the install runs.
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): chmod 555 does not block deletes on NTFS, so the undeletable retired folder cannot be built"
+elif [ "$(id -u)" = "0" ]; then
+  echo "  SKIP: req-004: running as root, a read-only folder cannot block a delete"
+else
+  for shell in $SHELLS; do
+    WS="$(make_workspace "locked-$shell")"
+    LOCKED="$WS/.claude/skills/ravintio-change-agent/references"
+    mkdir -p "$LOCKED"
+    echo "old" > "$WS/.claude/skills/ravintio-change-agent/SKILL.md"
+    echo "old" > "$LOCKED/notes.md"
+    chmod 555 "$LOCKED"
+    run_setup "$shell" "$WS" claude-code
+    chmod 755 "$LOCKED"
+    L="req-004: $shell failed delete"
+    assert_equals "0" "$RC" "$L: setup exits 0"
+    assert_contains "  ! could not remove .claude/skills/ravintio-change-agent - left in place, delete it by hand" "$OUT" "$L: the warning names the path"
+    assert_equals "yes" "$(yes_no test -d "$WS/.claude/skills/ravintio-change-agent")" "$L: the path is left in place"
+    assert_equals "" "$(retired_lines)" "$L: no (retired, removed) line"
+    assert_contains "Setup complete." "$OUT" "$L: the rest of the install finishes"
   done
 fi
 

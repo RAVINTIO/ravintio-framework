@@ -751,6 +751,17 @@ RETIRED_TRACK_SKILLS=(
   "ravintio-change-agent"
 )
 
+# is_retired_track_skill <name>: true when the name is on RETIRED_TRACK_SKILLS.
+# The manifest prune skips these names, so only cleanup_retired_tracks
+# removes them, under its link and outside-project rules.
+is_retired_track_skill() {
+  local name
+  for name in "${RETIRED_TRACK_SKILLS[@]}"; do
+    [ "$1" = "$name" ] && return 0
+  done
+  return 1
+}
+
 # cleanup_retired_tracks <skills folder> <workflow folder>: removes each
 # retired name that exists and prints one line for each removal. It prints
 # nothing when nothing is found. A tool with no workflow folder passes an
@@ -1119,6 +1130,9 @@ setup_tool() {
   if [ -f "$manifest" ]; then
     echo "  Re-run detected — removing previously installed directories"
     while IFS= read -r dir_path; do
+      # A retired skill name is left to cleanup_retired_tracks, which keeps
+      # the link and outside-project rules (0000040 req-004).
+      is_retired_track_skill "$(basename "$dir_path")" && continue
       if [ -n "$dir_path" ] && [ -d "$dir_path" ]; then
         rm -rf "$dir_path"
         echo "  - removed: $(basename "$dir_path")"

@@ -88,6 +88,13 @@ This decision replaces the single-array wording in req-004. That wording named o
 **Risks:**
 - A consumer with several tools re-runs setup for only one, and the others keep their copies. The migration in ADR-006 names a re-run per tool.
 - Bash and PowerShell drift apart. The suite runs the `.ps1` cases when `pwsh` is present.
+  - P4 addition: the `setup-powershell-51` CI job also runs the req-004 `.ps1` cases under Windows PowerShell 5.1.
+
+## What P4 changed (governing)
+
+- The manifest prune in `setup.sh` and `setup.ps1` skips every name on the retired skills list. Only `cleanup_retired_tracks` and `Invoke-RetiredTrackCleanup` remove those names, under their link and outside-project rules.
+- Reason: P4 verify-by-execution found that a second setup run deleted a refused retired folder through a linked skills folder. The manifest listed the folder, and the prune removed it.
+- An installed retired skill now prints a `(retired, removed)` line on a re-run, not a `- removed:` line.
 
 ## Related ADRs
 

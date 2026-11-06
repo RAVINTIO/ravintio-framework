@@ -79,3 +79,5 @@ As a consumer repo owner, I upgrade and lose every Fast Path and Change Pipeline
 - req-006 (residue-guard) checks that no live reference to the deleted files remains.
 - Existing pattern: `cleanup_retired_integrations` in `setup.sh` and `Invoke-RetiredIntegrationCleanup` in `setup.ps1` (0000030 ADR 004).
 - Backlog 0000255 covers the manifest prune that trusts listed paths. This requirement doesn't fix that prune. Its list works without the manifest.
+  - P4 revision: the prune now skips names on the retired skills list (ADR-005, "What P4 changed"). Criterion 2's linked skills folder holds across two setup runs. 0000255's wider fix stays open.
+  - P4 revision: the `setup-powershell-51` CI job runs the suite's `.ps1` cases under Windows PowerShell 5.1 for criterion 3. Under Git Bash on Windows, the link and failed-delete cases skip, and PowerShell 7 on macOS and Linux covers them.

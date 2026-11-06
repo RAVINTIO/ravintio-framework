@@ -241,6 +241,8 @@ jobs:
     runs-on: windows-latest
     # The cap stays at 10 (0000039 X-001). The req-006 step runs only the
     # .ps1 pass, which took about 2 minutes under pwsh on windows-latest.
+    # The req-004 step (0000040) also runs only the .ps1 pass. It took about
+    # 77 seconds on macOS, and 0000037 req-011 pins this cap at 10.
     timeout-minutes: 10
     permissions:
       contents: read
@@ -290,3 +292,18 @@ jobs:
             exit 1
           fi
           bash ravintio-framework/tests/test-0000039-req-006-consumer-migration.sh
+
+      # 0000040 req-004 AC3: setup.ps1 removes the retired track files under
+      # Windows PowerShell 5.1 as well as 7. The .sh runs happen in test-suite.
+      - name: Run the req-004 .ps1 cases under 5.1
+        shell: bash
+        env:
+          RAVINTIO_TEST_PWSH: powershell.exe
+          RAVINTIO_TEST_REQ004_ONLY: ps1
+        run: |
+          major=$(powershell.exe -NoProfile -NonInteractive -Command '$PSVersionTable.PSVersion.Major' | tr -d '\r')
+          if [ "$major" != 5 ]; then
+            echo "powershell.exe reports major version $major, not 5."
+            exit 1
+          fi
+          bash ravintio-framework/tests/test-0000040-req-004-remove-track-files.sh
