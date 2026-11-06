@@ -154,3 +154,22 @@ Exception resolved (P1, 6): the human on the loop chose option 3 at 2026-11-06T0
 Decision (P1): req-006 records that its P3 fixtures, run on all three CI shards, govern the guard's matching rules / reason: human choice on exception item 6
 Gate passed: P1
 Progress: P1 complete at 2026-11-06T01:41:47Z: seven requirements, critic loop escalated and resolved by the human on the loop, P2 next
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-06T01:43:51Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-adr-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+Decision (P2): seven ADRs. ADR-001 stack unchanged, ADR-002 one track, ADR-003 source folder rule, ADR-004 enforcement path list kept as ENFORCEMENT_PATHS, ADR-005 setup retired list, ADR-006 migrator named paths, ADR-007 residue guard / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
+Decision (P2): Q-001 answer: the list survives, renamed ENFORCEMENT_PATHS / reason: isAlwaysPermitted reads it, so dropping it would admit a permitted file name inside hooks/ and break NFR-003
+Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-007 by six parallel subagents / reason: ADR-001 needs no reads, under the size floor
