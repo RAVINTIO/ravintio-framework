@@ -225,3 +225,7 @@ Deviation (P3, unclassified): req-004 adds a Windows skip table row for its suit
 Deviation (P3, unclassified): req-004 changes the skill count in test-0000039-req-001 from 21 to 20.
 Deviation (P3, unclassified): req-004 cleanup functions skip an empty skills folder, so opencode never checks a path at the project root.
 Join (P3, batch 1): full suite 128 feature suites passed and 1 failed, 36 of 36 regression suites passed. The failing suite is test-0000040-req-001, on 5 checks that read req-007 docs.
+TDD (P3, req-007): RED exit 1 (3 passed, 51 failed), GREEN exit 0. test-0000040-req-001 now exits 0. Full suite 129 feature suites passed and 1 failed, 36 of 36 regression suites passed.
+Deviation (P3, unclassified): req-007 widens the 0.37-only version check in test-0000039-req-010 to accept 0.37 or a later 0.x release, and keeps every equality check.
+Deviation (P3, unclassified): req-007 capitalises the superseding notes in the architecture overview decision list, and adds one component.yml responsibility line for 0000040 routing.
+Decision (P3): accept the 3 equality failures in test-0000039-req-010 until P7 sets product.yml and docs/about.md to 0.38.0. P4 must not fix them / reason: set-product-release.mjs is sanctioned only at P7 Step 5b, and req-007 gives both files to the ship agent. Filed backlog 0000368.
