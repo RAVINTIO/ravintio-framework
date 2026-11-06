@@ -43,6 +43,11 @@ As a human on the loop, I read docs and decisions that describe one track, so th
 | 0000035 ADR 004, Fast Path enforcement path list | file `fast-path-enforcement-path-list` in the same folder | `superseded` if P2 drops the list, or `partly superseded` if the list survives under a new name |
 
 - `{n}` is the 0000040 ADR that P2 writes for each decision.
+- P2 revision, which governs every `{n}` and condition in this file:
+  - 0000014 ADR 004 is `partly superseded by 0000040 ADR-002`.
+  - 0000033 ADR 009, 0000035 ADR 002, and 0000035 ADR 003 are each `superseded by 0000040 ADR-002`.
+  - 0000035 ADR 004 is `partly superseded by 0000040 ADR-004`. The list survives as `ENFORCEMENT_PATHS`, and the docs use that name.
+  - `docs/architecture-overview.md` gains the short section on `ENFORCEMENT_PATHS` that the approach 2 revision names.
 - 0000035 ADR 003 reads only the scope record, so it falls with ADR 002 although the design does not name it.
 - Add a Feature 0000040 section to the decisions index for the new ADRs, and update its `Last updated` line.
 - The release is 0.38.0, a minor bump from 0.37.2, as the design suggests. Each file has one owner:

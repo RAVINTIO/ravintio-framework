@@ -179,3 +179,6 @@ Decision (P2): ADR-005 status accepted and component ravintio-framework / reason
 Deviation (P2, unclassified): req-005 step 3 changes from the migrator deleting plan/.fast-path-scope to the human on the loop running the delete, with the migrator checking the result. Hard Limit 8 names no delete route. Filed backlog 0000366.
 Decision (P2): req-002 keeps test-0000039-req-008 unchanged and moves direct isEnforcementPath coverage before any retirement of test-0000035-req-009 / reason: ADR-004 keeps the function name, and the list's matching must keep its tests
 Loop armed (P2): design_critic-p2, toggle on, cap 3, approach 1 of 3. consistency-check clean.
+Critic verdict (P2, iteration 1): REJECT. 3 major and 4 minor findings. See critic-verdict-p2-1.md.
+Decision (P2): pre-push checks nothing and warns when origin/main is missing, and fails closed only on an unreadable merge base / reason: keeps today's verdict for a master repo or first push, which CI still checks. Filed backlog 0000367 for the hard-coded ref.
+Decision (P2): the req-004 two-array form governs, which replaces the P1 Decision line naming RETIRED_TRACK_FILES / reason: ADR-005 accepts it

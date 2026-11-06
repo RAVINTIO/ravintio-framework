@@ -77,6 +77,7 @@ If the diff touches a source folder, the same diff must touch a record. Otherwis
 | Case | Behaviour |
 |------|-----------|
 | The base commit can't be resolved, as in a shallow clone (R-011) | Fail closed with exit 1. The message names `fetch-depth: 0`. |
+| Pre-push finds no `origin/main` ref, as in a `master` repo or before the first push (R-012) | Check nothing and print a warning that names the missing ref. Today's diff finds no files in this case, so the verdict stays the same. CI still runs the rule on the pull request. |
 | `product.yml` is absent from both commits | Check `src/` only. No warning, because a repo with one component needs no `product.yml`. |
 | `product.yml` exists but git can't read it | Check `src/` only, and print a warning that names the file. |
 | `product.yml` exists but yields no valid `path:` value, for example a flow-style list or no `components:` key | Check `src/` only, and print a warning that names the file and says the rule found no components. |
@@ -113,7 +114,8 @@ The first row follows req-003 and R-011. The second and third rows follow req-00
 **Negative:**
 - The CI step and pre-push grow longer, and both must stay in step by hand.
 - A repo that lists a root-level `component.yml` needs a record for every code change, including small ones.
-- A consumer gets the CI change only through a fresh install or the migration in ADR-006, because setup copies the CI template only when the file is absent.
+- A consumer with an existing CI file never gets the source folder rule in CI. Setup copies the CI template only when the file is absent, and the migration in ADR-006 removes only the exemption block. Backlog 0000364 covers the CI file that setup never refreshes.
+- Pre-push hard-codes `origin/main`, so a `master` repo gets no pre-push check. Backlog 0000367 covers it.
 
 **Risks:**
 - A hand-edited `product.yml` in an unusual layout leaves only `src/` checked. The warning names the file, but a busy reader can miss a warning in a passing run (R-005).

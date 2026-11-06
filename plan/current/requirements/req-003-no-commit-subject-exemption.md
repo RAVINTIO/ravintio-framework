@@ -29,6 +29,12 @@ As a human on the loop, I rely on pre-push and CI to admit nothing on a Fast Pat
   - A root-level `path: "component.yml"` gives the folder `.`, the whole repo. Every path outside `plan/` and `docs/` is then source. The check stays strict: a diff with a record still passes, and a diff under only `plan/` or `docs/` has no source change.
   - If `product.yml` is absent from both commits, the check falls back to `src/` only. It treats an unreadable file the same way and prints a warning.
   - `src/` always counts as a source folder, whatever `product.yml` lists.
+  - P2 revision, which governs the base commit:
+    - In CI, the base commit is the merge base with `origin/${{ github.base_ref }}`, which every pull request has.
+    - In pre-push, the base commit is the merge base with `origin/main`, the branch the hook already diffs against.
+    - If pre-push finds no `origin/main` ref, the rule checks nothing and prints a warning that names the missing ref. Today's diff already finds no files in that case, so the verdict doesn't change. A `master` repo or a first push then relies on CI.
+    - The rule fails closed only when the ref exists but its merge base can't be read, as in a shallow clone.
+    - Add a fixture for a repo with no `origin/main`: pre-push exits 0 and prints the warning.
 - A record is a file under the top-level `plan/` or `docs/` folder. A record never counts as source, even when a listed folder holds it.
 - If the diff touches a source folder, the same diff must touch a record. Otherwise the check fails with exit 1.
 - A `component.yml` counts as source, not as a record. A diff that touches a source folder and a `component.yml`, and no record, fails. Today pre-push line 41 and CI line 40 accept any `component.yml` as a record. This rule closes that route.

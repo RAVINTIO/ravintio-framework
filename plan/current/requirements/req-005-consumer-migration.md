@@ -60,6 +60,7 @@ As a consumer repo owner, I upgrade and lose any leftover scope record and the C
 - [ ] The migration file holds the `**Target:**`, `**Scope:**`, `**May edit:**`, and `**Safe to skip:**` lines and the four sections. It quotes the exemption block verbatim. That block matches a fixture copy of the 0.37.2 `hooks/ravintio.yml` once, and removing it leaves no `fix\(fast-path\)` or `FAST_PATH_COUNT` text. The instructions name the unfinished-run warning, the setup re-run, and the `skipped` record for a declined or unmatched edit. Verified by: integration
 - [ ] In a scratch consumer repo on 0.37.2, with `plan/.fast-path-scope` and `plan/current/change-summary.md`, a migrator run behaves as follows. Verified by: execution
   - With every confirmation given, it warns about the unfinished run and deletes the scope record. It removes the block and leaves the rest of the CI file byte-identical. It asks for a setup re-run, and records `applied`.
+  - P2 revision, which governs this criterion: "deletes the scope record" means the migrator asks the human on the loop to run the delete and then finds the path gone. The test fixture plays the human on the loop and runs the delete.
   - A second run changes no file and leaves the record unchanged.
   - A run where the human on the loop declines the CI edit leaves the CI file byte-identical. It names the file and the lines, and records `skipped` with the reason `declined`.
   - A run on an edited block does the same with the reason `no match`.

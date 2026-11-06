@@ -90,6 +90,11 @@ No suite under `ravintio-framework/tests/regression/` asserts scope record behav
 - Approach 2 iteration 1 revision:
   - Rewrite the comment above `FAST_PATH_ENFORCEMENT_PATHS` in `path-rules.mjs` (lines 492 to 494 today). It names the scope record, ADR 009, and `workflows/fast-path.md`. The new comment says what the list protects now, with no retired-track words.
   - The new suite is `ravintio-framework/tests/test-0000040-req-002-gates-ignore-scope-record.sh`. It replaces `test-0000035-req-001-fast-path-scope-record.sh`.
+- P2 answer to Q-001 (ADR-004), which governs the open wording above:
+  - Rename `FAST_PATH_ENFORCEMENT_PATHS` to `ENFORCEMENT_PATHS` in `path-rules.mjs`, and in every reader that ADR-004 lists. Keep every entry.
+  - `isEnforcementPath` keeps its name. Only `isAlwaysPermitted` calls it after this change.
+  - The list survives, so the `hooks/CLAUDE.md` case in the first criterion stands as written.
+  - The second criterion's source search also finds no `FAST_PATH_ENFORCEMENT_PATHS`.
 - Approach 2 revision: the `ravintio-framework/hooks/CLAUDE.md` case in the first criterion assumes P2 keeps the enforcement path list, under its old or a new name (Q-001). If P2 drops the list, P2 logs a deviation, and that case expects whatever verdict the P2 ADR states.
 - P1 critic revision: the execution plan's file ownership table governs who edits each file. This requirement states the gate bullets for `templates/standard-boot.md`, and req-001 writes them. It states the gate text for the docs, and req-007 writes it. It owns the `.gitignore` removal.
 

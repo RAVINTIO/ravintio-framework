@@ -27,7 +27,7 @@ The new migration `migrate-0.38.0-retire-fast-path-and-change-pipeline.md` (req-
 
 1. It confirms that the pack reports `0.38.0` or later.
 2. It warns on an unfinished Change Pipeline or Fast Path run in `plan/current/`. The warning changes no file.
-3. It deletes a leftover `plan/.fast-path-scope` on confirmation.
+3. It asks the human on the loop to delete a leftover `plan/.fast-path-scope`, then checks that the path is gone.
 4. It removes the exemption block from `.github/workflows/ravintio.yml` on confirmation.
 5. It asks for a setup re-run for each tool the project uses.
 
@@ -81,7 +81,7 @@ These limits bound the route:
 | Component | Impact |
 |-----------|--------|
 | ravintio-framework | The migrator `SKILL.md` gains the `**May edit:**` rule, the per-edit confirmation, the path refusals, and the wider `skipped` outcome. The pack gains the 0.38.0 migration and `tests/test-0000040-req-005-consumer-migration.sh`. These suites read the migrator text and must stay green: `test-0000005-framework-governance.sh`, `test-0000035-req-007-migration-run-state.sh`, `test-0000036-req-005-hard-limits-cited-by-name.sh`, and `test-0000039-req-009-migration-ordering-and-old-paths.sh`. |
-| Consumer repos | On confirmation, the migration deletes `plan/.fast-path-scope` and removes the exemption block from `.github/workflows/ravintio.yml`. The rest of the CI file stays byte-identical. |
+| Consumer repos | The human on the loop deletes `plan/.fast-path-scope` when the migration asks. On confirmation, the migration removes the exemption block from `.github/workflows/ravintio.yml`. The rest of the CI file stays byte-identical. |
 
 ## Consequences
 
