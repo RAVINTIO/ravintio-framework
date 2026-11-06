@@ -242,3 +242,20 @@ Requirement-ID scan (P3): 7 requirements, 0 unmapped. Execution criteria in req-
 Decision (P3): framework component.yml close-out done in the req-007 commit, with version 0.38.0 and feature 0000040-retire-fast-path. Skill Map unchanged / reason: every requirement ran on the skill the map names
 Gate passed: P3
 Progress: P3 complete at 2026-11-06T03:39:02Z: all seven requirements built under TDD, full suite red only on the 3 expected 0000039 req-010 checks (backlog 0000368), P4 next
+
+### P4: Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-06T16:17:52Z` |
+| End | |
+| Wall-clock | |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (in subagent) |
+| Agents spawned | |
+| MCP calls | 0 |
+| Parallel task batches | |
+| Notes | Autonomous run. Resumed after a session break at the P3 gate. |
+
+Decision (P4): the full suite, the coverage table, and verify-by-execution run in one parallel batch / reason: each reads the tree and writes to its own output, and none changes code
