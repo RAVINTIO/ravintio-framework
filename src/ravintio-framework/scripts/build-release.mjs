@@ -7,7 +7,8 @@
  *
  * The script takes no arguments. The root comes from the working directory,
  * with CLAUDE_PROJECT_DIR cleared. It runs only when projectKind(root) returns
- * `framework source`.
+ * `framework source`. The real working directory, the root, and the git top
+ * level must be one path.
  *
  * What it builds:
  *   - Each file that `git ls-files -z -- src/ravintio-framework` lists, except
@@ -83,13 +84,20 @@ function argName(arg, index) {
   return `argument ${index + 1}`;
 }
 
+// git: run git in root. The child environment drops every variable that can
+// move the repository or inject config, and fsmonitor stays off (F-06).
 function git(root, args) {
   const env = { ...process.env };
+  for (const name of Object.keys(env)) {
+    if (/^GIT_CONFIG_(KEY|VALUE)_/.test(name)) delete env[name];
+  }
   delete env.GIT_DIR;
   delete env.GIT_WORK_TREE;
   delete env.GIT_INDEX_FILE;
+  delete env.GIT_CONFIG_COUNT;
+  delete env.GIT_CONFIG_PARAMETERS;
   try {
-    return execFileSync("git", ["-C", root, ...args], {
+    return execFileSync("git", ["-c", "core.fsmonitor=false", "-C", root, ...args], {
       env, stdio: ["ignore", "pipe", "pipe"], maxBuffer: 64 * 1024 * 1024,
     });
   } catch (e) {
@@ -148,6 +156,7 @@ function checkClean(root) {
 function sourceFiles(root) {
   const out = git(root, ["ls-files", "-s", "-z", "--", SRC_REL]).toString("utf-8");
   const files = [];
+  const folded = new Map();
   for (const entry of out.split("\0")) {
     if (!entry) continue;
     const tab = entry.indexOf("\t");
@@ -163,6 +172,17 @@ function sourceFiles(root) {
       if (!SEGMENT_RE.test(seg) || seg === "." || seg === "..") {
         throw new Refusal(`${clean(path)} has a path segment outside [A-Za-z0-9._-]+`);
       }
+    }
+    // F-07: the build writes release.yml itself, and a case-only collision
+    // would clash on a case-insensitive file system.
+    if (rel.toLowerCase() === "release.yml") throw new Refusal(`${clean(path)} clashes with the built release.yml`);
+    const segs = rel.split("/");
+    for (let i = 1; i <= segs.length; i++) {
+      const prefix = segs.slice(0, i).join("/");
+      const key = prefix.toLowerCase();
+      const had = folded.get(key);
+      if (had === undefined) folded.set(key, prefix);
+      else if (had !== prefix) throw new Refusal(`${clean(had)} and ${clean(prefix)} differ only in case`);
     }
     if (rel === "component.yml") continue;
     files.push({ rel, exec: mode === "100755" });
@@ -275,7 +295,7 @@ function build(root, files, header) {
   const seen = new Set();
   const lines = [];
   try {
-    mkdirSync(out);
+    mkdirSync(out, { mode: 0o700 });
   } catch (e) {
     throw new Failure(`mkdir ${BUILD}: ${e.code ?? "error"}`);
   }
@@ -343,9 +363,23 @@ function main() {
   try { root = realpathSync(found); } catch (e) {
     throw new Refusal(`cannot resolve the project root: ${e.code ?? "error"}`);
   }
+  // F-01: the working directory must be the root itself, not a folder under it.
+  let cwd;
+  try { cwd = realpathSync(process.cwd()); } catch (e) {
+    throw new Refusal(`cannot resolve the working directory: ${e.code ?? "error"}`);
+  }
+  if (cwd !== root) throw new Refusal("run from the project root, not a folder under it");
 
   const { kind } = projectKind(root);
   if (kind !== "framework source") throw new Refusal(`project kind is ${clean(kind)}, not framework source`);
+
+  // F-01: the root must also be the git top level.
+  const top = git(root, ["rev-parse", "--show-toplevel"]).toString("utf-8").replace(/\n$/, "");
+  let realTop;
+  try { realTop = realpathSync(top); } catch (e) {
+    throw new Refusal(`cannot resolve the git top level: ${e.code ?? "error"}`);
+  }
+  if (realTop !== root) throw new Refusal("the project root is not the git top level");
 
   const version = readVersion(root);
   checkBoundary(root);
@@ -357,7 +391,8 @@ function main() {
   // Every refusal has run. Changes start here.
   const lines = [];
   const print = (l) => lines.push(l);
-  recover(root, print);
+  // F-08: the restored line prints at once, so a later failure cannot hide it.
+  recover(root, (l) => process.stdout.write(`${l}\n`));
   const oldMap = readOldCopy(root);
   const built = new Date().toISOString().slice(0, 10);
   const header =

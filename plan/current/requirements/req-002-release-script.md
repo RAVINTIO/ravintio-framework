@@ -35,6 +35,9 @@ All paths below use the post-move layout from req-001. The script lives at `src/
 - It reads `source-commit` from `git rev-parse HEAD`.
 - It refuses to build when `git status --porcelain -- src/ravintio-framework` prints anything. The release then always matches the commit it names. It exits 2, names the first uncommitted path, and writes nothing.
 - It refuses a source entry that isn't a regular file, such as a link (mode `120000`) or a submodule (mode `160000`). It also refuses a path segment outside `[A-Za-z0-9._-]+`, or one that is `.` or `..`. Each refusal exits 2, names the path, and writes nothing. Every tracked pack path matches that pattern today.
+- Before any change, the real path of the working directory, the resolved root, and the real path of `git rev-parse --show-toplevel` must be one path. Any other state exits 2 and writes nothing. (P5 security fix)
+- Every git call clears `GIT_DIR`, `GIT_WORK_TREE`, `GIT_INDEX_FILE`, `GIT_CONFIG_COUNT`, `GIT_CONFIG_PARAMETERS`, and each `GIT_CONFIG_KEY_*` and `GIT_CONFIG_VALUE_*` from the child environment. Each call also passes `-c core.fsmonitor=false`. (P5 security fix)
+- A tracked `src/ravintio-framework/release.yml` exits 2 and writes nothing. Two tracked paths that differ only in case, at any segment, also exit 2 and write nothing. The script finds both before any change. (P5 security fix)
 
 ### Write boundary
 
@@ -46,6 +49,8 @@ All paths below use the post-move layout from req-001. The script lives at `src/
 - It removes a folder with a recursive delete that never follows a link. A link inside the old copy goes as a link, and its target stays unchanged.
 - No write or delete lands outside the three folders, whatever a link inside them points at.
 - `.gitignore` lists `.ravintio-framework-build/` and `.ravintio-framework-previous/`, so an interrupted build never reaches a commit (P2 decision, ADR-003).
+- The script creates `.ravintio-framework-build/` with mode `0700`. (P5 security fix)
+- The script prints the `restored:` line as soon as the restore happens, before the build. The line then shows even when the build fails. (P5 security fix)
 
 ### Build and swap
 
