@@ -98,13 +98,28 @@ A migration shipped before 0.37.0 names `planifest-framework/` paths. Its body s
 
 Never read inside `.ravintio-backup/`. It holds the old pack, and it isn't a live pack. You may check that the folder exists, and nothing more.
 
-### Step 1b: Target check
+### The Applies to header
 
-Read the `**Target:**` line near the top of the migration file. If the file has no such line, go to Step 2.
+A migration may carry one `**Applies to:**` line near the top, beside `**Target:**`. Its value is `framework source`, `downstream`, or `all`. If the file has no such line, the value reads as `all`. Released migration files never change, so each one keeps its behaviour. You are the one owner of the allowed values.
 
-1. Decide whether this project is the framework source. It is when the root `product.yml` has `id: "ravintio-framework"`.
-2. If the line names only a downstream project and this project is the framework source, skip Steps 2 to 4. Don't run the Migrator Instructions.
-3. Record the outcome `not applicable` with both counts at `0` (Step 5). The body says that this project is the framework source.
+### Released migrations by project kind
+
+Some released migrations have no header and still need a project kind. This table holds them. For a file with no header, read the table first. A file in neither the header nor the table reads as `all`.
+
+| Migration file | Applies to |
+|----------------|------------|
+| `retroactive-release-tags.md` | `framework source` |
+
+### Step 1b: Project-kind check
+
+Run these checks in order.
+
+1. Run `ravintio-framework/scripts/project-kind.mjs` to find the project kind. It prints `framework source` or `downstream`. If the script fails to run, stop, report the error, and record nothing. The migration stays pending.
+2. Read the `**Applies to:**` line. If the file has no such line, look the file up in the table above. If its value is not one of the three, stop, report the line as an unknown value, and record nothing.
+3. If the value is `framework source` and the kind is `downstream`, or the value is `downstream` and the kind is `framework source`, skip Steps 2 to 4. Record the outcome `not applicable` with both counts at `0` (Step 5). The body names the project kind and the header value.
+4. Report each `not applicable` record and its reason to the human on the loop.
+5. If the value is `all` or matches the kind, read the `**Target:**` line near the top of the migration file. If the file has no such line, go to Step 2.
+6. Take the project kind for the Target check from the same script. If the line names only a downstream project and the kind is `framework source`, skip Steps 2 to 4 and record `not applicable` with both counts at `0`. The body says that this project is the framework source.
 
 In every other case, go to Step 1c.
 
