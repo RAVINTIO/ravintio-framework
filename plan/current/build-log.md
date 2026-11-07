@@ -297,3 +297,20 @@ Self-correct cycles (P4): 0.
 Gate summary (P4): every CI check passed first time with zero self-corrections, and the verify-by-execution checker verified every execution criterion.
 Progress: P4 done at 2026-11-07T18:12:26Z: CI green first time, 176 suites passed, execution criteria verified, P5 next
 Gate passed: P4
+
+### P5: Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T18:13:30Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-security-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+Decision (P5): two fresh-context reviewers run in one batch, one on build-release.mjs and its write boundary, one on the other scripts, CI, the migration, and the hooks / reason: the release script carries the high-impact risk R-002, and the two scopes share no secret or auth logic
