@@ -35,7 +35,7 @@ You own `plan/_migrations/` and are its only writer. Each project keeps one reco
 | `migration` | the migration file name. It must equal `{stem}.md`. |
 | `outcome` | `applied`, `not applicable`, or `skipped` |
 | `date` | the run date as `YYYY-MM-DD` |
-| `framework-version` | the `version` value in `ravintio-framework/component.yml` at the run |
+| `framework-version` | the `version` value in `ravintio-framework/release.yml` at the run. If `release.yml` is absent, use the `version` value in `ravintio-framework/component.yml`. |
 | `corrections-applied` | a whole number, `0` or more |
 | `corrections-skipped` | a whole number, `0` or more |
 
@@ -95,6 +95,8 @@ A migration shipped before 0.37.0 names `planifest-framework/` paths. Its body s
 - Read `planifest-framework/` as `ravintio-framework/`.
 - Read `planifest-overrides/` as `ravintio-overrides/`.
 - Read a `planifest-` skill name as the `ravintio-` name.
+
+Read a migration's framework version from `ravintio-framework/release.yml` first. If `release.yml` is absent, fall back to `ravintio-framework/component.yml`. If `release.yml` breaks the format, stop the run, name the file, and write no record. A run that stops this way records nothing.
 
 Never read inside `.ravintio-backup/`. It holds the old pack, and it isn't a live pack. You may check that the folder exists, and nothing more.
 
@@ -177,7 +179,7 @@ Write the record at `plan/_migrations/{stem}.md` with the **Write** tool. Create
 migration: "{stem}.md"
 outcome: "{applied | not applicable | skipped}"
 date: "{YYYY-MM-DD}"
-framework-version: "{version from ravintio-framework/component.yml}"
+framework-version: "{version from ravintio-framework/release.yml, or component.yml if release.yml is absent}"
 corrections-applied: {applied}
 corrections-skipped: {skipped}
 ---
