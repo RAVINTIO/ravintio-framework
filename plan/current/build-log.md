@@ -194,3 +194,4 @@ Decision (P2): ADR-008 counts a verified human-run delete in corrections-applied
 Decision (P2): ADR-009 adds a fourth alternative, failing the integrity job with no release.yml, and keeps the 37 suites plus six regression copies count / reason: it shows why the skip notice exists
 Decision (P2): req-002 gains a line that .gitignore lists the two work folders, R-002 names the two work folders, and the glossary gains the trusted release record term / reason: the ADR-003 and ADR-004 subagents found the gaps, and each fix is additive
 Backlog filed (P2): 0000391 gate permits agent writes to the release copy in the source repo
+Loop armed (P2): design_critic-p2, toggle on, cap 3, approach 1 of 3. consistency-check clean, with one advisory warning on req-002's four criteria, which its Split step keep note covers.
