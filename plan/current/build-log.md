@@ -234,3 +234,4 @@ Decision (P3): steps 1 to 5 run in sequence in the build order, and steps 6 and 
 Git pass (P3, step 1): ran `git mv ravintio-framework src/ravintio-framework`, then `git checkout v0.38.0 -- ravintio-framework`. Commit a5055f44 adds 1,184 files, all under src/ravintio-framework/.
 req-001 AC1 checks (P3, after the pass): 0 paths outside src/ravintio-framework/. `git rev-parse a5055f44:src/ravintio-framework` equals `git rev-parse v0.38.0:ravintio-framework`. `git diff --quiet v0.38.0 HEAD -- ravintio-framework` exits 0.
 req-001 product.yml (P3, step 1): path now src/ravintio-framework/component.yml, commit 4600b7b4. `node src/ravintio-framework/scripts/product-version.mjs` prints 0.38.0 and exits 0.
+TDD (P3, step 2, req-005 project-kind.mjs): RED 12 passed, 32 failed (6feeeb59). GREEN 44 passed, 0 failed (3f4e54f5). Refactor: no change needed.
