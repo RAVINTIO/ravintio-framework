@@ -101,7 +101,7 @@ Decision (P1): .gitattributes gains eol=lf lines for the src/ hook scripts and k
 Decision (P1): refresh-ravintio-framework-dir.ps1 uses $PSScriptRoot and keeps running the root setup / reason: it hard-codes an old path, and US-001 needs .claude/ installed from the release
 Decision (P1): no edit to CLAUDE.md or .claude/ in this run / reason: both are setup output that .gitignore excludes, and an agent never edits its own instruction file to sanction a script. The final report recommends a setup refresh after P7.
 Decision (P1): req-002 AC4 now checks the P7 Decision line and the setup refresh recommendation, in place of a local CLAUDE.md edit / reason: req-001 and req-002 disagreed, and the P0-approved recorded decision covers this run's P7
-Deviation (P1, unclassified): req-001 adds the three src/ravintio-framework/ prefixes to em-dash-guard.mjs scope / reason: after the move, pack prose edits would skip the guard (R-011)
+Deviation (P1, additive): req-001 adds the three src/ravintio-framework/ prefixes to em-dash-guard.mjs scope / reason: after the move, pack prose edits would skip the guard (R-011)
 Decision (P1): split step for req-007: keep / reason: the skip rule and the resolver move change one suite's verdict
 Decision (P1): req-007 skips only the three equality checks and prints SKIP (open run): {check}. {reason} / reason: the other checks agree from P3 on, and the format matches SKIP (windows):
 Decision (P1): split step for req-008: keep / reason: the integrity check guards the same risk as the resolver
@@ -111,7 +111,7 @@ Decision (P1): regression copies change by Edit with their twins, and regression
 Decision (P1): the CI integrity job release-copy-integrity runs release-check.mjs --root . --files-only on ubuntu only / reason: one hash reader
 Decision (P1): split step for req-002: keep / reason: one concern, a release copy a consumer can trust
 Decision (P1): split step for req-003: keep / reason: step 1a, the policy, and the migrator read one source, and none ships alone
-Deviation (P1, unclassified): build-release.mjs also writes .ravintio-framework-build/ and .ravintio-framework-previous/ beside the root copy, so its write boundary is three folders. design.md Security updated.
+Deviation (P1, altering, destructive): build-release.mjs also writes .ravintio-framework-build/ and .ravintio-framework-previous/ beside the root copy, so its write boundary is three folders. design.md Security updated.
 Decision (P1): build-release.mjs copies only git ls-files output, refuses a dirty src/ravintio-framework/, takes no arguments, and reads the version from the src/ manifest / reason: source-commit must match the content, and Hard Limit 8 sanctions the shown arguments
 Decision (P1): release.yml carries format: 1, a UTC built date, and SHA-256 hashes after CRLF reads as LF, and lists neither itself nor component.yml / reason: same-day reruns stay byte-identical, and Windows checkouts don't read as changed
 Decision (P1): the recorded value lives in plan/framework-release.yml, written only by step 1a / reason: no file records a source commit today
@@ -124,10 +124,10 @@ Decision (P1): the ship Step 9 case 2 fallback reads the archived design.md and 
 Decision (P1): split step for req-005: keep / reason: the script and the header have no use without the Step 1b rule
 Decision (P1): project-kind.mjs decides the project kind, read-only, and the Target check reads it too / reason: one source-repo signal
 Decision (P1): an unknown **Applies to:** value stops the run with no record / reason: never guess a skip
-Deviation (P1, unclassified): req-005 adds a migrator table that maps the released retroactive-release-tags.md to framework source / reason: the file can't change, and backlog 0000136 names it. design.md Dependencies updated.
+Deviation (P1, altering): req-005 adds a migrator table that maps the released retroactive-release-tags.md to framework source / reason: the file can't change, and backlog 0000136 names it. design.md Dependencies updated.
 Decision (P1): split step for req-006: keep / reason: one concern, removing the leftover manifest
 Decision (P1): the migrator never deletes the manifest and shows rm -- ravintio-framework/component.yml for the human on the loop / reason: Write and Edit can't delete (backlog 0000366)
-Deviation (P1, unclassified): req-006 adds step 3a. If product.yml lists the leftover manifest, the migration records skipped with the reason listed in product.yml / reason: product-version.mjs would exit 2 (R-013)
+Deviation (P1, altering): req-006 adds step 3a. If product.yml lists the leftover manifest, the migration records skipped with the reason listed in product.yml / reason: product-version.mjs would exit 2 (R-013)
 Decision (P1): this repo's not applicable record for the 0.39.0 migration lands at P3 / reason: the installed migrator is 0.38.0, and P4 runs the records suite
 Decision (P1): the P3 close-out bumps src/ravintio-framework/component.yml to 0.39.0 and src/setup-hook-integration/component.yml by one minor version, by Edit / reason: the installed 0.38.0 codegen close-out names only the root manifest, which no agent writes
 Decision (P1): backlog 0000382, the gate root under src/, stays out of scope / reason: a probe showed both gates fail closed, and Claude Code sets CLAUDE_PROJECT_DIR. R-006 is accepted.
@@ -141,7 +141,7 @@ Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-c
 Critic verdict (P1, iteration 1): REJECT. 0 major and 4 minor findings, on traceability and internal consistency. See critic-verdict-1.md.
 Decision (P1): req-007 and req-008 quote US-001 word for word and add a line on how each serves it / reason: critic finding 1, their story text matched no story
 Decision (P1): req-005 priority rises to must-have / reason: critic finding 2, must-have req-002 and req-008 import project-kind.mjs
-Deviation (P1, unclassified): the feature brief gains two acceptance criteria, one for req-004 and one for req-006, and req-004 and req-006 state how each serves US-002 / reason: critic finding 3, no brief criterion named either. design.md updated to 7 criteria.
+Deviation (P1, additive): the feature brief gains two acceptance criteria, one for req-004 and one for req-006, and req-004 and req-006 state how each serves US-002 / reason: critic finding 3, no brief criterion named either. design.md updated to 7 criteria.
 Decision (P1): R-005 states 1,184 tracked files / reason: critic finding 4, git ls-files count
 Critic verdict (P1, iteration 2): REJECT. 0 major and 2 minor findings. All 4 iteration 1 findings resolved. See critic-verdict-2.md.
 Decision (P1): the req-005 project-kind.mjs cases find the pack from the suite's own folder until the resolver exists, then move onto it / reason: critic finding 1, the resolver imports project-kind.mjs, so the script comes first
@@ -199,10 +199,10 @@ Critic verdict (P2, iteration 1): REJECT. 4 major and 6 minor findings, all rubr
 Decision (P2): an interrupted git pass runs only the missing checkout, and any other partial state stops and reports under the boot Escalation rule. This supersedes the earlier ADR-002 reset line / reason: critic finding 4, a reset discards work outside the P0-approved exception
 Decision (P2): req-002 Step 7 gates its git add on the project-kind.mjs result, and req-004 AC3 counts a src/ path ending in ravintio-framework/component.yml as a match / reason: critic finding 3, ADR-007 gives the signal one owner
 Decision (P2): fixed the other eight findings by addition: the ADR-003 risk, the release.yml owner and a .gitignore row in the execution plan, a req-002 AC2 sub-bullet, four req-004 close-out rules, a design deletion note, malformed release.yml lines in req-003 and req-006, the ADR-001 risk, the req-008 timing, and two ADR-004 negatives / reason: each is a wording gap, and none changes a decision
-Deviation (P2, unclassified): design.md Consumer migration line gains a note that the human on the loop runs the delete and the migrator checks it / reason: critic finding 6, req-006, ADR-005, and ADR-008 already state it
+Deviation (P2, altering, destructive): design.md Consumer migration line gains a note that the human on the loop runs the delete and the migrator checks it / reason: critic finding 6, req-006, ADR-005, and ADR-008 already state it
 Critic verdict (P2, iteration 2): REJECT. 1 major and 4 minor findings. All 10 iteration 1 findings resolved. See critic-verdict-p2-2.md.
-Deviation (P2, unclassified): design.md ## Component Paths gains ./product.yml and ./refresh-ravintio-framework-dir.ps1 / reason: critic finding 1, evaluateWrite returned allowed: false for both, so P3 build order step 1 would block. The bare refresh entry matched nothing.
-Deviation (P2, unclassified): the accepted Scope Lock cross-session path said an interrupted move resets to the last commit and repeats. ADR-002 and req-001 now recover by state and never reset / reason: critic finding 3, a reset falls outside the P0-approved Hard Limit 8 exception and discards work
+Deviation (P2, additive): design.md ## Component Paths gains ./product.yml and ./refresh-ravintio-framework-dir.ps1 / reason: critic finding 1, evaluateWrite returned allowed: false for both, so P3 build order step 1 would block. The bare refresh entry matched nothing.
+Deviation (P2, altering): the accepted Scope Lock cross-session path said an interrupted move resets to the last commit and repeats. ADR-002 and req-001 now recover by state and never reset / reason: critic finding 3, a reset falls outside the P0-approved Hard Limit 8 exception and discards work
 Decision (P2): feature-brief.md Scenario Paths records the four accepted Scope Lock paths, with the cross-session change marked / reason: critic finding 3, the section still read Empty
 Decision (P2): req-002 Step 5c logs the printed project kind and warns when src/ravintio-framework/ exists, and ADR-003 records the skip as a negative / reason: critic finding 2, a malformed product.yml reads as downstream at exit 0
 Decision (P2): req-002 AC3 and req-003 AC3 gain sub-bullets for the Step 7 gate and the malformed release.yml stop, and ADR-008 step 1 names the malformed case / reason: critic findings 4 and 5
@@ -324,8 +324,8 @@ Security fixes (P5): release-check RC-F02 and RC-F08 GREEN at 132 passed (20387d
 Security re-review (P5, fresh context): RS-F01, RS-F08, the 0o700 folder, RC-F02, and RC-F08 fixed. RS-F06 and RS-F07 partly fixed. Three new Low findings: NF-01, a GIT_CONFIG_GLOBAL filter still runs in the build's git status. NF-02, a tracked folder named release.yml exits 1. NF-03, the 0o700 build folder leaves the root copy at 0700. See security-rereview.md. Backlog filed: 0000418.
 Decision (P5): fix NF-02 and NF-03, and accept NF-01 as Low residual risk under R-002 / reason: NF-03 is a side effect of a P5 fix, and NF-02 is a one-line refusal. NF-01 needs a local actor who already controls the user's global git config.
 Rule breach (P5): the P5 release-script test-writer subagent changed test-0000041-req-002-release-script.sh once through a Python one-liner, which breaks the Write-or-Edit rule (boot Hard Limit 8). The orchestrator reviewed the diff before commit. It adds 105 lines and removes none. The final report lists it.
-Deviation (P5, unclassified): req-002 gains the RS-F01, RS-F06, RS-F07, and RS-F08 rules and 0o700 work folders, and req-003 gains the RC-F02 and RC-F08 rules / reason: P5 security fixes
-Deviation (P5, unclassified): req-002 gains the NF-02 folder refusal and the NF-03 0o755 root copy mode / reason: P5 re-review findings
+Deviation (P5, additive): req-002 gains the RS-F01, RS-F06, RS-F07, and RS-F08 rules and 0o700 work folders, and req-003 gains the RC-F02 and RC-F08 rules / reason: P5 security fixes
+Deviation (P5, additive): req-002 gains the NF-02 folder refusal and the NF-03 0o755 root copy mode / reason: P5 re-review findings
 Security re-review 2 (P5, fresh context): NF-02 and NF-03 fixed. RS-F01, RS-F06 for fsmonitor, RS-F07, and RC-F02 still hold. No new finding from 8ce4d7c8. NF-01 stays open at Low, accepted.
 Full suite (P5): 138 feature suites passed, 1 failed. The portability lint flagged two GNU `stat -c` calls in the new req-002 P5 cases. A Node mode reader replaced them, and the req-002 suite (126 passed) and the lint (30 passed) now pass.
 Gate summary (P5): security-report.md rates overall risk High. P5 fixed RS-F01, RS-F07, RS-F08, NF-02, NF-03, RC-F02, and RC-F08, and partly fixed RS-F06, with each fix re-reviewed in a fresh context. Accepted residual risks: R-015 for RC-F01 and RC-F03 to RC-F07, and R-002 for RS-F02 to RS-F05 and NF-01. Backlog filed: 0000415 to 0000418. Two Write-or-Edit breaches by subagents are logged, one in P3 and one in P5.
@@ -350,3 +350,15 @@ Gate passed: P5
 P6 Gate A: docs/ exists with all four mandatory living docs. No component exposes an API, so docs/api-index.md stays absent.
 P6 Gate B: docs update assessment (continuous run, auto-accepted). The pack source moved to src/ravintio-framework/, and the run added release tooling, a migration header, and a 0.39.0 migration. Auto-accepted: updating docs/component-registry.md, docs/dependency-graph.md, docs/architecture-overview.md, docs/decisions-index.md, the per-component docs of ravintio-framework and setup-hook-integration, recommendations.md, and the changelog.
 Decision (P6): three doc writers run in one batch, one on the living docs, one on the per-component docs, one on recommendations, the changelog, and their backlog entries / reason: the three sets share no file
+Docs (P6): living docs updated (a0ca4af4). Pack component docs created under src/ravintio-framework/docs/, with a README docs/ row so self-description-check passes (1985ef1d). Recommendations, the changelog, and backlog 0000419 to 0000422 written (cba8253f).
+Drift (P6): docs/decisions-index.md links the 0000041 ADRs at plan/current/adr/, which moves at P7. P7 repoints it to the archive folder.
+Drift (P6): src/ravintio-framework/docs/ ships in the release copy, which backlog 0000384 already tracks.
+Deviation review (P6): 19 lines reviewed in a fresh context. 9 additive, 10 altering, 5 of them destructive, 0 schema. See deviation-review.md.
+Exception waiting (P6, 3): approve the P0 `git rm` of the six picked-up backlog folders, a shell delete outside the one P0-approved git pass (review row 1)
+Exception waiting (P6, 1): approve the release script's three-folder write and delete boundary in place of the confirmed root copy only (review row 3)
+Exception waiting (P6, 2): approve the migrator table that maps the released retroactive-release-tags.md to framework source (review row 4)
+Exception waiting (P6, 1): approve that the human on the loop runs `rm -- ravintio-framework/component.yml` and the migrator checks it, in place of the migrator's confirmed edit (review rows 5 and 10)
+Exception waiting (P6, 2): approve req-006 step 3a, which skips the removal when product.yml lists the leftover manifest (review row 6)
+Exception waiting (P6, 2): approve the Scope Lock cross-session change, where an interrupted move recovers by state and never resets (review rows 9 and 12)
+Exception waiting (P6, 1): accept the release script race RS-F02 to RS-F04 under R-002, where a same-user concurrent writer can reach outside the boundary (review row 14)
+Exception waiting (P6, 2): accept R-015, with RC-F01 and RC-F03 to RC-F07 open against US-002's promise to detect each pack update (review row 16)
