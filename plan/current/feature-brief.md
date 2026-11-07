@@ -94,4 +94,4 @@ Empty. The Scope Lock Challenge drafts the four paths at P0.
 - [ ] The root `ravintio-framework/` holds a release with `release.yml` and no `component.yml`, and CI checks it against `release.yml`.
 - [ ] Step 1a, the migrator, and the update policy read `release.yml`, and step 1a flags any changed pack file.
 - [ ] A migration declares `**Applies to:**`, and the migrator records `not applicable` when the project kind differs.
-- [ ] The version equality suite passes from P3 to P7.
+- [ ] The version equality suite skips its equality checks with a reason from P3 to P7, and runs them in full on a released tree.
