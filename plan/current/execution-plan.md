@@ -108,11 +108,11 @@ The root `ravintio-framework/` copy has no P3 owner. Only the git pass writes it
 P3 runs the requirements in this order. Each step names what it waits for.
 
 1. req-001 git pass and its AC1 checks. Every other step waits for it.
-2. req-005 `project-kind.mjs`. The resolver and the release script import it.
+2. req-005 `project-kind.mjs`, under TDD with its AC1 cases. The resolver and the release script import it. Its suite finds the pack from its own folder until the resolver exists, as req-008 states.
 3. req-008 resolver and suite path edits. Every new suite sources the resolver.
 4. req-001 follow-up path fixes and its suite.
 5. req-002, then req-003. The CI integrity job in req-008 runs `release-check.mjs`, so req-008's CI criterion closes after req-003.
-6. req-004, req-005 migrator rule, then req-006.
+6. req-004, req-005 migrator rule, then req-006. The req-005 suite moves onto the resolver here.
 7. req-007.
 8. The P3 close-out bumps the component versions.
 

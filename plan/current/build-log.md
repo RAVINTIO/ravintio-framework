@@ -143,3 +143,6 @@ Decision (P1): req-007 and req-008 quote US-001 word for word and add a line on 
 Decision (P1): req-005 priority rises to must-have / reason: critic finding 2, must-have req-002 and req-008 import project-kind.mjs
 Deviation (P1, unclassified): the feature brief gains two acceptance criteria, one for req-004 and one for req-006, and req-004 and req-006 state how each serves US-002 / reason: critic finding 3, no brief criterion named either. design.md updated to 7 criteria.
 Decision (P1): R-005 states 1,184 tracked files / reason: critic finding 4, git ls-files count
+Critic verdict (P1, iteration 2): REJECT. 0 major and 2 minor findings. All 4 iteration 1 findings resolved. See critic-verdict-2.md.
+Decision (P1): the req-005 project-kind.mjs cases find the pack from the suite's own folder until the resolver exists, then move onto it / reason: critic finding 1, the resolver imports project-kind.mjs, so the script comes first
+Decision (P1): the Skill link in req-002 to req-006 reads ../../../ravintio-framework/skills/ / reason: critic finding 2, the old link resolved to no file

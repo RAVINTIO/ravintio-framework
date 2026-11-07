@@ -6,7 +6,7 @@ version: "0.1.0"
 ---
 # Requirement: req-002 - release-script
 
-**Skill:** [spec-agent](../skills/ravintio-spec-agent/SKILL.md)
+**Skill:** [spec-agent](../../../ravintio-framework/skills/ravintio-spec-agent/SKILL.md)
 **Feature:** 0000041-pack-source-under-src
 **Source:** US-002
 **Priority:** must-have

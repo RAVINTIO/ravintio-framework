@@ -6,7 +6,7 @@ version: "0.1.0"
 ---
 # Requirement: req-005 - applies-to-header
 
-**Skill:** [spec-agent](../skills/ravintio-spec-agent/SKILL.md)
+**Skill:** [spec-agent](../../../ravintio-framework/skills/ravintio-spec-agent/SKILL.md)
 **Feature:** 0000041-pack-source-under-src
 **Source:** US-003, backlog 0000378 and 0000136
 **Priority:** must-have. US-003 is should-have, but must-have req-002 and req-008 import `project-kind.mjs` from this requirement.
@@ -52,7 +52,7 @@ All paths below use the post-move layout. A consumer runs the same files at `rav
 
 ### Tests
 
-- New suite: `src/ravintio-framework/tests/test-0000041-req-005-applies-to-header.sh`.
+- New suite: `src/ravintio-framework/tests/test-0000041-req-005-applies-to-header.sh`. Its `project-kind.mjs` cases come first in P3, before the req-008 resolver exists, so they find the pack from the suite's own folder. The suite moves onto the resolver when req-005's migrator rule lands (execution plan, build order).
 - These suites read the migrator text and must stay green. Recheck them in P3:
   - `test-0000039-req-009-migration-ordering-and-old-paths.sh` (the `Applies when` checks)
   - `test-0000035-req-007-migration-run-state.sh`

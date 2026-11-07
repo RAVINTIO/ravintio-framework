@@ -124,4 +124,4 @@ This requirement serves US-001 through the suites and CI. They test the change u
 - req-003 (release-yml-readers) provides `release-check.mjs --files-only`, which the CI job runs.
 - req-005 (applies-to-header) provides `scripts/project-kind.mjs`, which the resolver runs for the source-repo signal.
 - req-007 (released-tree-version-suite) owns the version suite and sources this resolver.
-- Every new 0000041 suite sources this resolver and must pass the static scan.
+- Every new 0000041 suite sources this resolver and must pass the static scan. The one exception is the `project-kind.mjs` case set in `test-0000041-req-005-applies-to-header.sh`, which P3 writes before the resolver exists. It finds the pack from its own folder, `$(dirname "$0")/..`, so it reads `src/ravintio-framework/` in the source repo. P3 moves the rest of that suite onto the resolver once req-008 lands.
