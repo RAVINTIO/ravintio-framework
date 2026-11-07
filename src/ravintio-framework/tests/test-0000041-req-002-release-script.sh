@@ -447,6 +447,28 @@ else
   chmod 644 "$R/$PACK_IN_SRC/$SAME_P"
 fi
 
+# NF-02: a tracked folder at the pack root named release.yml, in any letter case, exits 2 before any change.
+for P5_NAME in "release.yml" "Release.YML"; do
+  R="$(fresh "p5nf02-$P5_NAME")"
+  mkdir -p "$R/$PACK_IN_SRC/$P5_NAME"
+  printf 'inside a folder\n' > "$R/$PACK_IN_SRC/$P5_NAME/x.md"
+  sg "$R" add -A >/dev/null 2>&1
+  sg "$R" commit -q -m "tracked release.yml folder" >/dev/null 2>&1
+  P5_OLD_SIG="$(snap "$R/$COPY_DIR")"
+  refuses "req-002 P5 NF-02: a tracked folder $PACK_IN_SRC/$P5_NAME/" "$R"
+  assert_equals "$P5_OLD_SIG" "$(snap "$R/$COPY_DIR")" "req-002 P5 NF-02: the old root copy stays byte-identical after the $P5_NAME folder refusal"
+done
+
+# NF-03: after a successful build the root copy is mode 0755. The build folder stays 0700 during the build (F-02 below).
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): NTFS has no POSIX mode, so the P5 NF-03 root copy mode cannot be read"
+else
+  R="$(fresh p5nf03)"
+  run_build "$R"
+  assert_equals "0" "$CODE" "req-002 P5 NF-03: the build for the root copy mode check exits 0"
+  assert_equals "755" "$(stat -c %a "$R/$COPY_DIR" 2>/dev/null || stat -f %Lp "$R/$COPY_DIR" 2>/dev/null)" "req-002 P5 NF-03: the root copy folder has mode 0755 after a build"
+fi
+
 # Work folder mode: poll while a build runs and read the build folder mode.
 if [ "$IS_WIN" = "yes" ]; then
   echo "  SKIP (windows): NTFS has no POSIX mode, so the P5 work folder mode cannot be read"
