@@ -164,3 +164,23 @@ Gate summary (P1): eight requirements written (US-001: req-001, req-007, req-008
 Skill Map (P1): unchanged. Its eight rows match the eight requirement files.
 Progress: P1 done at 2026-11-07T15:53:09Z: eight requirements and the P1 set written, design critic approved after six passes
 Gate passed: P1
+
+Resume detection (session 3cb17e30): no pending migrations. Step 1a found no framework update, since 0.38.0 matches the last run. Skill drift check exit 0, 20 skills match. Run mode autonomous from run-mode.mjs. Resumed at P2.
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T15:57:08Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-adr-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+Decision (P2): nine ADRs. ADR-001 stack unchanged, ADR-002 pack source under src/, ADR-003 release script, ADR-004 release.yml contract and readers, ADR-005 data ownership of the pack copies, ADR-006 manifest location from product.yml, ADR-007 Applies to header and source-repo signal, ADR-008 consumer migration, ADR-009 tests and CI from src/ / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
+Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-009 by eight parallel subagents / reason: ADR-001 needs no reads, under the size floor
