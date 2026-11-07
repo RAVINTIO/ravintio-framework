@@ -337,14 +337,14 @@ Gate passed: P5
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T18:59:27Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T19:59:45Z` |
+| Wall-clock | 60m |
 | Streams | n/a |
-| Model tier | cheaper for doc writers, a second model for the cross-model review |
+| Model tier | cheaper for doc writers, primary for the assessor, claude-fable-5-1 for the cross-model review |
 | Skills loaded | ravintio-docs-agent |
-| Agents spawned | pending |
+| Agents spawned | 7: 3 doc writers, 1 reversal assessor, 2 cross-model reviewers, 1 fixer |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 2 |
 | Notes | Autonomous run. |
 
 P6 Gate A: docs/ exists with all four mandatory living docs. No component exposes an API, so docs/api-index.md stays absent.
@@ -365,3 +365,10 @@ Exception waiting (P6, 2): approve req-006 step 3a, which skips the removal when
 Exception waiting (P6, 2): approve the Scope Lock cross-session change, where an interrupted move recovers by state and never resets (review rows 9 and 12)
 Exception waiting (P6, 1): accept the release script race RS-F02 to RS-F04 under R-002, where a same-user concurrent writer can reach outside the boundary (review row 14)
 Exception waiting (P6, 2): accept R-015, with RC-F01 and RC-F03 to RC-F07 open against US-002's promise to detect each pack update (review row 16)
+Revalidation (P6): P4 steps 0-5, pass after cycle 1. The fixer's full run at 047a8020 passed 139 feature and 37 regression suites, 0 failed, 176 run, and self-description-check exited 0.
+Cross-model review (P6, iteration 2): APPROVE on claude-fable-5-1. All seven rubric rows pass. Iteration 1 findings 1, 2, 3, 6, and 7 fixed, and 4 and 5 accepted with recorded reasons. Three new minor findings. See cross-model-review-2.md.
+Decision (P6): fixed N2, the changelog's build-from-HEAD wording, and N3, two more spec-agent template links, by addition before the gate, and filed N1 as backlog 0000424 / reason: N2 and N3 are wording and link fixes, and N1's dashes predate this feature
+Backlog filed (P6): 0000419 to 0000424
+Gate summary (P6): living docs, pack component docs, recommendations, and the changelog written. Revalidation passes, and the cross-model review approved at iteration 2. The deviation review classed 10 of 19 lines altering, and they wait as exception items for the human on the loop. P7 repoints the decisions-index ADR link to the archive.
+Progress: P6 done at 2026-11-07T19:59:45Z: docs written, cross-model review approved, 10 exception items waiting, P7 next
+Gate passed: P6

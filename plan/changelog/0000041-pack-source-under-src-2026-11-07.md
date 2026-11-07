@@ -23,7 +23,7 @@ version: "0.1.0"
 Version 0.39.0 moves the pack source to `src/ravintio-framework/` and ships the root `ravintio-framework/` as a release copy. The feature folds in backlog 0000361, 0000061, 0000378, 0000136, 0000368, and 0000181, with eight requirements under three user stories.
 
 - **Pack move (req-001):** one recorded git pass moved 1,184 files (commit `a5055f44`). `product.yml` now points at `src/ravintio-framework/component.yml`.
-- **Release script (req-002):** `build-release.mjs` builds the root copy from `HEAD`, swaps it in whole, and writes `release.yml` with a SHA-256 per file.
+- **Release script (req-002):** `build-release.mjs` builds the root copy from a clean `src/ravintio-framework/` tree, records `HEAD` as `source-commit`, swaps it in whole, and writes `release.yml` with a SHA-256 per file.
 - **Release readers (req-003):** step 1a and `release-check.mjs` read `release.yml` first and fall back to `component.yml` only for a pack before 0.39.0.
 - **Manifest rule (req-004):** `component-guide.md` owns the manifest location rule, which codegen and ship apply.
 - **Applies to header (req-005):** `project-kind.mjs` tells the migrator whether a repo is the framework source or a downstream project.
