@@ -410,4 +410,6 @@ Tag (P9): v0.38.0 created locally on ad64930b. product-version.mjs printed 0.38.
 Decision (P9): take Option [1] / reason: `custom-005-p9-push-and-raise-pr.md` says to push and raise the PR, and `custom-001-local-git-only.md` grants push despite its file name. Its text holds none of the local-git-only phrases.
 Credential scan (P9): PR text clean (regex only)
 PR: #76 https://github.com/RAVINTIO/ravintio-framework/pull/76
+CI checks (P9): all passed (13 of 13 at 2595f850, run 42343656450)
+R-013 (P9): the Setup under Windows PowerShell 5.1 job took 2m27s against its 10-minute cap. Backlog 0000380 can close.
 Clean-tree check (P9): committed the changelog PR link. `plan/backlog/.next-id` and the 0000362 entry stay unstaged, as at P8.
