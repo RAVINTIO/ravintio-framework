@@ -3,7 +3,7 @@
 > Living document. Reflects current system state. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
+Last updated: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
 
 ---
 
@@ -513,6 +513,36 @@ In a hooked consumer with no design, `gate-write` blocks the CI edit. The migrat
 
 ---
 
+## Pack source under src (0000041)
+
+Release 0.39.0 moves the pack source to `src/ravintio-framework/` (0000041 ADR-002). The declared stack stays unchanged (0000041 ADR-001). In this repo, `src/ravintio-framework/` holds the source and its `component.yml`. The root `ravintio-framework/` is a copy of the last release. This repo runs on that copy, so a broken change under `src/` can't break the run that builds it. Consumers still copy `ravintio-framework/`, which stays their runtime path.
+
+### Release copy and release script
+
+`scripts/build-release.mjs` rebuilds the root copy from `src/ravintio-framework/` without `component.yml` (0000041 ADR-003). It builds in `.ravintio-framework-build/` and swaps the folders. The old copy waits in `.ravintio-framework-previous/` until the swap succeeds, and an interrupted build leaves the old copy whole. It writes only inside those three folders and refuses a path that resolves outside them. It runs only in the source repo, which `project-kind.mjs` decides. Boot Hard Limit 8 sanctions the script, and ship Step 5c runs it at P7. `release-check.mjs` compares the root copy with its `release.yml` and refuses a `release.yml` folder.
+
+### release.yml and update detection
+
+The released pack carries `ravintio-framework/release.yml` with a `version`, a `source-commit`, a `built` date, and a SHA-256 for each file (0000041 ADR-004). Orchestrator step 1a, `standards/framework-update-policy.md`, and the migrator read it first and fall back to `component.yml` for a pack before 0.39.0. Step 1a now has two signals. A new `source-commit` or `version` is a release update. A pack file that differs from its hash is a changed file, even when the version is unchanged, and step 1a names it. This closes backlog 0000181. While a leftover `component.yml` sits beside `release.yml`, step 1a warns at every session start.
+
+### Manifest location
+
+A component manifest lives at the path `product.yml` lists, with `src/{component-id}/component.yml` as the default (0000041 ADR-006). `templates/component-guide.md` owns the rule, and the spec and docs agents link to it. The codegen close-out bumps the manifest of each component the run changed. It never names `ravintio-framework/component.yml`, so a consumer's copy is not bumped as source.
+
+### Applies to header and project kind
+
+A repo is the framework source when `product.yml` lists `ravintio-framework` at `src/ravintio-framework/component.yml` and that file exists (0000041 ADR-007). `project-kind.mjs` prints `framework source` or `downstream`. A migration may carry `**Applies to:**` with `framework source`, `downstream`, or `all`, and an absent line reads as `all`. The migrator records `not applicable` with the reason when the kinds differ. A table in the migrator skill maps the released `retroactive-release-tags.md` to `framework source`. This narrows 0000035 ADR-019 for migrations that carry the header or a table row.
+
+### Consumer migration
+
+`migrate-0.39.0-remove-pack-component-yml.md` applies to `downstream` repos only (0000041 ADR-008). If `ravintio-framework/component.yml` remains beside `release.yml`, it offers to remove the file. The human on the loop confirms and runs the delete, and the migrator checks the result. A decline, a `product.yml` entry for the file, or a linked folder records `skipped` and names the file.
+
+### Tests and CI from src
+
+In the source repo, suites read the pack through `tests/helpers/pack-root.sh`, which gives `src/ravintio-framework/` and fails a suite that reads the root copy (0000041 ADR-009). CI runs `src/ravintio-framework/tests/run-tests.sh`. A new `release-copy-integrity` job runs `release-check.mjs --files-only` against the root copy. It reports a skip while the root copy has no `release.yml`. The job is repo-only and is not part of the consumer `hooks/ravintio.yml`. The 0000039 req-010 version equality checks run only on a released tree, where `plan/current/design.md` is absent. `em-dash-guard.mjs` now also covers prose under `src/ravintio-framework/`.
+
+---
+
 ## Data Ownership
 
 No components own persistent data. RAVINTIO operates on local filesystem artifacts (plan/ files, skill SKILL.md files) written and read during pipeline execution. No databases. New in 0000016 (all plain markdown/YAML, git-tracked): `plan/backlog/` entries (orchestrator-owned, filed by any phase agent), `product.yml` (ship-agent writes, orchestrator reads), and `plan/current/` loop-state/run-log/defect-report/revision-log artifacts (orchestrator-owned). New in 0000020 (local, gitignored, not version-tracked): `<tool-dir>/.ravintio-setup-flags`, owned by `setup-hook-integration`, written on every successful install and read/updated by `ravintio-refresh-setup`. New in 0000025 (git-tracked, additive to the 0000020 marker, not a replacement): `ravintio-overrides/setup-config/{tool}.md`, one file per AI tool, written by `setup.sh`/`setup.ps1` alongside the existing gitignored marker so the flags in effect at install time are versioned and reviewable, not only locally cached.
@@ -527,6 +557,8 @@ New in 0000035 (plain Markdown and text):
 Clarified in 0000032: `ravintio-framework` owns the three committed session markers, `plan/.orchestrator-active`, `plan/.orchestrator-ack`, and `plan/.run-mode`. The orchestrator writes them at P0, and the ship skill deletes them in the P9 marker step. Hooks read them only.
 
 Clarified in 0000040: a consumer repo owns its `.github/workflows/ravintio.yml` and its `plan/` markers. A migration edits the CI file only when its `**May edit:**` line names it and the human on the loop confirms the edit (0000040 ADR-006).
+
+Clarified in 0000041 (0000041 ADR-005): `ravintio-framework` owns every file under `src/ravintio-framework/`. The release script owns the root `ravintio-framework/` copy and the two work folders `.ravintio-framework-build/` and `.ravintio-framework-previous/`, and no agent writes the root copy with **Write** or **Edit**. A consumer owns its copy of `ravintio-framework/component.yml`, and the 0.39.0 migration removes it only on confirmation. `setup-hook-integration` owns no pack file.
 
 ---
 
