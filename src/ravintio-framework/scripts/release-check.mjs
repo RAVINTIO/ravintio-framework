@@ -204,13 +204,15 @@ function fileLines(top, files) {
 // tracks no source file that release.yml lacks, except component.yml.
 function ownBuild(root, files) {
   if (projectKind(root).kind !== "framework source") return false;
+  // 0000041 P5 F-08: no inherited repo or config override, and no fsmonitor.
   const env = { ...process.env };
-  delete env.GIT_DIR;
-  delete env.GIT_WORK_TREE;
-  delete env.GIT_INDEX_FILE;
+  for (const key of Object.keys(env)) {
+    if (["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_CONFIG_COUNT", "GIT_CONFIG_PARAMETERS"].includes(key)
+      || key.startsWith("GIT_CONFIG_KEY_") || key.startsWith("GIT_CONFIG_VALUE_")) delete env[key];
+  }
   let tracked;
   try {
-    tracked = execFileSync("git", ["-C", root, "ls-files", "-z", "--", SRC_REL], {
+    tracked = execFileSync("git", ["-c", "core.fsmonitor=false", "-C", root, "ls-files", "-z", "--", SRC_REL], {
       env, stdio: ["ignore", "pipe", "ignore"], maxBuffer: 64 * 1024 * 1024,
     }).toString("utf-8").split("\0").filter(Boolean);
   } catch {
@@ -294,11 +296,19 @@ function main() {
   else if (about) print(`recorded: none, fallback docs/about.md version "${clean(about)}"`);
   else print("recorded: none");
 
+  // A recorded value proves a release.yml was trusted once (0000041 P5 F-02).
+  // The component.yml fallback then never applies, and a missing release.yml
+  // is a release update.
+  if (recorded && !release) {
+    print(`missing: ${COPY}/release.yml`);
+    print("update: release");
+    return { out, code: 1 };
+  }
+
   // A full comparison needs a recorded value and a release.yml. Every other
   // case compares the version only.
   let isRelease;
-  if (recorded && release) isRelease = recorded.version !== version || recorded.commit !== release.commit;
-  else if (recorded) isRelease = recorded.version !== version;
+  if (recorded) isRelease = recorded.version !== version || recorded.commit !== release.commit;
   else if (about) isRelease = about !== version;
   else isRelease = true;
 

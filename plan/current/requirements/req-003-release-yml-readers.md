@@ -62,6 +62,7 @@ The script prints one line for each finding, and step 1a acts on them.
 - With no `ravintio-framework/release.yml`, the script reads `version` from `ravintio-framework/component.yml`. It prints `release: none, fallback component.yml version "{v}"`.
 - It compares that version with the recorded version, as on a first upgrade. It prints `files: not checked, no release.yml` and no `record:` line.
 - With neither file, or an unreadable `component.yml`, it exits 2.
+- The fallback applies only when no trusted release record exists. If `plan/framework-release.yml` exists and `release.yml` is missing, the script prints `missing: ravintio-framework/release.yml` and `update: release`, and exits 1 (P5 security fix).
 
 ### Leftover manifest
 
@@ -74,6 +75,7 @@ The script prints one line for each finding, and step 1a acts on them.
 - When `projectKind(root)` (req-005) returns `framework source`, the script also checks for an own build. An own build needs both of these:
   - No `changed:`, `missing:`, or `unlisted:` line.
   - Each `release.yml` entry matches the hash of the same path under `src/ravintio-framework/`. `git ls-files -- src/ravintio-framework` lists no file that `release.yml` lacks, except `component.yml`.
+- Each `git` call runs with `-c core.fsmonitor=false`. Its child environment drops `GIT_DIR`, `GIT_WORK_TREE`, `GIT_INDEX_FILE`, `GIT_CONFIG_COUNT`, `GIT_CONFIG_PARAMETERS`, and every `GIT_CONFIG_KEY_*` and `GIT_CONFIG_VALUE_*` variable (P5 security fix).
 - An own build prints `update: own-build` in place of `update: release`. The proof is content, not commit ancestry, so it holds after a squash merge rewrites `source-commit`.
 - Mid-run, `src/` moves ahead of the root copy. The recorded value already matches the root copy by then, so the script prints `update: none`.
 - When the source repo's root copy isn't an own build, the normal rules apply, and step 1a asks for confirmation.

@@ -243,10 +243,13 @@ run_check "$C"
 assert_equals "0" "$(count_prefix 'warn:')" "req-003 AC1: no component.yml prints no warn: line"
 
 # --- A pack with no release.yml reads the component.yml version -------------
+# 0000041 P5 F-02: the fallback applies only with no plan/framework-release.yml.
+# A pre-0.39.0 pack has no record, so these cases compare with docs/about.md.
 C="$(consumer c-fallback)"
 rm -f "$C/$COPY_DIR/release.yml"
 printf 'id: "ravintio-framework"\nversion: "0.38.0"\n' > "$C/$COPY_DIR/component.yml"
-write_record "$C" "0.38.0" "$OTHER_SHA"
+mkdir -p "$C/docs"
+printf -- '---\nversion: "0.38.0"\nfeature: "x"\n---\n# About\n' > "$C/docs/about.md"
 run_check "$C"
 assert_equals "0" "$CODE" "req-003 AC1: a pack with no release.yml and an equal recorded version exits 0"
 assert_equals "yes" "$(has_line 'release: none, fallback component.yml version "0.38.0"')" "req-003 AC1: no release.yml prints the component.yml fallback release: line"
@@ -254,7 +257,7 @@ assert_equals "yes" "$(has_line 'files: not checked, no release.yml')" "req-003 
 assert_equals "0" "$(count_prefix 'record:')" "req-003 AC1: no release.yml prints no record: line"
 assert_equals "0" "$(count_prefix 'warn:')" "req-003 AC1: a component.yml with no release.yml prints no warn: line"
 
-write_record "$C" "0.0.1" "$OTHER_SHA"
+printf -- '---\nversion: "0.0.1"\nfeature: "x"\n---\n# About\n' > "$C/docs/about.md"
 run_check "$C"
 assert_equals "1" "$CODE" "req-003 AC1: the component.yml fallback with a different recorded version exits 1"
 assert_equals "yes" "$(has_line 'update: release')" "req-003 AC1: the component.yml fallback with a different recorded version prints update: release"

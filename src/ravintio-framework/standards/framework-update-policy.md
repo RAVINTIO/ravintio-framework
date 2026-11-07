@@ -35,7 +35,7 @@ The read-only script `ravintio-framework/scripts/release-check.mjs` runs the che
 
 **Hash rule.** Each hash is the SHA-256 of the file content after each CRLF pair reads as LF, in lowercase hex. A checkout with `core.autocrlf` then never reads as a changed file.
 
-**Fallback for a pack before 0.39.0.** A pack before 0.39.0 has no `release.yml`. The script then reads the `version` in `ravintio-framework/component.yml`. It compares that version with the recorded version, as on a first upgrade. It checks no file and prints no record. When `release.yml` exists but breaks its format, the check exits 2 and never falls back to `component.yml`. If the pack has no `release-check.mjs`, compare the `component.yml` version with `docs/about.md` by hand.
+**Fallback for a pack before 0.39.0.** A pack before 0.39.0 has no `release.yml`. The fallback applies only when no trusted release record exists. A `plan/framework-release.yml` proves that a `release.yml` was trusted once. If that record exists and `release.yml` is missing, the script prints a `missing:` line for `ravintio-framework/release.yml` and `update: release`, and exits 1. With no record, the script reads the `version` in `ravintio-framework/component.yml`. It compares that version with the recorded version, as on a first upgrade. It checks no file and prints no record. When `release.yml` exists but breaks its format, the check exits 2 and never falls back to `component.yml`. If the pack has no `release-check.mjs`, compare the `component.yml` version with `docs/about.md` by hand.
 
 **Leftover manifest.** When `ravintio-framework/component.yml` sits beside `release.yml`, the script prints a `warn:` line. Step 1a reports the warning at every session start while the file remains.
 
