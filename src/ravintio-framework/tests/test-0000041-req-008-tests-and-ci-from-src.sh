@@ -243,8 +243,117 @@ assert_contains "node $PACK_P/scripts/release-check.mjs --root . --files-only" "
 
 # ============================================================================
 # AC3 (integration): the release-copy-integrity step in scratch repos
-# Build order step 5 adds these cases here. They build each root copy with
-# build-release.mjs and run the step's run: block from ravintio.yml.
+# The cases build each root copy with build-release.mjs and run the step's
+# run: block from ravintio.yml with Bash, as the runner does (bash -e).
 # ============================================================================
+
+SKIP_NOTICE='::notice title=Release copy integrity::Skipped. The root copy has no release.yml, so it is a release from before 0.39.0.'
+
+# The step's run: block, de-indented. JOB_BLOCK comes from the AC2 section.
+STEP_RUN="$(awk '
+  /^ +run: \|[[:space:]]*$/ { f = 1; match($0, /^ */); ind = RLENGTH; next }
+  f {
+    match($0, /^ */)
+    if ($0 != "" && RLENGTH <= ind) exit
+    print substr($0, ind + 3)
+  }
+' <<< "$JOB_BLOCK")"
+
+if [ -n "$STEP_RUN" ]; then
+  assert_equals "yes" "yes" "req-008 AC3: the release-copy-integrity job holds a run: block"
+else
+  assert_equals "yes" "no" "req-008 AC3: the release-copy-integrity job holds a run: block"
+fi
+
+# sg3 <repo> <git args...>: git in a scratch repo with a fixed identity.
+sg3() {
+  local d="$1"; shift
+  git -C "$d" -c user.name=tester -c user.email=tester@example.invalid \
+    -c commit.gpgsign=false -c core.autocrlf=false "$@"
+}
+
+# assert_nonzero <code> <label>: pass when the code is not 0.
+assert_nonzero() {
+  if [ "$1" != "0" ]; then assert_equals "yes" "yes" "$2"; else assert_equals "non-zero" "$1" "$2"; fi
+}
+
+# assert_lacks <needle> <haystack> <label>: pass when the haystack omits the needle.
+assert_lacks() {
+  if [[ "$2" == *"$1"* ]]; then assert_equals "no $1" "$2" "$3"; else assert_equals "yes" "yes" "$3"; fi
+}
+
+# run_step <dir>: run the step's run: block in <dir>. Sets STEP_OUT and STEP_RC.
+run_step() {
+  STEP_OUT="$(cd "$1" && env -u CLAUDE_PROJECT_DIR bash -e -c "$STEP_RUN" 2>&1)"
+  STEP_RC=$?
+}
+
+# Scratch source repo: a copy of this pack, product.yml, and a root copy built
+# by build-release.mjs.
+AC3_BASE="$WORK/ac3-base"
+mkdir -p "$AC3_BASE/src"
+cp -Rp "$SUITE_PACK" "$AC3_BASE/src/ravintio-framework"
+printf '%s' "$PRODUCT_SRC" > "$AC3_BASE/product.yml"
+printf '.DS_Store\n.ravintio-framework-build/\n.ravintio-framework-previous/\n' > "$AC3_BASE/.gitignore"
+sg3 "$AC3_BASE" init -q . >/dev/null 2>&1
+sg3 "$AC3_BASE" add -A >/dev/null 2>&1
+sg3 "$AC3_BASE" commit -q -m "src" >/dev/null 2>&1
+BUILD_OUT="$(cd "$AC3_BASE" && env -u CLAUDE_PROJECT_DIR node src/ravintio-framework/scripts/build-release.mjs 2>&1)"
+BUILD_RC=$?
+assert_equals "0" "$BUILD_RC" "req-008 AC3: build-release.mjs builds the scratch root copy"
+if [ "$BUILD_RC" -ne 0 ]; then echo "$BUILD_OUT" | head -5 | sed 's/^/          /'; fi
+
+# ac3_fresh <name>: a copy of the built scratch repo. Prints its path.
+ac3_fresh() {
+  cp -Rp "$AC3_BASE" "$WORK/ac3-$1"
+  echo "$WORK/ac3-$1"
+}
+
+ROOT_COPY='ravintio-framework'
+CHG_FILE='scripts/build-release.mjs'
+DEL_FILE='scripts/set-product-release.mjs'
+ADD_FILE='zz-req008-added-file.txt'
+
+# --- untouched copy ---------------------------------------------------------
+D="$(ac3_fresh clean)"
+run_step "$D"
+assert_equals "0" "$STEP_RC" "req-008 AC3: an untouched root copy exits 0"
+assert_lacks "Skipped" "$STEP_OUT" "req-008 AC3: an untouched root copy prints no skip notice"
+
+# --- a changed byte ---------------------------------------------------------
+D="$(ac3_fresh changed)"
+printf 'x' >> "$D/$ROOT_COPY/$CHG_FILE"
+run_step "$D"
+assert_nonzero "$STEP_RC" "req-008 AC3: a changed byte exits non-zero"
+assert_contains "$CHG_FILE" "$STEP_OUT" "req-008 AC3: a changed byte names the file"
+
+# --- a deleted file ---------------------------------------------------------
+D="$(ac3_fresh deleted)"
+rm -f "$D/$ROOT_COPY/$DEL_FILE"
+run_step "$D"
+assert_nonzero "$STEP_RC" "req-008 AC3: a deleted file exits non-zero"
+assert_contains "$DEL_FILE" "$STEP_OUT" "req-008 AC3: a deleted file names the file"
+
+# --- an added file ----------------------------------------------------------
+D="$(ac3_fresh added)"
+printf 'extra\n' > "$D/$ROOT_COPY/$ADD_FILE"
+run_step "$D"
+assert_nonzero "$STEP_RC" "req-008 AC3: an added file exits non-zero"
+assert_contains "$ADD_FILE" "$STEP_OUT" "req-008 AC3: an added file names the file"
+
+# --- release.yml removed ----------------------------------------------------
+D="$(ac3_fresh norelease)"
+rm -f "$D/$ROOT_COPY/release.yml"
+run_step "$D"
+assert_equals "0" "$STEP_RC" "req-008 AC3: a copy without release.yml exits 0"
+assert_contains "$SKIP_NOTICE" "$STEP_OUT" "req-008 AC3: a copy without release.yml prints the exact skip notice"
+
+# --- this repo --------------------------------------------------------------
+# Before P7 the root copy has no release.yml, so the step prints the skip notice.
+if [ ! -f "$SUITE_TOP/$ROOT_COPY/release.yml" ]; then
+  run_step "$SUITE_TOP"
+  assert_equals "0" "$STEP_RC" "req-008 AC3: this repo before P7 exits 0"
+  assert_contains "$SKIP_NOTICE" "$STEP_OUT" "req-008 AC3: this repo before P7 prints the skip notice"
+fi
 
 print_summary

@@ -246,4 +246,7 @@ TDD (P3, step 4, req-001 follow-ups): RED 11 passed, 15 failed (8fcf8ee9). GREEN
 Decision (P3): the req-001 suite builds the old checkout path in parts, and brand guard allowlist entry 24 goes / reason: the refresh script no longer holds that path, so the entry was stale
 Backlog filed (P3): 0000402 migration branch diff across the pack move
 TDD (P3, step 5, req-002): RED 41 passed, 60 failed, plus the eighth-script cases in three existing suites (e5016d17).
+TDD (P3, step 5, req-002): GREEN 101 passed, 0 failed, and the three eighth-script suites green (191d2ac0). Refactor: no change needed.
+TDD (P3, step 5, req-003): RED 23 passed, 100 failed (d63a4701). Seven migrator cases wait for step 6.
+Rule breach (P3): the req-008 AC3 test-writer subagent ran `sed -i` once on test-0000041-req-008-tests-and-ci-from-src.sh to rename two helper calls, which breaks the Write-or-Edit rule (boot Hard Limit 8). The orchestrator reviewed the diff before commit, and the content matches what an Edit would produce. The final report lists it.
 Note (P3): test-0000040-req-007-docs-and-adr-supersede.sh asserts component.yml version 0.38.0, so the step 8 version bump turns it red. Step 8 handles it with the req-007 released-tree rule or an Edit.

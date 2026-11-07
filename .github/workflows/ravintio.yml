@@ -307,3 +307,33 @@ jobs:
             exit 1
           fi
           bash src/ravintio-framework/tests/test-0000040-req-004-remove-track-files.sh
+
+  # The release-copy-integrity job is repo-only. It is deliberately NOT
+  # mirrored into src/ravintio-framework/hooks/ravintio.yml (the copy setup.sh
+  # ships to consumer repos), because consumers have no source pack to compare
+  # their copy with. It checks the root copy against its release.yml. A root
+  # copy with no release.yml is a release from before 0.39.0, so the job
+  # reports a skip. See ADR-009 (feature 0000041).
+  release-copy-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify the root copy matches its release.yml
+        run: |
+          rc=0
+          out=$(node src/ravintio-framework/scripts/release-check.mjs --root . --files-only 2>&1) || rc=$?
+          if [ "$rc" -eq 0 ] && [[ "$out" == *"skipped: no ravintio-framework/release.yml"* ]]; then
+            echo "::notice title=Release copy integrity::Skipped. The root copy has no release.yml, so it is a release from before 0.39.0."
+            exit 0
+          fi
+          printf '%s\n' "$out"
+          if [ "$rc" -eq 1 ]; then
+            echo "::error title=Release copy integrity::The root copy differs from release.yml. The lines above name each file."
+          elif [ "$rc" -ne 0 ]; then
+            echo "::error title=Release copy integrity::release-check.mjs could not check the copy (exit $rc). See the reason above."
+          fi
+          exit "$rc"
