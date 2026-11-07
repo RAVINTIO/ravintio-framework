@@ -13,11 +13,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `0` of cap `3` (approach 2) |
+| Iteration | `1` of cap `3` (approach 2) |
 | Approach | `2 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `change-approach` |
-| Last updated | `2026-11-07T15:46:07Z` |
+| Last decision | `continue` |
+| Last updated | `2026-11-07T15:48:55Z` |
 
 ---
 
@@ -42,6 +42,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** fresh-context critic pass over the P1 set after the iteration 2 fixes.
 - **Observation:** REJECT with 0 critical, 0 major, and 2 minor findings. Both iteration 2 findings resolved. Item 8 fails on the migrator edit order. See critic-verdict-3.md.
 - **Decision:** change-approach: the iteration cap of 3 is reached at approach 1. Approach 2 sweeps every ordering and ownership claim across the whole set before the next review, in place of fixing one finding at a time. The sweep found two more conflicts the critic didn't name, in req-008's step timing and req-006's version bump owner.
+
+### Iteration 1 of approach 2 (2026-11-07T15:48:55Z)
+- **Approach:** 2
+- **Action:** fresh-context critic pass after the approach 2 sweep (critic-verdict-4.md).
+- **Observation:** REJECT with 0 critical, 0 major, and 2 minor findings. Both iteration 3 findings resolved. Item 8 fails on req-008 AC2 timing and on req-004's component source wording.
+- **Decision:** continue: both findings have direct fixes. The sweep also found the scope's P1 clarification still implied a `CLAUDE.md` edit, and a sub-bullet now corrects it.
 
 ---
 

@@ -35,6 +35,7 @@ version: "0.1.0"
 - The leftover manifest warning. Step 1a warns at every session start while `ravintio-framework/component.yml` sits beside `release.yml`, even after the migration records `skipped`. Maps to req-003-release-yml-readers (US-002).
 - The component path rule (backlog 0000061, 0000361). Maps to req-004-component-path-rule (US-002).
   - The codegen close-out in `skills/ravintio-codegen-agent/SKILL.md` bumps the manifest of each component the run changed. It reads them from `## Component Paths` and `product.yml`, and never names `ravintio-framework/component.yml`.
+  - The close-out takes the component list from the design's Engineering Layer Components list, each manifest from `product.yml`, and the changed files from `## Component Paths`.
   - The ship fallback with no `product.yml` reads the single component from the design.
   - `skills/ravintio-spec-agent/SKILL.md`, `skills/ravintio-docs-agent/SKILL.md`, and `templates/component-guide.md` state one manifest rule. A manifest lives at the path `product.yml` lists, and `src/{component-id}/` is the default.
 - The `**Applies to:**` migration header and the source-repo signal (backlog 0000378, 0000136). Maps to req-005-applies-to-header (US-003).
@@ -49,6 +50,7 @@ version: "0.1.0"
   - A new CI check fails when a root copy file differs from its `release.yml` hash. Until this run's P7 writes the first `release.yml`, the check reports itself skipped with that reason.
 - Live docs: `docs/component-registry.md`, `docs/decisions-index.md`, and `./README.md` name the new pack source path and the release copy.
 - P1 clarification: the design's Component Paths also list `./CLAUDE.md`, `.claude/skills/`, and `refresh-ravintio-framework-dir.ps1`. They cover the Hard Limit 8 text in this repo's boot file and the setup re-run from the new root copy. They add no new scope.
+  - No agent edits `./CLAUDE.md` or `.claude/skills/` in this run. Both are setup output, and they gain the new text when setup runs from the rebuilt root copy after P7. req-001 edits `refresh-ravintio-framework-dir.ps1` only.
 
 ## Out of Scope
 

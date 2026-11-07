@@ -109,11 +109,11 @@ P3 runs the requirements in this order. Each step names what it waits for.
 
 1. req-001 git pass and its AC1 checks. Every other step waits for it.
 2. req-005 `project-kind.mjs`, under TDD with its AC1 cases. The resolver and the release script import it. Its suite finds the pack from its own folder until the resolver exists, as req-008 states.
-3. req-008 resolver, static scan, and suite path edits, which close its AC1. Every new suite sources the resolver. req-008 AC2 and AC3 need `build-release.mjs` and `release-check.mjs`, so they close at step 5.
+3. req-008 resolver, static scan, and suite path edits. The resolver closes req-008 AC1. Every new suite sources the resolver. req-008 AC3 needs `build-release.mjs` and `release-check.mjs`, so it closes at step 5. req-008 AC2 needs a clean scan and a green `run-tests.sh`, so it closes at step 7.
 4. req-001 follow-up path fixes and its suite.
-5. req-002, then req-003's script, orchestrator, and update policy edits. req-008 AC2 and AC3 then close, because the CI integrity job runs `release-check.mjs` on a copy that `build-release.mjs` builds.
+5. req-002, then req-003's script, orchestrator, and update policy edits. req-008 AC3 then closes, because the CI integrity job runs `release-check.mjs` on a copy that `build-release.mjs` builds.
 6. req-004, the req-005 migrator rule, req-003's migrator edits, then req-006. req-003's migrator edits land after the req-005 rule, as the file ownership table states, and req-003 closes here. The req-005 suite moves onto the resolver here.
-7. req-007.
+7. req-007. It moves `test-0000039-req-010-version-bump.sh` onto the resolver, so the static scan comes up clean and req-008 AC2 closes here.
 8. The P3 close-out bumps the component versions.
 
 Steps 6 and 7 share no file, so P3 may run them as parallel streams.
