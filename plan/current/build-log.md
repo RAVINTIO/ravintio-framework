@@ -270,3 +270,18 @@ Gate summary (P3): eight requirements GREEN under TDD. The pack source sits at s
 Skill Map (P3): unchanged.
 Progress: P3 done at 2026-11-07T17:56:23Z: eight requirements GREEN, full suite 176 passed, pack at 0.39.0, P4 next
 Gate passed: P3
+
+### P4: Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T17:57:13Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-validate-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. verify_by_execution reads on from the P1 Toggle record. |
