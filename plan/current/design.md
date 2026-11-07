@@ -23,7 +23,7 @@
 - Latency target: not applicable (no service)
 - Availability target: not applicable (no service)
 - Scalability target: the release script builds the full pack, about 1,200 files, in under 30 seconds on a CI runner.
-- Security: no auth. The release script writes and deletes files only inside the root `ravintio-framework/`, and it refuses any path outside it, including through a link. The consumer migration removes `ravintio-framework/component.yml` only after the human on the loop confirms. Data classification: public source code.
+- Security: no auth. The release script writes and deletes files only inside the root `ravintio-framework/` and its two work folders, `.ravintio-framework-build/` and `.ravintio-framework-previous/`. It refuses any path outside those three, including through a link (P1 deviation, req-002). The consumer migration removes `ravintio-framework/component.yml` only after the human on the loop confirms. Data classification: public source code.
 - Data privacy: no regulated data
 - Observability: the release script prints each file it adds, changes, or removes, and a summary line. The migrator reports each `not applicable` record and its reason.
 - Cost boundary: not constrained
@@ -99,7 +99,7 @@
 
 ## Dependencies
 - Upstream: none
-- Downstream: backlog 0000361, 0000061, 0000378, 0000136, 0000368, and 0000181 close. 0000364 stays open.
+- Downstream: backlog 0000361, 0000061, 0000378, 0000136, 0000368, and 0000181 close. 0000364 stays open. 0000136 closes through a migrator table that maps the released `retroactive-release-tags.md` to `framework source`, because that file can't change (P1 deviation, req-005).
 
 ## Active Skills
 None
