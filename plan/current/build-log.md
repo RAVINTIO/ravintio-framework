@@ -309,3 +309,22 @@ Exception resolved (P5, altering design): the human on the loop chose option 3 a
 Decision (P5): filed backlog 0000378 for a source-repo migration skip / reason: the human on the loop asked why migrations run in the framework source repo, and the change reverses 0000035 ADR-019, outside the confirmed scope
 Security report (P5): overall risk low. 15 findings: 1 Medium (S-1, mitigated, leftover accepted as R-014), 12 Low, 2 Info. 3 mitigated, 3 accepted, 9 open in backlog. R-002, R-011, and R-012 set to mitigated. See security-report.md.
 Gate passed: P5
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T04:02:54Z` |
+| End | |
+| Wall-clock | |
+| Streams | n/a |
+| Model tier | primary, `claude-sonnet-5-5` for the cross-model review |
+| Skills loaded | ravintio-docs-agent |
+| Agents spawned | |
+| MCP calls | 0 |
+| Parallel task batches | |
+| Notes | Autonomous run. |
+
+P6 Gate A: `docs/` exists.
+P6 Gate B: docs update assessment (autonomous, auto-accepted). Feature 0000040 retired Fast Path and the Change Pipeline, added the source folder rule to pre-push and CI, and added the 0.38.0 consumer migration. Auto-accepted: updating `docs/architecture-overview.md`, `docs/component-registry.md`, `docs/decisions-index.md`, and `docs/dependency-graph.md`. No component exposes an API, so `docs/api-index.md` stays absent.
+Decision (P6): three docs subagents in one batch: living docs, the pack's component docs and manifest, and the recommendations with the changelog / reason: the three sets share no content. Backlog IDs 0000379 to 0000381 go to the recommendations agent.
