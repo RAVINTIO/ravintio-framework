@@ -38,7 +38,7 @@ BUILD="$RAVINTIO_PACK_DIR/scripts/build-release.mjs"
 STANDARD_BOOT="$RAVINTIO_PACK_DIR/templates/standard-boot.md"
 CURSOR_BOOT="$RAVINTIO_PACK_DIR/templates/cursor-boot.md"
 SHIP_SKILL="$RAVINTIO_PACK_DIR/skills/ravintio-ship-agent/SKILL.md"
-NEW_SCRIPT="ravintio-framework/scripts/build-release.mjs"
+NEW_SCRIPT="ravintio-framework/scripts/build-release.mjs" # portable-ok: the consumer-facing path in the root release copy, not a pack-source path
 PACK_IN_SRC="src/ravintio-framework"
 COPY_DIR="ravintio-framework"
 
@@ -89,6 +89,7 @@ git -C "$RAVINTIO_REPO_ROOT" ls-files -z -- "$RAVINTIO_PACK_REL" \
   | tar -C "$RAVINTIO_REPO_ROOT" -cf - --null -T - 2>/dev/null \
   | tar -C "$BASE" -xf - 2>/dev/null
 
+PACK_VERSION="$(sed -n 's/^version: *"\(.*\)"$/\1/p' "$BASE/$PACK_IN_SRC/component.yml" | head -1)"
 printf 'id: "ravintio-framework"\nname: "RAVINTIO Framework"\nversion: "0.38.0"\nversionPolicy: "max-component-version"\n\ncomponents:\n  - id: "ravintio-framework"\n    path: "src/ravintio-framework/component.yml"\n' > "$BASE/product.yml"
 printf '.DS_Store\n.ravintio-framework-build/\n.ravintio-framework-previous/\n' > "$BASE/.gitignore"
 
@@ -193,8 +194,8 @@ EXP_FILES="$WORK/expected-files.txt"
 node -e "$EXP_JS" "$R1" "$PACK_IN_SRC/" < "$SRC_LIST" > "$EXP_FILES"
 
 HEADER_ACTUAL="$(sed -n '1,6p' "$REL" 2>/dev/null)"
-HEADER_A="$(printf '# Written by scripts/build-release.mjs. Do not edit.\nformat: 1\nversion: "0.38.0"\nsource-commit: "%s"\nbuilt: "%s"\nfiles:' "$HEAD1" "$DATE_BEFORE")"
-HEADER_B="$(printf '# Written by scripts/build-release.mjs. Do not edit.\nformat: 1\nversion: "0.38.0"\nsource-commit: "%s"\nbuilt: "%s"\nfiles:' "$HEAD1" "$DATE_AFTER")"
+HEADER_A="$(printf '# Written by scripts/build-release.mjs. Do not edit.\nformat: 1\nversion: "%s"\nsource-commit: "%s"\nbuilt: "%s"\nfiles:' "$PACK_VERSION" "$HEAD1" "$DATE_BEFORE")"
+HEADER_B="$(printf '# Written by scripts/build-release.mjs. Do not edit.\nformat: 1\nversion: "%s"\nsource-commit: "%s"\nbuilt: "%s"\nfiles:' "$PACK_VERSION" "$HEAD1" "$DATE_AFTER")"
 assert_equals "yes" "$([ "$HEADER_ACTUAL" = "$HEADER_A" ] || [ "$HEADER_ACTUAL" = "$HEADER_B" ] && echo yes || echo no)" \
   "req-002 AC1: release.yml opens with the comment, format, version, source-commit, built and files in order and quoted"
 assert_equals "yes" "$(sed -n '7,$p' "$REL" 2>/dev/null | cmp -s - "$EXP_FILES" && echo yes || echo no)" \
@@ -229,7 +230,7 @@ ACT_LINES="$(grep -E '^(added|changed|removed): ' <<< "$OUT" | LC_ALL=C sort)"
 assert_equals "$(LC_ALL=C sort "$EXP_LINES")" "$ACT_LINES" "req-002 AC1: the output holds one added, changed or removed line for each differing file"
 assert_contains "removed: ravintio-framework/component.yml" "$OUT" "req-002 AC1: the first build prints the component.yml removal"
 assert_contains "changed: ravintio-framework/release.yml" "$OUT" "req-002 AC1: the lines cover release.yml"
-assert_equals "summary: version 0.38.0, source-commit $HEAD1, added $N_ADDED, changed $N_CHANGED, removed $N_REMOVED, unchanged $N_SAME" \
+assert_equals "summary: version $PACK_VERSION, source-commit $HEAD1, added $N_ADDED, changed $N_CHANGED, removed $N_REMOVED, unchanged $N_SAME" \
   "$(printf '%s\n' "$OUT" | tail -n 1)" "req-002 AC1: the last line is the summary with matching counts"
 
 # A second run on the same commit and day.

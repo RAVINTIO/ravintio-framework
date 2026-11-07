@@ -31,7 +31,7 @@ REPO="$RAVINTIO_REPO_ROOT"
 STEM="migrate-0.39.0-remove-pack-component-yml"
 MIGRATION="$FW/migrations/$STEM.md"
 RECORD="$REPO/plan/_migrations/$STEM.md"
-LEFTOVER="ravintio-framework/component.yml"
+LEFTOVER="ravintio-framework/component.yml" # portable-ok: the consumer-repo path the migration removes, not a pack-source path
 RM_CMD="rm -- $LEFTOVER"
 
 WORK="$(mktemp -d -t ravintio_0000041_req006_XXXXXX)" || { echo "  FAIL: req-006: mktemp -d failed"; exit 1; }

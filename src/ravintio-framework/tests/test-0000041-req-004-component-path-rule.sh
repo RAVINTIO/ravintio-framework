@@ -40,7 +40,7 @@ for f in "$GUIDE" "$SPEC" "$DOCS" "$CODEGEN" "$SHIP"; do
 done
 
 # Path text that a match rule must catch: any path ending in this file name.
-RE_ROOT_MANIFEST='ravintio-framework/component[.]yml'
+RE_ROOT_MANIFEST='ravintio-framework/component[.]yml' # portable-ok: a regex that must match the consumer path text
 RE_DEFAULT_PATH='src/[{][{]?component-id[}][}]?/component[.]yml'
 
 # section_h2 <file> <heading line>: the lines under a "## " heading, up to the next one.
