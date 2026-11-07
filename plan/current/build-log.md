@@ -184,3 +184,13 @@ Resume detection (session 3cb17e30): no pending migrations. Step 1a found no fra
 
 Decision (P2): nine ADRs. ADR-001 stack unchanged, ADR-002 pack source under src/, ADR-003 release script, ADR-004 release.yml contract and readers, ADR-005 data ownership of the pack copies, ADR-006 manifest location from product.yml, ADR-007 Applies to header and source-repo signal, ADR-008 consumer migration, ADR-009 tests and CI from src/ / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
 Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-009 by eight parallel subagents / reason: ADR-001 needs no reads, under the size floor
+Decision (P2): ADR-002 limits the Hard Limit 8 exception to the two named git commands, and an interrupted pass resets to the last commit and repeats / reason: a script would widen the exception
+Decision (P2): ADR-003 sanctions build-release.mjs with no arguments at ship Step 5c, and gate-write and shell-write-guard need no change / reason: the script runs through node, which neither guard treats as a shell writer
+Decision (P2): ADR-004 records the req-003 own-build rule and an exit 2 with no fallback when release.yml exists but can't be read / reason: both are part of the reader contract
+Decision (P2): ADR-005 records the git pass and this run's P7 run from src/ as one-time root copy writers, and setup code changes bump the ravintio-framework manifest / reason: both are approved in req-001 and req-002, and ownership follows the files
+Decision (P2): ADR-006 makes a listed product.yml path win over the default, stops on a missing listed file, assigns a changed file to the deepest manifest folder, and skips a second bump in one feature / reason: a typo must not bump the wrong manifest, and a reversal must not bump twice
+Decision (P2): ADR-007 includes req-005's no-link conditions in the source-repo signal, and the 0000035 ADR 019 narrowing covers the migrator table row too / reason: req-005 AC1 tests linked paths
+Decision (P2): ADR-008 counts a verified human-run delete in corrections-applied and records applied / reason: req-006 step 6 states it, and the migrator checks the result itself
+Decision (P2): ADR-009 adds a fourth alternative, failing the integrity job with no release.yml, and keeps the 37 suites plus six regression copies count / reason: it shows why the skip notice exists
+Decision (P2): req-002 gains a line that .gitignore lists the two work folders, R-002 names the two work folders, and the glossary gains the trusted release record term / reason: the ADR-003 and ADR-004 subagents found the gaps, and each fix is additive
+Backlog filed (P2): 0000391 gate permits agent writes to the release copy in the source repo

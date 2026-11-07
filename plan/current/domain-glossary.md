@@ -21,6 +21,7 @@ version: "0.1.0"
 | consumer repo | A repo that installs the pack by copying the root `ravintio-framework/` into its own root. It is the `downstream` value of the `**Applies to:**` header. | consumer, downstream project | ravintio-framework |
 | pack source | `src/ravintio-framework/`, the folder the maintainer edits. It holds the pack's `component.yml`, and `product.yml` lists it. | | ravintio-framework, setup-hook-integration |
 | root copy | The root `ravintio-framework/` in the framework source. It holds the last release, with `release.yml` and no `component.yml`. Only the git pass and the release script write it. From the git pass until this run's P7, it is the `v0.38.0` tree with its `component.yml`. | release copy | ravintio-framework |
+| trusted release record | `plan/framework-release.yml`, the release a repo last trusted. Step 1a writes it after confirmation and compares the next `release.yml` against it (req-003, ADR-004). | recorded value | ravintio-framework |
 | vendored pack | The copy of `ravintio-framework/` in a consumer repo. It counts as source only if that repo's `product.yml` lists it (0000040). | copied pack | ravintio-framework |
 | consumer runtime path | `ravintio-framework/`, the path every pack file uses to name the installed pack. This feature keeps it. | | ravintio-framework |
 | git pass | The one P3 commit that runs `git mv ravintio-framework src/ravintio-framework`, then `git checkout v0.38.0 -- ravintio-framework`. It is a recorded exception to the Write-or-Edit rule (boot Hard Limit 8). | the move | ravintio-framework |

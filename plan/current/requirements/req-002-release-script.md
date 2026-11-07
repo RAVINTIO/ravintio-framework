@@ -45,6 +45,7 @@ All paths below use the post-move layout from req-001. The script lives at `src/
 - Before any change, it checks each of the three paths and `src/ravintio-framework/` itself. Each one must be absent or a real folder, never a link, and each must resolve inside the real root. Any other state exits 2 and writes nothing.
 - It removes a folder with a recursive delete that never follows a link. A link inside the old copy goes as a link, and its target stays unchanged.
 - No write or delete lands outside the three folders, whatever a link inside them points at.
+- `.gitignore` lists `.ravintio-framework-build/` and `.ravintio-framework-previous/`, so an interrupted build never reaches a commit (P2 decision, ADR-003).
 
 ### Build and swap
 
