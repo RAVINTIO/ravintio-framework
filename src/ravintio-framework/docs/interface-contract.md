@@ -52,6 +52,7 @@ Output lines on stdout:
 |---|---|
 | `release: version "{v}" source-commit "{sha}"` | Read from `release.yml`. |
 | `release: none, fallback component.yml version "{v}"` | No `release.yml` and no trusted record. |
+| `release: none` | No `release.yml` and a trusted record. The script then prints `missing:` and `update: release`, and exits 1. |
 | `recorded: ...` | The last trusted release, or `none`, or the `docs/about.md` fallback. |
 | `update: release`, `update: own-build`, `update: none` | The decision. `own-build` applies only in the framework source. |
 | `record: version "{v}" source-commit "{sha}"` | The value for step 1a to write after confirmation. |

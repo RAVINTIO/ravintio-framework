@@ -286,6 +286,17 @@ assert_equals "1" "$CODE" "req-003 P5 F-02: a recorded value and a missing relea
 assert_equals "yes" "$(has_line 'update: release')" "req-003 P5 F-02: a recorded value and a missing release.yml print update: release"
 assert_equals "yes" "$(if grep -E '^missing: .*release[.]yml' <<< "$OUT" >/dev/null 2>&1; then echo yes; else echo no; fi)" "req-003 P5 F-02: a missing release.yml with a recorded value prints a missing: line that names release.yml"
 assert_equals "0" "$(count_prefix 'update: none')" "req-003 P5 F-02: a missing release.yml with a recorded value never prints update: none"
+assert_equals "0" "$(count_prefix 'release: none, fallback')" "req-003 P6 M-3: a recorded value and a missing release.yml print no component.yml fallback line"
+
+# A recorded value with neither release.yml nor component.yml is an update, not a refusal.
+C="$(consumer c-p6-m3-neither-recorded)"
+rm -f "$C/$COPY_DIR/release.yml" "$C/$COPY_DIR/component.yml"
+write_record "$C" "0.38.0" "$OTHER_SHA"
+run_check "$C"
+assert_equals "1" "$CODE" "req-003 P6 M-3: a recorded value with neither release.yml nor component.yml exits 1"
+assert_equals "yes" "$(has_line 'update: release')" "req-003 P6 M-3: a recorded value with neither file prints update: release"
+assert_equals "yes" "$(if grep -E '^missing: .*release[.]yml' <<< "$OUT" >/dev/null 2>&1; then echo yes; else echo no; fi)" "req-003 P6 M-3: a recorded value with neither file prints a missing: line that names release.yml"
+assert_equals "0" "$(count_prefix 'release: none, fallback')" "req-003 P6 M-3: a recorded value with neither file prints no fallback line"
 
 # With no recorded value, the fallback stays as it is (docs/about.md rule).
 C="$(consumer c-p5-f02-norecord)"

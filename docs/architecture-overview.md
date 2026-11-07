@@ -299,10 +299,11 @@ The ship agent sets `product.yml` `version` and `feature` in P7, after Step 5 an
 
 ### Sanctioned scripts: the Write-or-Edit rule (boot Hard Limit 8)
 
-The Write-or-Edit rule (boot Hard Limit 8) now names the fixed framework scripts that skill steps run to write files (0000035-ADR-011). Both `standard-boot.md` and `cursor-boot.md` carry one `Sanctioned scripts:` sentence. It names seven scripts:
+The Write-or-Edit rule (boot Hard Limit 8) now names the fixed framework scripts that skill steps run to write files (0000035-ADR-011). Both `standard-boot.md` and `cursor-boot.md` carry one `Sanctioned scripts:` sentence. It names eight scripts:
 
 - `archive-current.mjs`
 - `set-product-release.mjs`
+- `build-release.mjs` (0000041 ADR-003), with no arguments
 - `promote-to-regression.sh`
 - `refresh-delete-boot-files.sh` and `refresh-delete-boot-files.ps1`
 - `setup.sh` and `setup.ps1`
@@ -621,7 +622,7 @@ Reference `docs/decisions-index.md` for the full ADR list.
 - **ADR-007 (0000035):** `ratchet-check.mjs` uses the shared root and target rules.
 - **ADR-008 (0000035):** Root markers under always-permitted names are not trusted.
 - **ADR-010 (0000035):** `set-product-release.mjs` sets `product.yml` at P7.
-- **ADR-011 (0000035):** The Write-or-Edit rule (boot Hard Limit 8) names seven sanctioned scripts.
+- **ADR-011 (0000035):** The Write-or-Edit rule (boot Hard Limit 8) names seven sanctioned scripts. 0000041 ADR-003 adds an eighth.
 - **ADR-015 (0000035):** Migration files never move. Supersedes the archive step of **ADR-005 (0000005)**.
 - **ADR-016 (0000035):** Each project records migration runs in `plan/_migrations/`.
 - **ADR-002 (0000036):** A non-regular, swapped, or oversize `design.md` reads as no design. Only `EACCES` and `EPERM` fail open. Narrows **ADR-005 (0000003)**.

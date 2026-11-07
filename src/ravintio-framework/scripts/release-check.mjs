@@ -284,6 +284,10 @@ function main() {
     release = parseRelease(relText);
     version = release.version;
     print(`release: version "${version}" source-commit "${release.commit}"`);
+  } else if (recorded) {
+    // A trusted record means the component.yml fallback never applies. The
+    // block below reports the missing release.yml.
+    print("release: none");
   } else {
     const compText = readRegular(root, `${COPY}/component.yml`);
     if (compText === null) throw new Refusal(`${COPY}/ holds neither release.yml nor component.yml`);

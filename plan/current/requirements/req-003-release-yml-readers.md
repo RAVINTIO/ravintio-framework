@@ -61,7 +61,7 @@ The script prints one line for each finding, and step 1a acts on them.
 
 - With no `ravintio-framework/release.yml`, the script reads `version` from `ravintio-framework/component.yml`. It prints `release: none, fallback component.yml version "{v}"`.
 - It compares that version with the recorded version, as on a first upgrade. It prints `files: not checked, no release.yml` and no `record:` line.
-- With neither file, or an unreadable `component.yml`, it exits 2.
+- With neither file and no trusted record, or an unreadable `component.yml`, it exits 2. With a trusted record it exits 1 with `missing:` and `update: release`.
 - The fallback applies only when no trusted release record exists. If `plan/framework-release.yml` exists and `release.yml` is missing, the script prints `missing: ravintio-framework/release.yml` and `update: release`, and exits 1 (P5 security fix).
 
 ### Leftover manifest

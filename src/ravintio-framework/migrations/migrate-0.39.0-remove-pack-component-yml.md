@@ -3,7 +3,7 @@
 **Target:** every downstream project that copied a 0.39.0 or later pack over an older one.
 **Applies to:** downstream
 **Scope:** `ravintio-framework/component.yml`. The migration also reads `ravintio-framework/release.yml` and changes nothing there.
-**Safe to skip:** Yes. The migrator's step 1a warns at every session start while the file stays.
+**Safe to skip:** Yes. The orchestrator's step 1a warns at every session start while the file stays.
 
 ---
 
