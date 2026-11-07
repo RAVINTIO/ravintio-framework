@@ -70,3 +70,25 @@ Brief complete: no
 Stack unchanged: yes
 Progress: P0 done at 2026-11-07T15:18:43Z: design confirmed, three stories, six backlog entries folded in, run mode autonomous
 Run mode confirmed: autonomous (2026-11-07T15:18:43Z)
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T15:21:00Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-orchestrator, ravintio-spec-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run, resumed in a new session after the context reset the human on the loop asked for at P0. |
+
+Resume detection (P1): no pending migrations. Skill drift check exit 0, 20 skills match. run-mode.mjs prints autonomous. No pause.md, .skips, or stream files.
+Decision (P1): wrote session ID 8679269c-b90b-469d-b553-067fe3c62b96 to plan/.orchestrator-ack / reason: the strict-mode banner asked for it
+Skills inbox (P1): ravintio-framework/skills-inbox/ is empty, so nothing to process.
+Toggle record (P1): ravintio-overrides/loop-toggles.yml is absent. In autonomous, design_critic, reversal_protocol, verify_by_execution, and cross_model_review read on (autonomous default). parallel_streams reads on (autonomous default). p0_completeness reads off (absent default).
+Decision (P1): P1 runs as parallel spec subagents rather than stream files / reason: the requirement groups share one design and join at one commit set. P3 decides on streams per agent-dispatch-standards.
+Decision (P1): P1 writes no src/ravintio-framework/component.yml draft / reason: the folder must not exist before the P3 git pass, or git mv would nest the pack inside it. The manifest moves with the pack, and P3 updates its purpose and scope.
