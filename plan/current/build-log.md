@@ -331,3 +331,22 @@ Full suite (P5): 138 feature suites passed, 1 failed. The portability lint flagg
 Gate summary (P5): security-report.md rates overall risk High. P5 fixed RS-F01, RS-F07, RS-F08, NF-02, NF-03, RC-F02, and RC-F08, and partly fixed RS-F06, with each fix re-reviewed in a fresh context. Accepted residual risks: R-015 for RC-F01 and RC-F03 to RC-F07, and R-002 for RS-F02 to RS-F05 and NF-01. Backlog filed: 0000415 to 0000418. Two Write-or-Edit breaches by subagents are logged, one in P3 and one in P5.
 Progress: P5 done at 2026-11-07T18:57:14Z: security High with two accepted High reader findings, every fix re-reviewed, P6 next
 Gate passed: P5
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T18:59:27Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | cheaper for doc writers, a second model for the cross-model review |
+| Skills loaded | ravintio-docs-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. |
+
+P6 Gate A: docs/ exists with all four mandatory living docs. No component exposes an API, so docs/api-index.md stays absent.
+P6 Gate B: docs update assessment (continuous run, auto-accepted). The pack source moved to src/ravintio-framework/, and the run added release tooling, a migration header, and a 0.39.0 migration. Auto-accepted: updating docs/component-registry.md, docs/dependency-graph.md, docs/architecture-overview.md, docs/decisions-index.md, the per-component docs of ravintio-framework and setup-hook-integration, recommendations.md, and the changelog.
+Decision (P6): three doc writers run in one batch, one on the living docs, one on the per-component docs, one on recommendations, the changelog, and their backlog entries / reason: the three sets share no file
