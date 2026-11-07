@@ -102,7 +102,7 @@ Never read inside `.ravintio-backup/`. It holds the old pack, and it isn't a liv
 
 ### The Applies to header
 
-A migration may carry one `**Applies to:**` line near the top, beside `**Target:**`. Its value is `framework source`, `downstream`, or `all`. If the file has no such line, the value reads as `all`. Released migration files never change, so each one keeps its behaviour. You are the one owner of the allowed values.
+A migration may carry one `**Applies to:**` line near the top, beside `**Target:**`. Its value is `framework source`, `downstream`, or `all`. If the file has no such line, the value reads as `all`. Released migration files never change, so each one keeps its behaviour. You own the allowed values.
 
 ### Released migrations by project kind
 
