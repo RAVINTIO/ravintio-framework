@@ -276,12 +276,24 @@ Gate passed: P3
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T17:57:13Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T18:12:26Z` |
+| Wall-clock | 15m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-validate-agent |
-| Agents spawned | pending |
+| Agents spawned | 1: the verify-by-execution checker |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 2 |
 | Notes | Autonomous run. verify_by_execution reads on from the P1 Toggle record. |
+
+Library audit (P4): no dependency added. The new scripts use Node.js built-ins only, and the one existing package.json under hooks/adapters/opencode/ is unchanged.
+Lint (P4): `node --check` passes on project-kind.mjs, build-release.mjs, release-check.mjs, self-description-check.mjs, and em-dash-guard.mjs. `bash -n` passes on the eight 0000041 suites and pack-root.sh. The workflow YAML parses.
+Typecheck (P4): not applicable. The stack has no type system.
+Test (P4): `bash src/ravintio-framework/tests/run-tests.sh --quiet` passes. 139 feature suites and 37 regression suites passed, 0 failed, 176 run.
+Build (P4): not applicable. The pack ships source files with no build step. `node src/ravintio-framework/scripts/self-description-check.mjs .` exits 0.
+Semantic correctness (P4): 25 criteria across 8 requirements, each covered. See coverage-table.md. req-002 AC4 is manual and closes at P7.
+Verify by execution (P4): req-005 AC3, req-006 AC2, and req-007 AC3 verified, plus release-check.mjs on this repo and the release-copy-integrity run block. See verification-report.md.
+Self-correct cycles (P4): 0.
+Gate summary (P4): every CI check passed first time with zero self-corrections, and the verify-by-execution checker verified every execution criterion.
+Progress: P4 done at 2026-11-07T18:12:26Z: CI green first time, 176 suites passed, execution criteria verified, P5 next
+Gate passed: P4
