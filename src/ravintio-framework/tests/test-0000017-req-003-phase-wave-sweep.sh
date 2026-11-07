@@ -7,9 +7,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROJECT_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+PROJECT_ROOT="$RAVINTIO_REPO_ROOT"
 TEMPLATES="$FRAMEWORK/templates"
 REPORT="$PROJECT_ROOT/plan/current/req-003-phase-wave-sweep-report.md"
 

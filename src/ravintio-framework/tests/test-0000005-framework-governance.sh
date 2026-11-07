@@ -8,6 +8,7 @@ unset CLAUDE_PROJECT_DIR
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
 STANDARDS="$FRAMEWORK/standards"
@@ -134,7 +135,7 @@ assert_file_exists "$FRAMEWORK/skills-inbox/.gitkeep" "req-010: skills-inbox dir
 echo ""
 echo "=== req-011: skill registries ==="
 
-assert_file_exists "$FRAMEWORK/../ravintio-overrides/capability-skills/.gitkeep" "req-011: ravintio-overrides/capability-skills/ exists"
+assert_file_exists "$RAVINTIO_REPO_ROOT/ravintio-overrides/capability-skills/.gitkeep" "req-011: ravintio-overrides/capability-skills/ exists"
 assert_contains "Copy-CapabilitySkills"          "$(cat "$FRAMEWORK/setup.ps1")" "req-011: setup.ps1 has Copy-CapabilitySkills"
 assert_contains "capability-skills"              "$(cat "$FRAMEWORK/setup.ps1")" "req-011: setup.ps1 copies from capability-skills"
 
@@ -193,7 +194,7 @@ else
 fi
 
 assert_contains "ravintio-overrides"           "$(cat "$FRAMEWORK/setup.ps1")" "req-016: setup.ps1 reads ravintio-overrides"
-assert_file_exists "$FRAMEWORK/../ravintio-overrides/library-standards/.gitkeep" "req-016: ravintio-overrides scaffolded"
+assert_file_exists "$RAVINTIO_REPO_ROOT/ravintio-overrides/library-standards/.gitkeep" "req-016: ravintio-overrides scaffolded"
 
 # -----------------------------------------------------------------------
 

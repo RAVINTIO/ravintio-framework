@@ -10,6 +10,7 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -56,8 +57,8 @@ assert_contains "skill-scope test" "$p0_content" "req-007: orchestrator names th
 # only pass during 0000027's run and has been red ever since. Point it at the
 # archive, where the artifact actually lives, and accept either location so the
 # test stays green both during a feature and after it ships.
-adr_003_live="$SCRIPT_DIR/../../plan/current/adr/ADR-003-skill-scope-principle.md"
-adr_003_archived=$(ls "$SCRIPT_DIR"/../../plan/_archive/0000027-*/adr/ADR-003-skill-scope-principle.md 2>/dev/null | head -1)
+adr_003_live="$RAVINTIO_REPO_ROOT/plan/current/adr/ADR-003-skill-scope-principle.md"
+adr_003_archived=$(ls "$RAVINTIO_REPO_ROOT"/plan/_archive/0000027-*/adr/ADR-003-skill-scope-principle.md 2>/dev/null | head -1)
 assert_equals "yes" "$([ -f "$adr_003_live" ] || [ -n "$adr_003_archived" ] && echo yes || echo no)" \
   "req-007: ADR-003 exists at plan/current/adr/ or in the 0000027 archive"
 
@@ -76,7 +77,7 @@ assert_contains "produced when the component acts as an API provider" "$spec_age
 assert_contains "produced when the feature introduces or modifies a deployed runtime service" "$spec_agent_content" "req-008: ravintio-spec-agent states Operational Model/SLO trigger condition"
 assert_contains "ADR-004" "$spec_agent_content" "req-008: ravintio-spec-agent references ADR-004"
 
-README_CONTENT=$(cat "$SCRIPT_DIR/../../README.md")
+README_CONTENT=$(cat "$RAVINTIO_REPO_ROOT/README.md")
 assert_contains "five Phase 1 artifacts" "$README_CONTENT" "req-008: README states the default artifact count"
 
 docs_agent_content=$(cat "$FRAMEWORK_DIR/skills/ravintio-docs-agent/SKILL.md")
