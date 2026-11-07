@@ -378,12 +378,12 @@ Gate passed: P6
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T20:00:25Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T20:02:19Z` |
+| Wall-clock | 2m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent |
-| Agents spawned | pending |
+| Agents spawned | 0 |
 | MCP calls | 0 |
 | Parallel task batches | 1 |
 | Notes | Autonomous run. The ship skill in use is the 0.38.0 copy, which has no Step 5c. |
@@ -398,3 +398,26 @@ Step 5b (P7): product.yml: version "0.39.0", feature "0000041-pack-source-under-
 Decision (P7): run build-release.mjs from src/ and stage the root copy / reason: the 0.38.0 ship agent lacks Step 5c
 Step 5c (P7, from src/): summary: version 0.39.0, source-commit dabed7cd6b8907e9a75290f74dc5662d081339b0, added 23, changed 59, removed 1, unchanged 1124. The root copy now holds release.yml and no component.yml, at mode 0755, with no work folder left.
 Integrity (P7): release-check.mjs --files-only exits 0 on the new root copy. The full check prints update: own-build and exits 0.
+Archive (P7): archive-current.mjs moved every plan/current/ item and removed plan/current/.feature-id. archive-dir: plan/_archive/0000041-pack-source-under-src-2026-11-07
+docs/about.md (P7): version 0.39.0, feature 0000041-pack-source-under-src, updated 07 Nov 2026
+Credential scan (P7): held back ravintio-framework/release.yml
+Exception waiting (P7, 7): credential sighting in ravintio-framework/release.yml:634 and ravintio-framework/release.yml:635. Both lines are pack path and SHA-256 hash pairs in the vendored risk requirements analysis skill under external-skills/. The api-secret-key rule likely matches the hyphenated folder name. This line names the folder in words, because the folder name itself trips the rule. Review the two lines, then commit release.yml if you confirm a false positive. Backlog 0000425.
+Commit (P7): ecdc151d holds the archive, the changelog, the test report, docs/about.md, docs/decisions-index.md, product.yml, and the rebuilt root copy without release.yml. 179 of 180 candidate paths were safe.
+Note (P7): until release.yml is committed, the release-copy-integrity CI job on the PR prints its skip notice, because the committed root copy has no release.yml.
+Backlog filed (P7): 0000425 credential scan flags release.yml hash lines
+Progress: P7 done at 2026-11-07T20:02:19Z: plan/current archived, root copy rebuilt at 0.39.0, release.yml held back by the credential scan
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T20:04:00Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | cheaper |
+| Skills loaded | ravintio-build-assessment-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | 0 |
+| Notes | Autonomous run. |
