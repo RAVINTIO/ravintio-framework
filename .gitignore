@@ -27,5 +27,10 @@ _temp/*
 # machine (helper scripts, scratch notes) and is never committed
 *.local-only.*
 
+# build-release.mjs work folders (0000041 ADR-003). An interrupted build
+# leaves one behind, and it must never reach a commit.
+.ravintio-framework-build/
+.ravintio-framework-previous/
+
 # OS
 .DS_Store

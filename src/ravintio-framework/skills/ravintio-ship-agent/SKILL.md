@@ -16,7 +16,7 @@ hooks:
 ## Prefix
 
 Emit the correct phase prefix as you move through each step:
-- `P7:` for all archive work (Steps 1–7, including Step 5b)
+- `P7:` for all archive work (Steps 1–7, including Step 5b and Step 5c)
 - `P8:` for build assessment (Step 8)
 - `P9:` for ship steps (the P9 marker step and Steps 9–12)
 
@@ -127,6 +127,16 @@ Run this step before Step 6 archives `design.md` (0000035 ADR-010). You own `pro
    - Exit 2: the script wrote nothing, and stderr names the reason. If an argument broke a rule, correct it and rerun. If the reason names a file-system error code, such as `EACCES`, fix the file or folder permission and rerun. If the manifest is invalid or the derived version differs from `{version}`, stop and report the reason. Never tag a fabricated version.
 4. Log the line the script printed in the P7 build-log block.
 
+### Step 5c: Build the release copy
+
+This step rebuilds the root `ravintio-framework/` release copy from `src/ravintio-framework/` in the framework source repo (0000041 ADR-003). Write the root copy only through `build-release.mjs`, never through **Write** or **Edit**. The Write-or-Edit rule (boot Hard Limit 8) names the script as a sanctioned script, with no arguments.
+
+1. Run `node ravintio-framework/scripts/project-kind.mjs`. If it prints anything other than `framework source`, skip this step and log `P7: Step 5c skipped: project kind {output}`. If `src/ravintio-framework/` exists in that case, also log `P7: Step 5c warning: src/ravintio-framework/ exists, so check product.yml`. A malformed `product.yml` reads as `downstream`, and the warning makes that skip visible.
+2. Run `node ravintio-framework/scripts/build-release.mjs`. The step runs the root copy, the last release, so a broken change under `src/` can't break the build that ships it.
+3. On exit 0, log the `summary:` line in the P7 build-log block.
+4. On exit 2, stop and report the reason. Never copy the pack by hand, and never write the root copy through **Write** or **Edit**.
+5. On any other exit, fix the cause stderr names and rerun. A rerun recovers a leftover state on its own.
+
 ### Step 6: Archive plan/current/
 
 1. Run the archive script as a single command (0000033 ADR-010):
@@ -149,11 +159,12 @@ Run this step before Step 6 archives `design.md` (0000035 ADR-010). You own `pro
 
 ### Step 7: Commit archive
 
-Commit the archive, changelog, `docs/about.md`, and `product.yml` to the branch in one commit. Step 5b wrote `product.yml`, so stage it whenever it exists:
+Commit the archive, changelog, `docs/about.md`, and `product.yml` to the branch in one commit. Step 5b wrote `product.yml`, so stage it whenever it exists. In the framework source repo, Step 5c rebuilt the root `ravintio-framework/` copy, so stage that too:
 
 ```
 git add plan/current/ plan/_archive/ plan/changelog/ docs/about.md
 if [ -f product.yml ]; then git add product.yml; fi
+if [ "$(node ravintio-framework/scripts/project-kind.mjs)" = "framework source" ]; then git add -A -- ravintio-framework/; fi
 git --literal-pathspecs diff --cached --name-only --no-renames -z
 node ravintio-framework/scripts/credential-scan.mjs --safe-paths "{out-file}" -- {candidate} ...
 [ -s "{out-file}" ] && git --literal-pathspecs commit -m "plan(p7): archive plan/current" -m "{feature-id}" --pathspec-from-file="{out-file}" --pathspec-file-nul
