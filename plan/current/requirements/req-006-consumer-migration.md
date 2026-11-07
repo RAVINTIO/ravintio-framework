@@ -86,6 +86,6 @@ Split step: keep, at three criteria. The one concern is the consumer's removal o
 - req-002 (release-script) writes `release.yml`, which step 1 reads.
 - req-003 (release-yml-readers) adds the step 1a warning for a leftover manifest, which step 8 names. It also moves the record's `framework-version` source to `release.yml`.
 - req-001 (move-pack-to-src) moves the manifest to `src/ravintio-framework/component.yml`, so this repo reads as the framework source.
-- The version bump to `0.39.0` belongs to the requirement that owns the release version.
+- The P3 close-out bumps `src/ravintio-framework/component.yml` to `0.39.0` (execution plan, file ownership).
 - Backlog 0000366 covers the missing delete route. The migration routes the delete to the human on the loop, as the 0.38.0 migration does.
 - Existing pattern: `migrate-0.38.0-retire-fast-path-and-change-pipeline.md` step 3 for the human-run delete and the path check afterwards.

@@ -109,10 +109,10 @@ P3 runs the requirements in this order. Each step names what it waits for.
 
 1. req-001 git pass and its AC1 checks. Every other step waits for it.
 2. req-005 `project-kind.mjs`, under TDD with its AC1 cases. The resolver and the release script import it. Its suite finds the pack from its own folder until the resolver exists, as req-008 states.
-3. req-008 resolver and suite path edits. Every new suite sources the resolver.
+3. req-008 resolver, static scan, and suite path edits, which close its AC1. Every new suite sources the resolver. req-008 AC2 and AC3 need `build-release.mjs` and `release-check.mjs`, so they close at step 5.
 4. req-001 follow-up path fixes and its suite.
-5. req-002, then req-003. The CI integrity job in req-008 runs `release-check.mjs`, so req-008's CI criterion closes after req-003.
-6. req-004, req-005 migrator rule, then req-006. The req-005 suite moves onto the resolver here.
+5. req-002, then req-003's script, orchestrator, and update policy edits. req-008 AC2 and AC3 then close, because the CI integrity job runs `release-check.mjs` on a copy that `build-release.mjs` builds.
+6. req-004, the req-005 migrator rule, req-003's migrator edits, then req-006. req-003's migrator edits land after the req-005 rule, as the file ownership table states, and req-003 closes here. The req-005 suite moves onto the resolver here.
 7. req-007.
 8. The P3 close-out bumps the component versions.
 

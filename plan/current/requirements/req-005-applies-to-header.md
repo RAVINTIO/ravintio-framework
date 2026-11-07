@@ -71,6 +71,6 @@ Split step: keep, at three criteria. The one concern is the skip by project kind
 
 - req-001 (move-pack-to-src) puts `src/ravintio-framework/component.yml` in place and points `product.yml` at it. Before the move, this repo reads as `downstream`.
 - req-002 (release-script) imports `projectKind(root)` to refuse a run outside the source repo.
-- req-003 (release-yml-readers) also edits the migrator `SKILL.md`, for the record's `framework-version` source. The two edits touch different sections.
+- req-003 (release-yml-readers) also edits the migrator `SKILL.md`, for the record's `framework-version` source. The two edits touch different sections. This requirement owns the file, and req-003's edits land after its Step 1b rule is green (execution plan, build order step 6).
 - req-006 (consumer-migration) is the first migration that carries the header.
 - 0000035 ADR 016 to ADR 019 define the records, the outcomes, and the pending rule this rule writes through.

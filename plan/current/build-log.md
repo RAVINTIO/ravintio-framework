@@ -146,3 +146,9 @@ Decision (P1): R-005 states 1,184 tracked files / reason: critic finding 4, git 
 Critic verdict (P1, iteration 2): REJECT. 0 major and 2 minor findings. All 4 iteration 1 findings resolved. See critic-verdict-2.md.
 Decision (P1): the req-005 project-kind.mjs cases find the pack from the suite's own folder until the resolver exists, then move onto it / reason: critic finding 1, the resolver imports project-kind.mjs, so the script comes first
 Decision (P1): the Skill link in req-002 to req-006 reads ../../../ravintio-framework/skills/ / reason: critic finding 2, the old link resolved to no file
+Critic verdict (P1, iteration 3): REJECT. 0 major and 2 minor findings. Both iteration 2 findings resolved. See critic-verdict-3.md.
+Decision (P1): design_critic changes approach to 2 of 3 after the iteration cap / reason: approach 2 sweeps every ordering and ownership claim across the set before each review, in place of fixing one finding at a time
+Decision (P1): build order step 6 now holds req-003's migrator edits after the req-005 rule, and req-003 and req-005 Dependencies state that order / reason: critic finding 1, the table and the build order disagreed
+Decision (P1): req-008 AC1 closes at step 3, and AC2 and AC3 close at step 5 after build-release.mjs and release-check.mjs exist / reason: the approach 2 sweep found req-008's suite needs req-002 and req-003
+Decision (P1): req-006 names the P3 close-out as the owner of the 0.39.0 bump / reason: the approach 2 sweep found its text still named an unnamed owner
+Decision (P1): req-008 AC2 keeps both the inline and the indented Verified by / reason: critic finding 2. The requirement template allows both forms, and the indented line governs. An edit to a criterion line while the loop is armed reads as a removal to ratchet-check.

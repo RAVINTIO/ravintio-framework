@@ -167,7 +167,7 @@ In `src/ravintio-framework/skills/ravintio-migrator/SKILL.md`:
 ## Dependencies
 
 - req-002 (release-script) defines the `release.yml` format and the hash rule that the script reads.
-- req-005 (applies-to-header) provides `projectKind(root)` in `scripts/project-kind.mjs`, which the own-build check imports.
+- req-005 (applies-to-header) provides `projectKind(root)` in `scripts/project-kind.mjs`, which the own-build check imports. req-005 owns the migrator `SKILL.md`. This requirement's migrator edits land after the req-005 Step 1b rule is green (execution plan, build order step 6). Its script, orchestrator, and update policy edits land earlier, at step 5.
 - req-006 (consumer-migration) offers to remove the leftover manifest that the `warn:` line names, and names this warning in its `skipped` record.
 - req-008 (tests-and-ci-from-src) provides the resolver the new suite uses, and may run `--files-only` for its CI check.
 - Backlog 0000181 closes with this requirement.
