@@ -23,9 +23,10 @@ if [ "$(basename "$SCRIPT_DIR")" = "regression" ]; then
   TESTS_DIR="$(dirname "$SCRIPT_DIR")"
 fi
 source "$TESTS_DIR/helpers/assert.sh"
+source "$TESTS_DIR/helpers/pack-root.sh"
 
-FW="$(cd "$TESTS_DIR/.." && pwd)"
-ROOT="$(cd "$FW/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 PIPEREF="$FW/pipeline-reference.md"
 ARCH="$ROOT/docs/architecture-overview.md"
 INDEX="$ROOT/docs/decisions-index.md"
@@ -85,10 +86,10 @@ echo "=== req-007: the rewrite list offers no retired track ==="
 
 for rel in \
   README.md \
-  ravintio-framework/getting-started.md \
-  ravintio-framework/pipeline-reference.md \
-  ravintio-framework/project-operations.md \
-  ravintio-framework/tool-setup-reference.md \
+  "$RAVINTIO_PACK_REL/getting-started.md" \
+  "$RAVINTIO_PACK_REL/pipeline-reference.md" \
+  "$RAVINTIO_PACK_REL/project-operations.md" \
+  "$RAVINTIO_PACK_REL/tool-setup-reference.md" \
   docs/component-registry.md \
   docs/dependency-graph.md \
   src/setup-hook-integration/docs/interface-contract.md \
@@ -101,7 +102,7 @@ do
 done
 no_residue decisions docs/decisions-index.md
 no_residue decisions docs/architecture-overview.md
-no_residue history ravintio-framework/component.yml
+no_residue history "$RAVINTIO_PACK_REL/component.yml"
 
 echo ""
 echo "=== req-007: the history-line rule still fails an uncovered line ==="

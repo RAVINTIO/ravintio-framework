@@ -30,8 +30,10 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FW="$(cd "$SCRIPT_DIR/.." && pwd)"
-ROOT="$(cd "$FW/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 STEM="migrate-0.38.0-retire-fast-path-and-change-pipeline"
 MIGRATION="$FW/migrations/$STEM.md"
 MIGRATOR="$FW/skills/ravintio-migrator/SKILL.md"
@@ -171,8 +173,8 @@ YML
 echo ""
 echo "=== req-005 AC1: the fixture is the 0.37.2 template ==="
 
-if git -C "$ROOT" cat-file -e "$FIXTURE_COMMIT:ravintio-framework/hooks/ravintio.yml" 2>/dev/null; then
-  git -C "$ROOT" show "$FIXTURE_COMMIT:ravintio-framework/hooks/ravintio.yml" > "$WORK/from-git.yml"
+if git -C "$ROOT" cat-file -e "$FIXTURE_COMMIT:ravintio-framework/hooks/ravintio.yml" 2>/dev/null; then # root-copy-ok: history stores the 0.37.2 template at the old path
+  git -C "$ROOT" show "$FIXTURE_COMMIT:ravintio-framework/hooks/ravintio.yml" > "$WORK/from-git.yml" # root-copy-ok: history stores the 0.37.2 template at the old path
   assert_equals "yes" "$(yes_no cmp -s "$FIXTURE" "$WORK/from-git.yml")" \
     "req-005: the fixture equals hooks/ravintio.yml at the 0.37.2 template commit"
 else

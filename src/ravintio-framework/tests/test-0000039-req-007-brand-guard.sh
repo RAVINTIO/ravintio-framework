@@ -31,9 +31,12 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FW="$SCRIPT_DIR/.."
-ROOT="$(cd "$FW/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
+# Regex form of the pack path: src/ravintio-framework in the source repo, ravintio-framework in a consumer.
+PACK_RE="$RAVINTIO_PACK_REL"
 
 WORD="planifest"
 
@@ -50,8 +53,8 @@ EXCLUDED_PREFIXES=(
 
 # Bodies of migrations shipped before 0.37.0 are history. The 0.37.0 rename
 # migration and its helpers stay in scope and carry allowlist entries.
-HISTORY_MIGRATIONS_DIR="ravintio-framework/migrations/" # portable-ok: repo-relative path literal that matches git ls-files output
-LIVE_MIGRATION_RE='^ravintio-framework/migrations/migrate-0\.37\.0-ravintio-rename\.'
+HISTORY_MIGRATIONS_DIR="$RAVINTIO_PACK_REL/migrations/"
+LIVE_MIGRATION_RE="^${PACK_RE}/migrations/migrate-0\\.37\\.0-ravintio-rename\\."
 
 ALLOWLIST=(
   # --- This guard ---
@@ -114,6 +117,14 @@ ALLOWLIST=(
   # The refresh script keeps the old local checkout path.
   '^refresh-ravintio-framework-dir\.ps1$|C:.d.planifest.framework|Local checkout path on the maintainer machine keeps the old text.'
 )
+
+# Anchor each pack path regex on the pack's real location, so entries match
+# src/ravintio-framework/ in the source repo and ravintio-framework/ elsewhere.
+for _i in "${!ALLOWLIST[@]}"; do
+  case "${ALLOWLIST[$_i]}" in
+    '^ravintio-framework/'*) ALLOWLIST[$_i]="^${PACK_RE}/${ALLOWLIST[$_i]#^ravintio-framework/}" ;;
+  esac
+done
 
 # One counter per entry, used by the stale-entry check.
 HITS=()
@@ -193,7 +204,7 @@ SCOPE=""
 while IFS= read -r path; do
   [ -n "$path" ] || continue
   in_scope "$path" && SCOPE="${SCOPE}${path}"$'\n'
-done <<< "$(git -C "$ROOT" ls-files)"
+done <<< "$(if [ "$RAVINTIO_SOURCE_REPO" = "yes" ]; then git -C "$ROOT" ls-files -- . ':!ravintio-framework'; else git -C "$ROOT" ls-files; fi)"
 
 # One scan: paths first, then lines. Hits count toward the stale check.
 while IFS= read -r path; do

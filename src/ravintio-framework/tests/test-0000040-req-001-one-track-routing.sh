@@ -21,9 +21,10 @@ if [ "$(basename "$SCRIPT_DIR")" = "regression" ]; then
   TESTS_DIR="$(dirname "$SCRIPT_DIR")"
 fi
 source "$TESTS_DIR/helpers/assert.sh"
+source "$TESTS_DIR/helpers/pack-root.sh"
 
-FW="$(cd "$TESTS_DIR/.." && pwd)"
-ROOT="$(cd "$FW/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 ORCH="$FW/skills/ravintio-orchestrator/SKILL.md"
 PHASE0="$FW/skills/ravintio-orchestrator/references/phase-0-assess-and-coach.md"
 ADOPT="$FW/skills/ravintio-orchestrator/references/adoption-modes.md"
