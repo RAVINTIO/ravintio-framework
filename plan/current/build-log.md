@@ -314,3 +314,10 @@ Gate passed: P4
 | Notes | Autonomous run. |
 
 Decision (P5): two fresh-context reviewers run in one batch, one on build-release.mjs and its write boundary, one on the other scripts, CI, the migration, and the hooks / reason: the release script carries the high-impact risk R-002, and the two scopes share no secret or auth logic
+Security review (P5, release script): High. 1 high, 2 medium, 5 low. See security-review-release-script.md.
+Security review (P5, readers and CI): High. 3 high, 3 medium, 2 low, 6 mitigated. See security-review-readers-and-ci.md. Backlog filed: 0000415.
+Decision (P5): fix release script RS-F01 (refuse unless the working folder, the resolved root, and the git top level are one real path), RS-F06 (clear GIT_CONFIG_* and force core.fsmonitor=false), RS-F07 (a tracked release.yml or a case-only collision exits 2), and RS-F08 (print restored: before the build) / reason: RS-F01 breaks the write boundary, and the other three are cheap and close a fail-open path
+Decision (P5): accept release script RS-F02, RS-F03, and RS-F04 as residual risk under R-002, and RS-F05 with backlog / reason: each needs a concurrent same-user writer or a local index trick, and Node has no openat to close the race. The work folders get mode 0o700 to narrow it.
+Decision (P5): fix reader RC-F02 (the component.yml fallback applies only when no trusted release record exists) and RC-F08 (force core.fsmonitor=false in ownBuild) / reason: RC-F02 is a downgrade path to a version-only check, and both fixes are small
+Decision (P5): accept reader RC-F01, RC-F03, RC-F04, RC-F05, and RC-F07 as one residual risk, R-015, with backlog / reason: each needs a push that can also rewrite the in-repo trust record or the checker. An in-repo record can't resist that writer, and the step 1a check was version-only before this feature. A trust anchor outside the repo needs its own design.
+Deviation (P5, unclassified): req-002 gains the RS-F01, RS-F06, RS-F07, and RS-F08 rules and 0o700 work folders, and req-003 gains the RC-F02 and RC-F08 rules / reason: P5 security fixes
