@@ -59,7 +59,11 @@ Run these steps in order. Every step is safe to repeat. A deleted scope record, 
    - A Change Pipeline run leaves `plan/current/change-summary.md`.
 
    If either file exists, warn the human on the loop that the track is gone. Tell them to restart the work on the Feature Pipeline. The warning changes no file.
-3. If `plan/.fast-path-scope` exists, ask the human on the loop to delete it. The migrator never deletes it itself, because the Write-or-Edit rule (boot Hard Limit 8) names no delete route (backlog 0000366). Show them this command, to run from the project root:
+3. If `plan/.fast-path-scope` exists, ask the human on the loop to delete it. The migrator never deletes it itself, because the Write-or-Edit rule (boot Hard Limit 8) names no delete route (backlog 0000366).
+
+   First check whether `plan` itself is a symbolic link. If it is, `rm` would delete a file in the link's target. So the migrator doesn't show the command. It names `plan/.fast-path-scope` for the human on the loop to check by hand. The record body names the path, as for a delete that didn't run. This step is then done.
+
+   If `plan` is not a link, show them this command, to run from the project root:
 
    `rm -- plan/.fast-path-scope`
 
@@ -74,9 +78,15 @@ Run these steps in order. Every step is safe to repeat. A deleted scope record, 
    - It counts the edit in `corrections-skipped`.
    - It records the outcome `skipped`. The record body names the reason as `declined` or `no match`.
    - It never records `applied` with `corrections-skipped: 0` for this case.
+
+   Two more reasons get the same handling:
+   - `blocked`: a hook blocks the **Edit**. For example, `gate-write` exits 2 in a consumer with no confirmed design. The migrator shows the hook's block reason.
+   - `refused`: `.github/workflows/ravintio.yml` fails a path check from the migrator's `### Named paths`, such as a linked `.github`. The migrator reads and edits nothing there.
+
+   For each one, the migrator edits nothing in the CI file. It names the file and the line numbers to delete by hand, where it could read them. It counts the edit in `corrections-skipped` and records `skipped`. The record body names the reason as `blocked` or `refused`.
 6. Tell the human on the loop that Fast Path and the Change Pipeline are gone. Every change now runs the Feature Pipeline. Ask for a setup re-run for each tool the project uses. Use `ravintio-framework/setup.sh` or `setup.ps1` with the flags the project normally uses. The re-run removes the installed copies of the retired track files. Also say that the CI file keeps its old `src/` check. Name `ravintio-framework/hooks/ravintio.yml` as the template to compare against (backlog 0000364).
 7. Record the outcome, as `## Record` describes. Set it from these rules:
-   - `skipped` when step 5 found `declined` or `no match`.
+   - `skipped` when step 5 found `declined`, `no match`, `blocked`, or `refused`.
    - `applied` in every other case where steps 1 to 6 ran. A run that found nothing records `applied` with both counts at `0`.
    - The counts cover the CI edit only. The human on the loop runs the scope record delete, so no count includes it.
 
@@ -88,8 +98,10 @@ Report to the human on the loop:
 - the version that `ravintio-framework/component.yml` reports
 - each unfinished-run leftover found in step 2, with the warning
 - whether `plan/.fast-path-scope` existed, and whether it is gone after step 3
-- the CI file result: the block removed, already gone, the file absent, `declined`, or `no match`
-- for `declined` or `no match`, the file and the line numbers to delete by hand
+- the CI file result: the block removed, already gone, the file absent, `declined`, `no match`, `blocked`, or `refused`
+- for `declined`, `no match`, `blocked`, or `refused`, the file and the line numbers to delete by hand
+- for `blocked`, the hook's block reason
+- for a linked `plan`, the path `plan/.fast-path-scope` to check by hand
 - the setup re-run request, with each tool the project uses
 - the reminder that the CI file keeps its old `src/` check, with the template to compare against
 

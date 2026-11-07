@@ -103,6 +103,15 @@ These limits bound the route:
 - A future migration may name a sensitive path. Per-edit confirmation is then the only control. The P2 design critic and the P5 security review should check each new `**May edit:**` line.
 - Boot Hard Limit 8 allows file changes only through **Write** or **Edit**, and neither deletes a file. So the migrator doesn't delete `plan/.fast-path-scope` itself. It asks the human on the loop to run the delete, then checks that the path is gone (req-005, P2 revision). Backlog 0000366 covers the missing delete route.
 
+## What P5 changed (governing)
+
+- Decisions 3, 5, and 7 gain two reasons for `skipped`, with the same handling as `declined` and `no match`:
+  - `blocked`: a hook blocks the named-path edit. For example, `gate-write` exits 2 in a consumer with no confirmed design. The migrator shows the hook's block reason.
+  - `refused`: the named path fails a check from decision 3. The migrator edits nothing there.
+- In each case the migrator names the file and the lines to delete by hand. It counts the edit in `corrections-skipped`, and the record body names the reason. The migrator never records `applied` for a named-path edit it didn't make.
+- Migration step 3 checks whether `plan` itself is a symbolic link before it shows `rm -- plan/.fast-path-scope`. If it is, the migrator doesn't show the command. It names the path for the human on the loop to check by hand.
+- Reason: the P5 security review found that a hooked consumer's `gate-write` blocks the CI edit, and step 7 then recorded `applied`. Defect verdict 001 placed this fix within the confirmed design. How the removal reaches a hooked consumer stays an open design question for the human on the loop.
+
 ## Related ADRs
 
 - ADR-002 - depends-on: retiring Fast Path is why the exemption block and the scope record must go.

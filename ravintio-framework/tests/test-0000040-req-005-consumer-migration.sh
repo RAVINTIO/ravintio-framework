@@ -14,6 +14,8 @@
 #   AC1 the migration file text, its quoted block, and the block match
 #       against a fixture copy of the 0.37.2 hooks/ravintio.yml
 #   AC3 the migrator SKILL.md states the widened scope rule
+#   P5 revision (defect verdict 001): the blocked and refused reasons, the
+#       linked plan check in step 3, and a real gate-write block of the CI edit
 # AC2 is "Verified by: execution". It needs a real migrator run, so P4 runs it.
 # The scratch consumer cases below check only the matching rule the migration
 # states: trailing whitespace trimmed, and a removal only on one match.
@@ -318,6 +320,31 @@ assert_contains "outcome \`skipped\`" "$STEPS" "req-005: a declined or unmatched
 assert_contains "never records \`applied\` with \`corrections-skipped: 0\`" "$STEPS" \
   "req-005: a declined or unmatched edit never records a clean applied"
 
+# P5 revision (defect verdict 001): a hook-blocked edit and a refused path.
+STEP5="$(awk '/^5\. /{ on = 1 } /^6\. /{ exit } on { print }' <<< "$STEPS")"
+assert_contains '`blocked`' "$STEP5" "req-005: step 5 names the reason blocked"
+assert_contains '`gate-write`' "$STEP5" "req-005: step 5 names gate-write as a hook that blocks the edit"
+assert_contains "block reason" "$STEP5" "req-005: step 5 shows the hook's block reason for blocked"
+assert_contains '`refused`' "$STEP5" "req-005: step 5 names the reason refused"
+assert_contains '`### Named paths`' "$STEP5" "req-005: refused points at the migrator's named-path checks"
+STEP7_SKIPPED="$(grep -m1 -E '^   - `skipped` when step 5 found' <<< "$STEPS" || true)"
+for r in '`declined`' '`no match`' '`blocked`' '`refused`'; do
+  assert_contains "$r" "$STEP7_SKIPPED" "req-005: step 7 records skipped for $r"
+done
+FINDINGS="$(section "$MIGRATION" "## Present Findings" "## Record")"
+assert_contains '`blocked`' "$FINDINGS" "req-005: Present Findings lists the blocked result"
+assert_contains '`refused`' "$FINDINGS" "req-005: Present Findings lists the refused result"
+
+# P5 revision (defect verdict 001): step 3 checks for a linked plan folder.
+STEP3="$(awk '/^3\. /{ on = 1 } /^4\. /{ exit } on { print }' <<< "$STEPS")"
+assert_contains "\`plan\` itself is a symbolic link" "$STEP3" "req-005: step 3 checks whether plan itself is a symbolic link"
+assert_contains "doesn't show the command" "$STEP3" "req-005: step 3 holds back the rm command when plan is a link"
+assert_contains "check by hand" "$STEP3" "req-005: step 3 names the path for the human on the loop to check by hand"
+P_LINK="$(position "$STEP3" "\`plan\` itself is a symbolic link")"
+P_RM="$(position "$STEP3" '`rm -- plan/.fast-path-scope`')"
+assert_equals "yes" "$([ "$P_LINK" -ge 0 ] && [ "$P_LINK" -lt "$P_RM" ] && echo yes || echo no)" \
+  "req-005: step 3 checks for a linked plan before it shows the rm command"
+
 # Step 6: the notice and the setup re-run.
 assert_contains "setup.sh" "$STEPS" "req-005: step 6 names setup.sh"
 assert_contains "setup.ps1" "$STEPS" "req-005: step 6 names setup.ps1"
@@ -365,5 +392,40 @@ assert_contains "declined" "$SKIPPED" "req-005: the skipped outcome covers a dec
 assert_contains "couldn't match" "$SKIPPED" "req-005: the skipped outcome covers an edit the migrator couldn't match"
 assert_contains "the skip rule (migrator Hard Limit 3)" "$SKIPPED" "req-005: the skipped outcome keeps the skip rule"
 assert_contains "the scope rule (migrator Hard Limit 1)" "$SKILL" "req-005: the migrator cites the scope rule by name"
+
+# P5 revision (defect verdict 001): refused and blocked record skipped.
+assert_contains '`refused`' "$NAMED" "req-005: Named paths gives a refused path the reason refused"
+assert_contains '`blocked`' "$NAMED" "req-005: Named paths gives a hook-blocked edit the reason blocked"
+assert_contains "never records \`applied\` for a named-path edit" "$NAMED" \
+  "req-005: the migrator never records applied for a named-path edit it didn't make"
+assert_contains "refused" "$SKIPPED" "req-005: the skipped outcome covers a refused named path"
+assert_contains "hook blocked" "$SKIPPED" "req-005: the skipped outcome covers a hook-blocked edit"
+
+# =============================================================================
+echo ""
+echo "=== req-005 P5: gate-write blocks the CI edit in a hooked consumer ==="
+
+# The premise of the blocked reason: in a consumer git repo with no design,
+# the real gate-write hook exits 2 for an Edit to the CI file. The record
+# under plan/_migrations/ still passes, so the migrator can record skipped.
+GATE_WRITE="$FW/hooks/enforcement/gate-write.mjs"
+GATED="$WORK/gated-consumer"
+mkdir -p "$GATED/.github/workflows" "$GATED/plan"
+git init "$GATED" >/dev/null 2>&1
+cp "$FIXTURE" "$GATED/$CI_PATH"
+GATED_NATIVE="$GATED"
+if command -v cygpath >/dev/null 2>&1; then GATED_NATIVE="$(cygpath -m "$GATED")"; fi
+
+gate_edit() {
+  printf '{"cwd":"%s","tool_name":"Edit","tool_input":{"file_path":"%s","old_string":"a","new_string":"b"}}' \
+    "$GATED_NATIVE" "$1" | (cd "$GATED" && node "$GATE_WRITE" >"$WORK/gate.out" 2>"$WORK/gate.err")
+}
+
+gate_edit "$GATED_NATIVE/$CI_PATH"
+assert_equals "2" "$?" "req-005: gate-write exits 2 for an Edit to $CI_PATH with no design"
+assert_contains "No confirmed design" "$(cat "$WORK/gate.err")" "req-005: gate-write gives a block reason on stderr"
+
+gate_edit "$GATED_NATIVE/plan/_migrations/$STEM.md"
+assert_equals "0" "$?" "req-005: gate-write lets the migrator write the plan/_migrations/ record"
 
 print_summary
