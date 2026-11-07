@@ -14,7 +14,7 @@ The `component.yml` is created at **two points** in the lifecycle:
 
 2. **Completed by the codegen-agent** after the implementation is built - the agent fills in purpose, contract, data ownership, risk, scope, and quality sections based on what was actually implemented.
 
-From that point forward, every change-agent reads it before modifying the component.
+From that point forward, the `codegen-agent` reads it before it changes the component in a Feature Pipeline run.
 
 ---
 
@@ -86,7 +86,7 @@ Describes the component's interface - what it accepts, what it produces, who dep
 
 ### Data
 
-Components that own data declare it here. This is what the `change-agent` reads before proposing any schema migration.
+Components that own data declare it here. This is what the `codegen-agent` reads before proposing any schema migration.
 
 | Field | Required | Written by | Description |
 |---|---|---|---|
@@ -143,7 +143,7 @@ Operational metadata used by the CI/CD pipeline and template stamping system.
 | `metadata.updatedAt` | Yes | Agent | ISO 8601 timestamp. Updated on every change. |
 | `metadata.createdBy` | Yes | System | `agent` or `human`. |
 | `metadata.lastModifiedBy` | Yes | System | `agent` or `human`. |
-| `metadata.skill` | Yes | Agent | Which skill produced or last modified this manifest (e.g., `codegen-agent`, `change-agent`). |
+| `metadata.skill` | Yes | Agent | Which skill produced or last modified this manifest (e.g., `codegen-agent`, `docs-agent`). |
 | `metadata.tool` | Yes | Agent | Which agentic tool was used (e.g., `claude-code`, `cursor`, `antigravity`). |
 | `metadata.model` | Yes | Agent | Which model produced the output (e.g., `claude-sonnet-4-20250514`). |
 

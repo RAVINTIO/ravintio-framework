@@ -25,7 +25,7 @@ cd "$ROOT" || exit 2
 
 OLD="planif""est"
 
-SKILLS="adr-agent build-assessment-agent change-agent codegen-agent design-critic docs-agent implementer loop-runner migrator optimise-agent orchestrator refactor refresh-setup reversal-assessor scope-lock-agent security-agent ship-agent spec-agent test-writer validate-agent verify-by-execution"
+SKILLS="adr-agent build-assessment-agent codegen-agent design-critic docs-agent implementer loop-runner migrator optimise-agent orchestrator refactor refresh-setup reversal-assessor scope-lock-agent security-agent ship-agent spec-agent test-writer validate-agent verify-by-execution"
 
 # Tracked paths, minus paths deleted in the working tree but not yet staged. The
 # held-back vendored files under the old pack folder are in that state until P4.
@@ -88,7 +88,7 @@ for s in $SKILLS; do
     assert_equals "yes" "no" "req-001 AC1: ravintio-framework/skills/ravintio-$s/SKILL.md exists"
   fi
 done
-assert_equals "21" "$skill_count" "req-001 AC1: 21 ravintio-* skill folders exist"
+assert_equals "20" "$skill_count" "req-001 AC1: 20 ravintio-* skill folders exist"
 
 echo ""
 echo "=== req-001 AC2: identifiers carry the new id, name, and scope ==="

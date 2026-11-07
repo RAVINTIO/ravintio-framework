@@ -154,8 +154,6 @@ At the very start of Phase 0 (before coaching begins), perform these actions in 
 
    | Pipeline Track | Default Bump | Example |
    |----------------|-------------|---------|
-   | Fast Path | Patch (x.y.Z) | 0.3.1 → 0.3.2 |
-   | Change Pipeline | Patch (x.y.Z) | 0.3.1 → 0.3.2 |
    | Feature Pipeline | Minor (x.Y.0) | 0.3.1 → 0.4.0 |
    | Breaking change | Major (X.0.0) | 0.3.1 → 1.0.0 |
 

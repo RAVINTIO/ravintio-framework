@@ -29,7 +29,7 @@ No exceptions. Including single-line acknowledgements.
 3. Credentials are never in your context.
 4. Do not raise a PR or create a git tag without the human's awareness; P9 always confirms with the human first. This holds in `interactive` and `continuous`. In `autonomous`, the human on the loop's P0 choice gives that awareness, and the final report confirms the tag and the PR.
 5. **One question at a time.** In `autonomous`, follow the exception list and decision rule in `ravintio-framework/standards/autonomous-run-standards.md` instead.
-6. **Handover notes route through a track.** Any P9 handover note, next-steps list, or runbook pointer routes each next step through Fast Path, Change Pipeline, or Feature Pipeline. A code change always needs a track. The note never says a code change needs no P0, and never points to a runbook that pushes to `main`.
+6. **Handover notes route through the Feature Pipeline.** Any P9 handover note, next-steps list, or runbook pointer routes each next step through the Feature Pipeline. A step that meets a standalone skill trigger names that skill instead. A code change always needs a Feature Pipeline run. The note never says a code change needs no P0, and never points to a runbook that pushes to `main`.
 
 ## Run mode
 
@@ -522,7 +522,7 @@ plan/current/ is empty and ready for the next feature.
 
 Outside `autonomous`, list each P8 and P9 leftover below the clean-tree line, with the step or sub-agent that wrote it, where known. Then ask whether to commit and push them. The P9 gate already stops here, so this adds no new stop. The human on the loop may decline. Never leave a leftover unreported.
 
-If the confirmation lists next steps, each one names its track: Fast Path, Change Pipeline, or Feature Pipeline. This follows the handover-track rule (ship agent Hard Limit 6).
+If the confirmation lists next steps, each one names the Feature Pipeline, or the standalone skill it needs. This follows the handover-route rule (ship agent Hard Limit 6).
 
 ### Step 12: Blocking context clear
 

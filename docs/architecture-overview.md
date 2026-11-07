@@ -3,7 +3,7 @@
 > Living document. Reflects current system state. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
+Last updated: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
 
 ---
 
@@ -41,7 +41,7 @@ flowchart TD
     subgraph Enforcement["Enforcement Scripts (hooks/enforcement/)"]
         GW["gate-write.mjs\n(path allowlist + sentinel check,\nreason on stderr, 0000032)"]
         SWG["shell-write-guard.mjs\n(Bash shell writers judged by\nthe same rules, Claude Code only, 0000032)"]
-        PR["path-rules.mjs\n(shared gated-path rules, repository root,\nlink resolution, scope record, 0000032/0000035)"]
+        PR["path-rules.mjs\n(shared gated-path rules, repository root,\nlink resolution, ENFORCEMENT_PATHS, 0000032/0000035/0000040)"]
         CD["check-design.mjs\n(scope injection)"]
         RC["ratchet-check.mjs\n(criteria/scope weakening block,\narmed while a loop is active,\nshared root rules, 0000035)"]
         ED["em-dash-guard.mjs\n(U+2014 rejected in RAVINTIO prose,\nsentinel bypass, 0000028)"]
@@ -148,7 +148,7 @@ Self-modification sequencing (ADR-004) governs how such a change is applied to h
 
 | Job | Runner | What it checks |
 |-----|--------|----------------|
-| `validate-branch` | `ubuntu-latest` | A change under `src/` also touches `plan/`, `docs/`, or a `component.yml` |
+| `validate-branch` | `ubuntu-latest` | A change to a source folder also touches a file under `plan/` or `docs/`. A source folder is `src/` or the folder of a `component.yml` that `product.yml` lists (0000040 ADR-003) |
 | `self-description-check` | `ubuntu-latest` | The README matches the repository structure (0000019) |
 | `test-suite` | `ubuntu-latest`, `macos-latest`, and `windows-latest` under Git Bash in seven shards, `fail-fast: false` | `run-tests.sh` passes. On failure, the log lists each failed suite by file name. |
 | `setup-powershell` | `windows-latest`, PowerShell 7 | `test_setup.ps1` passes, including the live `.ravintio-setup-flags` marker checks |
@@ -188,7 +188,7 @@ Resume Detection in the orchestrator reads archive evidence to finish an interru
 
 ### Blocking context clear after P9
 
-Ship Step 12 asks the human on the loop to run `/clear` or start a new session (0000032-ADR-003). The orchestrator refuses new work in the same session until that happens. In the next session, `auto-trigger-orchestrator.mjs` says no RAVINTIO run is active, and the agent must triage the request before it acts. A ship Hard Limit makes every P9 handover note route each next step through a track.
+Ship Step 12 asks the human on the loop to run `/clear` or start a new session (0000032-ADR-003). The orchestrator refuses new work in the same session until that happens. In the next session, `auto-trigger-orchestrator.mjs` says no RAVINTIO run is active, and the agent must triage the request before it acts. The handover-route rule (ship agent Hard Limit 6) makes every P9 handover note route each next step through the Feature Pipeline, or the standalone skill it needs (0000040 ADR-002).
 
 ### Shared path rules and repository root
 
@@ -250,10 +250,6 @@ In `autonomous`, every phase gate runs as a loop under `ravintio-loop-runner` wi
 
 `standards/p0-question-policy.md` limits P0 to real forks (0000033-ADR-007). Adoption mode, version, stack, and similar items go into the design draft for one confirmation. The design, the Scope Lock batch, and the run mode confirm in one turn. The build log records the question count. When a design depends on existing records, discovery samples recent rows and the design states the usable rate as an assumption. `standards/release-sizing.md` sizes each requirement as small (1), medium (2), or large (3). P0 fills the release from the backlog up to the target in `ravintio-overrides/release-budget.yml` (0000033-ADR-008). Without that file, the three-story rule applies.
 
-### Fast Path for changes with no src target
-
-Fast Path now admits a change with no `src/` target (0000033-ADR-009). Its four criteria are unchanged, and the orchestrator's track table says so.
-
 ### Parallel streams and join reconciliation
 
 Parallel dispatch is the default in every phase (`standards/agent-dispatch-standards.md`). Independent requirements move through P1 to P4 as separate streams. Each stream has a state file under `plan/current/streams/`, from `templates/stream-state.template.md`. The `parallel_streams` toggle in `loop-toggles.yml` defaults to `on` in `autonomous` and `off` otherwise (0000033-ADR-013). The orchestrator owns every join. After each join, `scripts/stream-reconcile.mjs` checks that every artifact one stream declares is consumed by another stream or by a requirement (0000033-ADR-014).
@@ -287,16 +283,11 @@ A link loop, a chain past 40 links, or a resolution error blocks with exit 2 whe
 
 `markedRoot` distrusts a `.git` or `ravintio-framework` marker that sits below an always-permitted name, such as `plan/w/.git` (0000035-ADR-008). The walk goes on to the next trusted marker above, so a moved folder can't become a new root.
 
-### Fast Path scope record
+### `ENFORCEMENT_PATHS`
 
-A Fast Path change lists its target paths in `plan/.fast-path-scope` (0000035-ADR-002). Both write gates accept a valid, current record when `design.md` is absent. The record stores the branch and `HEAD` it was written at. The gate reads both from `.git` files with no spawn, and ignores a stale record (0000035-ADR-003).
+`path-rules.mjs` exports a frozen list, `ENFORCEMENT_PATHS` (0000040 ADR-004). It covers hook folders, hook wiring, tool-local settings, setup scripts, the CI workflow, and `.git/`. `isEnforcementPath` matches a path against it. The match folds case and NFKC lookalikes, and it reads a `**/` entry at any depth.
 
-The record is self-authorisation, so the gates add two controls:
-
-- Each admitted write prints one stderr notice that names the record and the path.
-- The Fast Path changelog entry lists every record path.
-
-`FAST_PATH_ENFORCEMENT_PATHS` lists the paths a record never admits (0000035-ADR-004). The list covers hook folders, hook wiring, tool-local settings, setup scripts, the CI workflow, and `.git/`. `fast-path.md` names the same entries, and a suite checks both lists match. Fast Path removes the record before its commit, and `.gitignore` lists it.
+The list has one caller, `isAlwaysPermitted`. An always-permitted name such as `CLAUDE.md` inside a listed path gets no shortcut, so it takes the normal route (0000036-ADR-003). With no design, that write blocks. With a design, the component-path check judges it.
 
 ### ratchet-check shares the root rules
 
@@ -480,6 +471,48 @@ Through the 0.x line, the pack still reads the old session ID variable and the o
 
 ---
 
+## One track and the source folder rule (0000040)
+
+Release 0.38.0 retires Fast Path and the Change Pipeline, so every change runs the Feature Pipeline (0000040 ADR-002). The declared stack stays unchanged (0000040 ADR-001).
+
+### One track
+
+The Routing Directive in the orchestrator keeps its triage step, with two outcomes (0000040 ADR-002). A request that meets a standalone skill trigger invokes that skill. The standalone skills are `ravintio-optimise-agent`, `ravintio-refresh-setup`, and the retrofit workflow. Every other request goes to the Feature Pipeline, whether or not it has a `src/` target. The version bump table keeps the minor and major rules and drops the patch rule for the retired tracks.
+
+The pack no longer ships `workflows/fast-path.md`, `workflows/change-pipeline.md`, or the `ravintio-change-agent` skill. The `PC:` prefix goes with them (0000040 ADR-002).
+
+### Write gates
+
+`gate-write`, `shell-write-guard`, and `ratchet-check` no longer read `plan/.fast-path-scope` (0000040 ADR-002). `path-rules.mjs` drops `scopeVerdict` and `readGitState` with it. With no design, `gate-write` blocks every write outside `plan/`, `docs/`, and the always-permitted names. The enforcement path list stays as `ENFORCEMENT_PATHS`, described above (0000040 ADR-004).
+
+### Source folder rule in pre-push and CI
+
+`hooks/pre-push`, the consumer template `hooks/ravintio.yml`, and this repo's `.github/workflows/ravintio.yml` drop the `fix(fast-path):` commit subject exemption (0000040 ADR-003). In its place they apply one source folder rule:
+
+- A source folder is `src/`, or the folder of a `component.yml` that `product.yml` lists.
+- If a diff touches a source folder, the same diff needs a file under `plan/` or `docs/`.
+- A `component.yml` counts as source, not as a record.
+
+The rule reads `product.yml` with `git show` at the base commit and at `HEAD`, never from a folder scan. If `product.yml` is absent or can't be read, the rule checks `src/` only and prints a warning. Pre-push fails closed when a shallow clone has no merge base.
+
+### Setup retired list
+
+Setup carries a named retired list that doesn't depend on the skill manifest (0000040 ADR-005). `setup.sh` holds `RETIRED_TRACK_WORKFLOWS` and `RETIRED_TRACK_SKILLS`, and `setup.ps1` holds `$RetiredTrackWorkflows` and `$RetiredTrackSkills`. Every run removes those installed workflow copies and skill folders from the tool it sets up.
+
+### Consumer migration and migrator named paths
+
+`migrate-0.38.0-retire-fast-path-and-change-pipeline.md` asks the human on the loop to delete a leftover scope record, then checks that it is gone (0000040 ADR-006). It warns on an unfinished run of a retired track and asks for a setup re-run. It also removes the exemption block from the consumer's `.github/workflows/ravintio.yml` once the human on the loop confirms.
+
+The scope rule (migrator Hard Limit 1) now lets a migration list extra paths on a `**May edit:**` line (0000040 ADR-006). The human on the loop confirms each edit to a named path on its own, in every run mode. The migrator refuses an absolute path, a `..` part, a link, and any path under `src/`.
+
+In a hooked consumer with no design, `gate-write` blocks the CI edit. The migration then records `skipped` with the reason `blocked`, and names the file and the lines to delete by hand. The human on the loop accepted this outcome at P5 (risk R-014).
+
+### Residue guard
+
+`test-0000040-req-006-residue-guard.sh` fails on any live reference to either retired track (0000040 ADR-007). It skips history prefixes such as `plan/_archive/` and `plan/changelog/`. A closed allowlist and a history-line rule cover the rest, and a stale allowlist entry fails the suite.
+
+---
+
 ## Data Ownership
 
 No components own persistent data. RAVINTIO operates on local filesystem artifacts (plan/ files, skill SKILL.md files) written and read during pipeline execution. No databases. New in 0000016 (all plain markdown/YAML, git-tracked): `plan/backlog/` entries (orchestrator-owned, filed by any phase agent), `product.yml` (ship-agent writes, orchestrator reads), and `plan/current/` loop-state/run-log/defect-report/revision-log artifacts (orchestrator-owned). New in 0000020 (local, gitignored, not version-tracked): `<tool-dir>/.ravintio-setup-flags`, owned by `setup-hook-integration`, written on every successful install and read/updated by `ravintio-refresh-setup`. New in 0000025 (git-tracked, additive to the 0000020 marker, not a replacement): `ravintio-overrides/setup-config/{tool}.md`, one file per AI tool, written by `setup.sh`/`setup.ps1` alongside the existing gitignored marker so the flags in effect at install time are versioned and reviewable, not only locally cached.
@@ -489,10 +522,11 @@ Clarified in 0000033: `ravintio-framework` owns `plan/.run-mode`, `plan/current/
 New in 0000035 (plain Markdown and text):
 
 - `plan/_migrations/` run records: owned by `ravintio-migrator`, read by orchestrator resume detection, git-tracked, never archived (0000035-ADR-017).
-- `plan/.fast-path-scope`: owned by the Fast Path workflow, read by `gate-write.mjs` and the shell-write guard, gitignored and removed before each Fast Path commit.
 - `product.yml`: the ship agent owns it and writes it only through `set-product-release.mjs`. `product-version.mjs` reads it.
 
 Clarified in 0000032: `ravintio-framework` owns the three committed session markers, `plan/.orchestrator-active`, `plan/.orchestrator-ack`, and `plan/.run-mode`. The orchestrator writes them at P0, and the ship skill deletes them in the P9 marker step. Hooks read them only.
+
+Clarified in 0000040: a consumer repo owns its `.github/workflows/ravintio.yml` and its `plan/` markers. A migration edits the CI file only when its `**May edit:**` line names it and the human on the loop confirms the edit (0000040 ADR-006).
 
 ---
 
@@ -544,12 +578,12 @@ Reference `docs/decisions-index.md` for the full ADR list.
 - **ADR-005 (0000033):** A loop that hits its cap tries up to 3 different approaches before it becomes an exception.
 - **ADR-007 (0000033):** P0 asks only real forks and confirms the design, Scope Lock batch, and run mode in one turn.
 - **ADR-008 (0000033):** The release budget counts size points, not stories.
-- **ADR-009 (0000033):** Fast Path admits a change with no `src/` target.
+- **ADR-009 (0000033):** Fast Path admits a change with no `src/` target. Superseded by 0000040 ADR-002.
 - **ADR-010 (0000033):** `archive-current.mjs` replaces the glob delete in the P7 archive.
 - **ADR-013 (0000033):** Parallel streams use a `parallel_streams` toggle and per-stream state files.
 - **ADR-014 (0000033):** The orchestrator owns joins and runs `stream-reconcile.mjs` after each.
-- **ADR-002 (0000035):** A Fast Path scope record at `plan/.fast-path-scope` stands in for `design.md`, with a stderr notice on each admitted write.
-- **ADR-004 (0000035):** A scope record never admits a path in `FAST_PATH_ENFORCEMENT_PATHS`.
+- **ADR-002 (0000035):** A Fast Path scope record at `plan/.fast-path-scope` stands in for `design.md`, with a stderr notice on each admitted write. Superseded by 0000040 ADR-002.
+- **ADR-004 (0000035):** A scope record never admits a path in the enforcement path list. Partly superseded by 0000040 ADR-004, which keeps the list as `ENFORCEMENT_PATHS`.
 - **ADR-005 (0000035):** The gates resolve links segment by segment and judge both placements. A resolution error inside the root fails closed.
 - **ADR-006 (0000035):** The root lookup works when `cwd` no longer exists.
 - **ADR-007 (0000035):** `ratchet-check.mjs` uses the shared root and target rules.
@@ -583,6 +617,12 @@ Reference `docs/decisions-index.md` for the full ADR list.
 - **ADR-005 (0000039):** The consumer migration moves the old pack to `.ravintio-backup/` and deletes nothing.
 - **ADR-006 (0000039):** The migrator maps old paths and skips a migration whose `Applies when:` condition is false.
 - **ADR-007 (0000039):** The brand guard allowlist matches on path and line.
+- **ADR-002 (0000040):** Every change runs the Feature Pipeline, and triage keeps only the standalone skills. Supersedes **ADR-009 (0000033)**, **ADR-002 (0000035)**, and **ADR-003 (0000035)**. Partly supersedes **ADR-004 (0000014)**.
+- **ADR-003 (0000040):** Pre-push and both CI files apply a source folder rule read from `product.yml`.
+- **ADR-004 (0000040):** The enforcement path list stays as `ENFORCEMENT_PATHS` for the permitted-name rule. Partly supersedes **ADR-004 (0000035)**.
+- **ADR-005 (0000040):** Setup removes the retired track files through a named list.
+- **ADR-006 (0000040):** A migration may name extra paths on a `**May edit:**` line, and the human on the loop confirms each edit.
+- **ADR-007 (0000040):** A residue guard with a closed allowlist fails on any live reference to a retired track.
 
 ---
 

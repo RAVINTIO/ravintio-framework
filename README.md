@@ -109,7 +109,7 @@ The setup script copies skills into the directory your tool auto-discovers, adds
 | [standards/](ravintio-framework/standards/) | Code quality, API design, database, deployment, infrastructure, monorepo, observability, testing, and backend/frontend stack-evaluation standards |
 | [setup/](ravintio-framework/setup/) | Per-tool boot file templates — a `.sh` and `.ps1` pair for each supported tool |
 | [hooks/](ravintio-framework/hooks/) | Git hooks, the CI workflow, and the enforcement adapters they wire up |
-| [workflows/](ravintio-framework/workflows/) | Agent workflow definitions: fast-path, feature-pipeline, change-pipeline, retrofit |
+| [workflows/](ravintio-framework/workflows/) | Agent workflow definitions: feature-pipeline (the Feature Pipeline) and retrofit |
 | [scripts/](ravintio-framework/scripts/) | Deterministic tooling: consistency checks, version derivation, regression promotion, skill sync |
 | [tests/](ravintio-framework/tests/) | Per-feature test scripts plus the promoted regression pack |
 | [external-skills/](ravintio-framework/external-skills/) | Vendored third-party capability skills, available for a pipeline run to load alongside the RAVINTIO skills |
@@ -135,7 +135,7 @@ These apply regardless of tool, model, or configuration:
 
 RAVINTIO is a deliberate trade-off: it exchanges upfront ceremony for traceability and reviewability. That trade-off is not always worth making.
 
-- **Overhead is real.** For small changes, prototypes, or exploratory work, the full pipeline is disproportionate. The fast-path workflow reduces this, but doesn't eliminate it.
+- **Overhead is real.** For small changes, prototypes, or exploratory work, the full pipeline is disproportionate. Every change runs the Feature Pipeline, so a one-line fix costs a full run.
 - **It depends on review discipline.** The PR gate is only a backstop if humans actually read the plans and the diffs. RAVINTIO structures the review; it can't perform it.
 - **Plans don't prevent all bad output.** A complete specification reduces assumption-driven errors; it doesn't guarantee correct code. Validation and security skills catch classes of problems, not all of them.
 - **No comparative benchmarks yet.** We have not published measurements comparing outcomes with and without the framework. Claims about quality improvement are, at this stage, based on design rationale and our own use.

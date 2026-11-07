@@ -7,7 +7,9 @@
  *   2. plan/.orchestrator-active does NOT exist → no run is active
  *
  * If both conditions are met, outputs an instruction to the model to load
- * the ravintio-orchestrator skill and triage the request before acting.
+ * the ravintio-orchestrator skill. The model then routes the request as the
+ * skill's Routing Directive says before acting. A request that meets no
+ * standalone skill trigger goes to the Feature Pipeline (0000040 ADR-002).
  * The instruction appears inline in the model's context before it processes
  * the user prompt. The hook can't tell whether the skill is already loaded,
  * so the message doesn't claim either way (0000032 ADR-003, req-003).
@@ -45,7 +47,8 @@ try {
     "SYSTEM INSTRUCTION: This is a RAVINTIO project (ravintio-framework/ detected) " +
     "and no RAVINTIO run is active. " +
     "Load the ravintio-orchestrator skill before responding to the prompt. " +
-    "Then triage the request as Fast Path, Change Pipeline, or Feature Pipeline before acting. " +
+    "Then triage the request as the skill's Routing Directive says before acting. " +
+    "A request that meets no standalone skill trigger goes to the Feature Pipeline. " +
     "Begin with resume detection as described in the skill.\n"
   );
 

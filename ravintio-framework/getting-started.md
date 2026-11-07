@@ -100,6 +100,5 @@ The orchestrator will assess your brief, coach you through any gaps, produce a c
 | Updating the framework | [project-operations.md](project-operations.md#updating-the-framework) |
 | What to commit | [project-operations.md](project-operations.md#what-to-commit) |
 | Retrofit an existing project | [project-operations.md](project-operations.md#retrofit-an-existing-project) |
-| Trivial fixes (Fast Path) | [pipeline-reference.md](pipeline-reference.md#trivial-fixes--fast-path) |
-| Targeted changes (Change Pipeline) | [pipeline-reference.md](pipeline-reference.md#change-pipeline) |
+| Small fixes and changes to existing features | [pipeline-reference.md](pipeline-reference.md#one-track-the-feature-pipeline) |
 | Phase mechanics and confirmation gates | [pipeline-reference.md](pipeline-reference.md) |

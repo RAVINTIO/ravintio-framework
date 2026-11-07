@@ -1,6 +1,6 @@
 # Dependency Graph
 
-**Last updated:** 0000039-ravintio-rebrand (25 Oct 2026). Feature 0000039 renamed the pack to `ravintio-framework` (0.37.0) and changed no dependency. The new migration helpers sit inside the pack. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026). Feature 0000038 changed no component dependency. `run-tests.sh` gains a `--quiet` flag, and `ravintio-orchestrator` loads two files from its own `references/` folder. Earlier: 0000037 left `ravintio-framework` at 0.35.0. The new `credential-scan.mjs` depends on `git` and an optional `gitleaks`. `run-tests.sh` reads the shard variables. No component dependency changed.
+**Last updated:** 0000040-retire-fast-path (7 Nov 2026). Feature 0000040 moved `ravintio-framework` to 0.38.0 and changed no component dependency. Pre-push and CI now read `product.yml` through `git`, and the migrator may edit a consumer CI file it names. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). Feature 0000039 renamed the pack to `ravintio-framework` (0.37.0) and changed no dependency. The new migration helpers sit inside the pack. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026). Feature 0000038 changed no component dependency. `run-tests.sh` gains a `--quiet` flag, and `ravintio-orchestrator` loads two files from its own `references/` folder. Earlier: 0000037 left `ravintio-framework` at 0.35.0. The new `credential-scan.mjs` depends on `git` and an optional `gitleaks`. `run-tests.sh` reads the shard variables. No component dependency changed.
 **Maintained by:** ravintio-docs-agent
 
 ---
@@ -9,7 +9,7 @@
 
 ```mermaid
 graph TD
-    subgraph "ravintio-framework (component-pack, 0.37.0)"
+    subgraph "ravintio-framework (component-pack, 0.38.0)"
         SKILLS["skills/ (orchestrator + phase agents)"]
         STANDARDS["standards/, templates/"]
         ENFORCE["hooks/enforcement/\n(gate-write, check-design,\nem-dash-guard)"]
@@ -22,7 +22,7 @@ graph TD
         RUNTESTS["tests/run-tests.sh\n(shard selection, 0000037)"]
         EDG["hooks/enforcement/em-dash-guard.mjs\n(Write/Edit)"]
         RATCHET["hooks/enforcement/ratchet-check.mjs\n(Write/Edit, armed while a loop is active)"]
-        PATHRULES["hooks/enforcement/path-rules.mjs\n(gated-path rules, repository root,\nlink resolution, scope record,\nshared module, always installed, 0000032/0000035)"]
+        PATHRULES["hooks/enforcement/path-rules.mjs\n(gated-path rules, repository root,\nlink resolution, ENFORCEMENT_PATHS,\nshared module, always installed, 0000032/0000035/0000040)"]
     end
 
     subgraph "Claude Code Runtime"
@@ -104,10 +104,13 @@ graph TD
 - `set-product-release.mjs` → `path-rules.mjs` (0000035-ADR-010): the script imports `resolveRoot` across folders, from `scripts/` into `hooks/enforcement/`. Both folders sit inside `ravintio-framework`, so no component dependency changed. The script clears `CLAUDE_PROJECT_DIR` for the call, so the root comes from the working folder only.
 - `skill-drift-check.mjs` → `path-rules.mjs` (0000036-ADR-004, ADR-005): the script imports `shown` across folders, from `scripts/` into `hooks/enforcement/`. `ravintio-orchestrator` runs the script in Resume Detection. It warns and never blocks. Both folders sit inside `ravintio-framework`, so no component dependency changed.
 - `em-dash-guard.mjs` → `path-rules.mjs` (0000036-ADR-004): it imports `shown` so a control character in a target path can't forge a line of hook output. It also imports `readStdin` from `read-stdin.mjs`. A broken import fails the hook at module load.
-- `path-rules.mjs` still imports Node built-ins only and no `node:child_process` (0000035-ADR-001). It now also reads `plan/.fast-path-scope` and git state from `.git` files.
+- `path-rules.mjs` still imports Node built-ins only and no `node:child_process` (0000035-ADR-001). Since 0000040 it no longer reads a scope record or git state from `.git` files (0000040 ADR-002).
 - `ravintio-framework`'s `hooks/enforcement/shell-write-guard.mjs` → Claude Code's Bash PreToolUse hook runner (0000032-ADR-006): `setup.sh` and `setup.ps1` register it for Claude Code only. Other tools don't run it.
 - `ravintio-ship-agent` and `ravintio-orchestrator` → three scripts in `ravintio-framework/scripts/` (0000033). The ship agent calls `archive-current.mjs` at P7 and `run-mode.mjs` for the effective run mode. The orchestrator calls `stream-reconcile.mjs` after each join and `run-mode.mjs` after P0. The scripts use Node built-ins and `git`. All of this stays inside `ravintio-framework`, so no component dependency changed.
 - `ravintio-ship-agent` and the autonomous standard → `credential-scan.mjs` (0000037-ADR-003, ADR-004): the ship skill calls it for the P8 and Step 10b guards and for PR text in `--file` mode. `standards/autonomous-run-standards.md` orders every `autonomous` commit to call it first. The script imports Node built-ins only (0000037-ADR-001). It spawns `git` and, when `gitleaks` is on PATH, `gitleaks`. A missing `gitleaks` falls back to the regex rules. All of this stays inside `ravintio-framework`, so no component dependency changed.
+- `hooks/pre-push`, `hooks/ravintio.yml`, and `.github/workflows/ravintio.yml` → `product.yml` and `git` (0000040 ADR-003): the source folder rule reads `product.yml` with `git show` at the base commit and at `HEAD`. It uses Bash and line matching, with no YAML library and no Node.js. An absent or unreadable `product.yml` leaves `src/` as the only source folder.
+- `setup.sh` and `setup.ps1` → their own retired list (0000040 ADR-005): setup removes the retired workflow copies and skill folders by name, so the clean-up doesn't depend on the skill manifest. No component dependency changed.
+- `ravintio-migrator` → a consumer's `.github/workflows/ravintio.yml` (0000040 ADR-006): the 0.38.0 migration names this one path on its `**May edit:**` line. The edit passes through `gate-write`, so a hooked consumer with no design blocks it, and the migration records `skipped` with the reason `blocked`.
 - `run-tests.sh` → shard variables (0000037-ADR-014): it reads `RAVINTIO_SHARD_INDEX` and `RAVINTIO_SHARD_COUNT` from the CI environment and clears both after reading. With neither set, it runs every suite.
 - `ravintio-refresh-setup` (0000020) -> `setup-hook-integration`: two-way relationship via the `.ravintio-setup-flags` marker file. `setup.sh`/`setup.ps1` write it on every successful install (producer); the refresh skill reads it for reconstruction and writes to it again before deletion (consumer and secondary writer of the same file, ADR-002). The refresh skill also re-invokes `setup.sh`/`setup.ps1` directly once flags are confirmed, and calls `refresh-delete-boot-files.sh`/`.ps1` (its own hardcoded deletion script, not a dependency on `setup-hook-integration`).
 

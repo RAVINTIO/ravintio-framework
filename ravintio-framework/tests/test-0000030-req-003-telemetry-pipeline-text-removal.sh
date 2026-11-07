@@ -34,7 +34,7 @@ filtered() {
 }
 
 FILES=()
-for f in "$FRAMEWORK"/skills/ravintio-{adr-agent,change-agent,codegen-agent,design-critic,docs-agent,loop-runner,orchestrator,refresh-setup,reversal-assessor,scope-lock-agent,security-agent,ship-agent,spec-agent,validate-agent,verify-by-execution}/SKILL.md; do
+for f in "$FRAMEWORK"/skills/ravintio-{adr-agent,codegen-agent,design-critic,docs-agent,loop-runner,orchestrator,refresh-setup,reversal-assessor,scope-lock-agent,security-agent,ship-agent,spec-agent,validate-agent,verify-by-execution}/SKILL.md; do
   FILES+=("$f")
 done
 FILES+=(

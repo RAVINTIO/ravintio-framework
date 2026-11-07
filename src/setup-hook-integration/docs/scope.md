@@ -35,6 +35,6 @@
 - Live PowerShell checks beyond `test_setup.ps1`, such as stale-entry clean-up and retired flags
 - `setup all` stopping at roo-code (backlog 0000087) and the opencode PowerShell null skills folder (backlog 0000088)
 - `setup.ps1` skill subcommand routing (TD-006) — add in next iteration
-- `validate_skill_name()` security guard (TD-001/002/003) — add via change-agent
+- `validate_skill_name()` security guard (TD-001/002/003) — add in a Feature Pipeline run
 - Automated test coverage for `skill-sync.sh` operations — future iteration
 - `setup/copilot.sh`/`.ps1` `TOOL_HOOK_ADAPTER_DEST` self-copy bug (crashes `setup.sh copilot` on every run), discovered during 0000020 P5, filed as backlog `0000027`, not fixed in this feature

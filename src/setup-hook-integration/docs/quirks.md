@@ -68,7 +68,7 @@ The `setup.ps1` clean-up, the `-LiteralPath` and reparse-point handling (F2), th
 
 ## Q-015: old names stay in live code through 0.x (0000039)
 
-Some live lines still hold the old brand name. Each is an old-name read that ADR-004 or the brand guard allowlist covers. They exist so a consumer repo on 0.36.0 upgrades without duplicate blocks or a lost session ID. The brand guard (`test-0000039-req-007-brand-guard.sh`) fails on any other hit and on a stale allowlist entry. They are removed at 1.0.0. Two reads are not in the ADR-004 list: the old em dash bypass sentinel in `em-dash-guard.mjs` and the old plugin and workflow paths in `FAST_PATH_ENFORCEMENT_PATHS`. See TD-011.
+Some live lines still hold the old brand name. Each is an old-name read that ADR-004 or the brand guard allowlist covers. They exist so a consumer repo on 0.36.0 upgrades without duplicate blocks or a lost session ID. The brand guard (`test-0000039-req-007-brand-guard.sh`) fails on any other hit and on a stale allowlist entry. They are removed at 1.0.0. Two reads are not in the ADR-004 list: the old em dash bypass sentinel in `em-dash-guard.mjs` and the old plugin and workflow paths in `ENFORCEMENT_PATHS`. See TD-011.
 
 ## Q-014: `Write-SettingsFile` writes UTF-8 without a BOM (0000030)
 

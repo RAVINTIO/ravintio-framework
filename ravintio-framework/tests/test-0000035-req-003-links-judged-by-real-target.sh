@@ -225,24 +225,27 @@ assert_equals "2" "$CODE" "req-003: gate-write blocks the absolute form of docs/
 run_guard "$FX" "touch docs/L/../../src/a.js"
 assert_equals "0" "$CODE" "req-003: the shell guard keeps the physical walk, which lands in plan/src/a.js"
 
-# Under a current scope record, the text-collapsed path still meets the enforcement list.
-FXR="$WORK/repo-record"
+# The text-collapsed path still meets the enforcement path rules with no
+# design. The physical placement plan/.claude/settings.json is always
+# permitted, so only the text placement can block (0000040 req-002).
+FXR="$WORK/repo-collapsed"
 mkdir -p "$FXR/plan/current" "$FXR/plan/x/y" "$FXR/docs" "$FXR/src" "$FXR/.claude"
 git init -q "$FXR" >/dev/null 2>&1
+ln -s ../plan/x/y "$FXR/docs/L"
+run_gate "$FXR" "docs/L/../../.claude/settings.json"
+assert_equals "2" "$CODE" "req-003: gate-write blocks docs/L/../../.claude/settings.json with no design"
+assert_contains "No confirmed design" "$ERR" "req-003: gate-write judges docs/L/../../.claude/settings.json as .claude/settings.json"
+run_gate "$FXR" "docs/L/../../.claude/CLAUDE.md"
+assert_equals "0" "$CODE" "req-003: control, a permitted name outside every enforcement path passes in both placements"
+run_gate "$FXR" "docs/L/../../.claude/hooks/enforcement/CLAUDE.md"
+assert_equals "2" "$CODE" "req-003: gate-write blocks a permitted name that the text placement puts in an enforcement path"
+# A current record at plan/.fast-path-scope changes none of these verdicts.
 git -C "$FXR" -c user.name=t -c user.email=t@t -c commit.gpgsign=false commit -q --allow-empty -m init --no-verify >/dev/null 2>&1
 printf 'branch: %s\nhead: %s\npaths:\n- src/a.js\n' \
   "$(git -C "$FXR" rev-parse --abbrev-ref HEAD)" "$(git -C "$FXR" rev-parse HEAD)" > "$FXR/plan/.fast-path-scope"
-ln -s ../plan/x/y "$FXR/docs/L"
-run_gate "$FXR" "docs/L/../../.claude/settings.json"
-assert_equals "2" "$CODE" "req-003: gate-write blocks docs/L/../../.claude/settings.json under a scope record"
-assert_contains "enforcement path" "$ERR" "req-003: gate-write judges docs/L/../../.claude/settings.json as .claude/settings.json"
-run_gate "$FXR" "src/a.js"
-assert_equals "0" "$CODE" "req-003: control, the record still admits src/a.js"
-# The physical placement plan/src/a.js is always permitted, and the text one
-# is src/a.js, which the record admits. The record's notice still prints (G-N2).
 run_gate "$FXR" "docs/L/../../src/a.js"
-assert_equals "0" "$CODE" "req-003: gate-write admits docs/L/../../src/a.js through the record"
-assert_contains "Fast Path: admitted 'src/a.js'" "$ERR" "req-003: the record's notice prints when another placement needs none"
+assert_equals "2" "$CODE" "req-003: gate-write blocks docs/L/../../src/a.js with a record in place"
+assert_equals "no" "$([[ "$ERR" == *"Fast Path"* ]] && echo yes || echo no)" "req-003: the block names no Fast Path"
 
 # =============================================================================
 echo ""

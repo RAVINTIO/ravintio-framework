@@ -179,9 +179,6 @@ echo "=== req-015: British English rewrite ==="
 TESTING=$(cat "$STANDARDS/testing-standards.md")
 assert_contains "behaviour"                     "$TESTING" "req-015: behaviour (British) in testing-standards"
 
-CHANGE=$(cat "$SKILLS/ravintio-change-agent/SKILL.md")
-assert_contains "behaviour"                     "$CHANGE" "req-015: behaviour (British) in change-agent"
-
 # -----------------------------------------------------------------------
 
 echo ""

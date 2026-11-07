@@ -816,6 +816,74 @@ if (changed) writeSettings(sf, s);
 }
 # END retired-integrations (0000030)
 
+# Retired track files (0000040 req-004, ADR-005). Parity with setup.sh. Every
+# setup run removes these names from the tool it sets up, with or without a
+# skill manifest. Workflow names sit in the tool's workflow folder, and skill
+# names sit in its skills folder. Keep one quoted name per line.
+$RetiredTrackWorkflows = @(
+    'fast-path.md',
+    'change-pipeline.md'
+)
+$RetiredTrackSkills = @(
+    'ravintio-change-agent'
+)
+
+# Invoke-RetiredTrackCleanup: parity with cleanup_retired_tracks in setup.sh.
+# It removes each retired name that exists and prints one line for each
+# removal, or nothing when nothing is found. A tool with no workflow folder
+# passes an empty WorkflowsRel. It needs no Node.js. The delete rules match
+# Invoke-RetiredIntegrationCleanup:
+#   - every folder between the project root and the path must be a real
+#     folder, not a symlink or junction
+#   - a link is removed as a link, never its target
+#   - a failed delete warns, and setup carries on
+function Invoke-RetiredTrackCleanup {
+    param(
+        [string]$SkillsRel,      # e.g. .claude\skills
+        [string]$WorkflowsRel    # e.g. .claude\commands, empty if the tool has no workflow folder
+    )
+
+    $retired = @()
+    if ($WorkflowsRel) {
+        foreach ($name in $RetiredTrackWorkflows) { $retired += "$WorkflowsRel/$name" }
+    }
+    # OpenCode passes no skills folder, so nothing joins onto the project root.
+    if ($SkillsRel) {
+        foreach ($name in $RetiredTrackSkills) { $retired += "$SkillsRel/$name" }
+    }
+
+    $rootFull = [System.IO.Path]::GetFullPath($ProjectRoot).TrimEnd('\', '/')
+    foreach ($rel in $retired) {
+        # Forward slashes, so each output line matches setup.sh.
+        $p = $rel -replace '\\', '/'
+        $full = Join-Path $ProjectRoot $p
+        $item = Get-Item -LiteralPath $full -Force -ErrorAction SilentlyContinue
+        if (-not $item) { continue }
+        $inside = $false
+        $dir = Split-Path -Parent $full
+        while ($dir) {
+            if ([System.IO.Path]::GetFullPath($dir).TrimEnd('\', '/') -eq $rootFull) { $inside = $true; break }
+            $d = Get-Item -LiteralPath $dir -Force -ErrorAction SilentlyContinue
+            if (-not $d -or ($d.Attributes -band [System.IO.FileAttributes]::ReparsePoint)) { break }
+            $dir = Split-Path -Parent $dir
+        }
+        if (-not $inside) {
+            Write-Host "  ! $p resolves outside the project - not removed"
+            continue
+        }
+        try {
+            if ($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+                (Get-Item -LiteralPath $full -Force).Delete()
+            } else {
+                Remove-Item -LiteralPath $full -Recurse -Force -ErrorAction Stop
+            }
+            Write-Host "  - $p (retired, removed)"
+        } catch {
+            Write-Host "  ! could not remove $p - left in place, delete it by hand"
+        }
+    }
+}
+
 function Invoke-RavintioGuardrails {
     Write-Host ""
     Write-Host "  Activating RAVINTIO Git Guardrails"
@@ -1319,6 +1387,9 @@ function Invoke-RavintioSetup {
     if (Test-Path $manifest) {
         Write-Host "  Re-run detected — removing previously installed directories"
         Get-Content -Path $manifest | Where-Object { $_ -ne '' } | ForEach-Object {
+            # A retired skill name is left to Invoke-RetiredTrackCleanup, which
+            # keeps the link and outside-project rules (0000040 req-004).
+            if ($RetiredTrackSkills -contains (Split-Path -Leaf $_)) { return }
             if (Test-Path $_) {
                 Remove-Item -Path $_ -Recurse -Force
                 Write-Host "  - removed: $(Split-Path -Leaf $_)"
@@ -1326,6 +1397,9 @@ function Invoke-RavintioSetup {
         }
         Remove-Item -Path $manifest -Force
     }
+
+    # Remove the retired track copies, whatever the manifest held (0000040 ADR-005)
+    Invoke-RetiredTrackCleanup -SkillsRel $toolConfig.SkillsDir -WorkflowsRel $toolConfig.WorkflowsDir
 
     # Copy skills (now automatically bundles supporting files)
     Copy-RavintioSkills -TargetDir $skillsDir

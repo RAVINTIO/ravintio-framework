@@ -12,8 +12,8 @@
 
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
-version: "0.37.2"
-feature: "0000039-ravintio-rebrand"
+version: "0.38.0"
+feature: "0000040-retire-fast-path"
 
 versionPolicy: "max-component-version"
 

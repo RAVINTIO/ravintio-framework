@@ -25,8 +25,11 @@ AM_REF="$ORCH_DIR/references/adoption-modes.md"
 # Feature 0000039 (RAVINTIO rebrand) renamed the brand words inside both blocks.
 # The hashes below are of the same blocks after that scripted pass. The only
 # change from the 5966840 text is the brand words.
-BASE_P0_SHA="b677d17f9cceea112bfc7cc98c7a2d05acb29318fdc2ffda9b51dad73252c063"
-BASE_AM_SHA="e6c2e73f419dfc72877d50407fcc1671f63b85d3cc58bfca1c1a64b42de47dc8"
+# Feature 0000040 req-001 then dropped the Fast Path and Change Pipeline bump
+# rows from the Phase 0 block. It also changed the Standard Iterative bump line
+# in the Adoption Modes block. The hashes below are of both blocks after that.
+BASE_P0_SHA="d3e0f7f3f51eec65ef3709c1531188031b6ebaa2fd8690038d8ef9891c633ad3"
+BASE_AM_SHA="2fba564d6fb1216ea85c6614153781d2ebda11dd82126ca87ec51226250cb6fa"
 
 # sha256_of <file>: prints the file's SHA-256 in hex, or nothing if unreadable.
 sha256_of() {

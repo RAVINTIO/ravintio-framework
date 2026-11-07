@@ -18,8 +18,10 @@ FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
 STANDARD="$FRAMEWORK/templates/standard-boot.md"
 # md5 of standard-boot.md before req-007 (6,112 bytes).
 # Feature 0000039 (RAVINTIO rebrand) renamed the brand words in the template.
-# This hash is of the template after that pass, minus the 20 KB line.
-BASELINE_MD5="25c239eba424f6d30c10c7c69bff4ce0"
+# Feature 0000040 req-001 then dropped the scope record from the gate-write
+# and shell-write-guard bullets. This hash is of the template after both
+# passes, minus the 20 KB line.
+BASELINE_MD5="c5fe062e1f4b4c7b051e07d8afc70977"
 
 WORK="$(mktemp -d -t ravintio_0000038_req007_XXXXXX)"
 trap 'rm -rf "$WORK"' EXIT

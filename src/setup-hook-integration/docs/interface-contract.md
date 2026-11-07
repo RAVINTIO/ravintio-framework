@@ -20,7 +20,7 @@
 | `.claude/settings.json` | File (merged) | Hook wiring for PreToolUse and UserPromptSubmit. Additive merge, never full replacement. Every enforcement command string is written with a `node` interpreter prefix (0000028 P5 SEC-001); a bare `.mjs` path exits 126 against the non-executable committed file mode and fails open silently. For Claude Code, setup also registers `shell-write-guard.mjs` on a `Bash` PreToolUse matcher (0000032-ADR-006). It first removes any earlier `Bash` group whose command names `shell-write-guard`, so a re-run leaves exactly one. Other `Bash` groups stay in place. |
 | `.claude/hooks/enforcement/` | Directory | Every `*.mjs` under `hooks/enforcement/`, always installed, not gated on any flag. Currently `gate-write.mjs`, `check-design.mjs`, `ratchet-check.mjs`, `em-dash-guard.mjs` (0000028), `auto-trigger-orchestrator.mjs`, `check-orchestrator-presence.mjs`, `shell-write-guard.mjs` (0000032), plus the shared modules `read-stdin.mjs` (0000028) and `path-rules.mjs` (0000032) |
 | `.claude/skills/` | Directory | Skill files from `ravintio-framework/skills/` |
-| `CLAUDE.md` | File | Generated from `templates/standard-boot.md` (Claude Code only). Since 0000035, the Write-or-Edit rule (boot Hard Limit 8) names the sanctioned scripts, and the Hook Enforcement section covers the Fast Path scope record and link judgement. Setup copies the template text and changed in no other way (0000035 ADR-011) |
+| `CLAUDE.md` | File | Generated from `templates/standard-boot.md` (Claude Code only). Since 0000035, the Write-or-Edit rule (boot Hard Limit 8) names the sanctioned scripts, and the Hook Enforcement section covers link judgement. Since 0000040, that section says the gate blocks every write outside `plan/`, `docs/`, and the always-permitted names when no design exists. Setup copies the template text and changed in no other way (0000035 ADR-011) |
 | `git config core.hooksPath` | Git config | Points to `ravintio-framework/hooks/` for advisory commit-msg hook |
 | `ravintio-framework/external-skills.json` | File | Manifest of installed external skills (created on first `add-skill`) |
 | `<tool-dir>/.ravintio-setup-flags` | File | Flags-used marker (0000020): tool, flags applied, timestamp, attempt status. Written on every successful install; consumed by `ravintio-refresh-setup`. Schema: `docs/data-contract.md` |
@@ -60,15 +60,24 @@ Failure behaviour, in every case with exit 0:
 
 `setup/opencode.sh` now parses and writes `opencode.json` with Node and the shared settings helpers, not `jq`. A malformed `opencode.json` stays byte-identical and setup warns (F1). If you run `setup/opencode.sh` on its own, it leaves an existing `opencode.json` unchanged and prints a warning, because the helpers come from `setup.sh`.
 
-## Wiring files and the Fast Path enforcement list (0000035)
+## Wiring files and the enforcement path list (0000035, 0000040)
 
-A Fast Path scope record never admits a write to a file that wires the hooks (0000035 ADR-004). `FAST_PATH_ENFORCEMENT_PATHS` in `hooks/enforcement/path-rules.mjs` lists these setup outputs and sources:
+`ENFORCEMENT_PATHS` in `hooks/enforcement/path-rules.mjs` lists these setup outputs and sources (0000040 ADR-004):
 
 - every hook wiring file that `setup.sh` and `setup.ps1` write, such as `.claude/settings.json` and `.github/hooks/`
 - the installed `hooks/enforcement/` and `hooks/adapters/` folders
 - `ravintio-framework/setup/`, `setup.sh`, `setup.ps1`, and the installed `.github/workflows/ravintio.yml`
 
-If setup gains a new wiring file, add it to that constant and to the `workflows/fast-path.md` prerequisites in the same change. The req-009 suite checks that the two lists match.
+An always-permitted name such as `CLAUDE.md` inside a listed path gets no shortcut past the gate (0000036 ADR-003). If setup gains a new wiring file, add it to that constant in the same change.
+
+## Retired track cleanup (0000040)
+
+Every setup run removes the files that earlier releases installed for the two retired tracks (0000040 ADR-005). It does this with or without a skill manifest. Two lists name them:
+
+- `RETIRED_TRACK_WORKFLOWS` in `setup.sh` and `$RetiredTrackWorkflows` in `setup.ps1` hold workflow file names. Setup removes each one from the tool's workflow folder.
+- `RETIRED_TRACK_SKILLS` in `setup.sh` and `$RetiredTrackSkills` in `setup.ps1` hold skill folder names. Setup removes each one from the tool's skills folder.
+
+Each removal prints one `(retired, removed)` line, and a rerun prints none. Setup refuses a parent folder outside the project root. It removes a link as a link and never follows it. A failed delete warns, and setup carries on.
 
 ## Rename to RAVINTIO and old-name reads (0000039)
 

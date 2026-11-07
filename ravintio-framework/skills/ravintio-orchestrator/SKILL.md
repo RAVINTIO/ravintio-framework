@@ -26,7 +26,7 @@ These are non-negotiable. They apply in every session, every phase.
 7. **Commit after every meaningful artifact write, and at minimum at each phase gate.** Do not batch work waiting for a phase gate: each requirement doc (P1), each ADR (P2), each requirement's completed TDD cycle (P3), each fix batch (P4), the security report (P5), and each docs artifact group (P6) is a commit on its own. Push cadence: after each phase-gate commit, if remote push is authorized (a standing override in `ravintio-overrides/instructions/`, else an explicit per-session grant recorded in the P0 build log), push the feature branch; if not authorized, do nothing and do not prompt per phase. A failed push is reported once and never blocks the pipeline. In `autonomous`, every commit runs the pre-commit credential scan first, under `## Pre-commit credential scan` in `ravintio-framework/standards/autonomous-run-standards.md`. Every commit names explicit paths after `--`. From P7 to P9, each commit follows `### Scan-then-commit` in the same file instead. The scan writes the safe list, and the commit passes it with `--pathspec-from-file`. The agent unstages a held-back file with `git restore --staged -- {path}` only when it is staged as a new file.
 8. **Write a build log entry at every phase start and gate.** Create `plan/current/build-log.md` at P0 if absent. Append a phase block before doing any work in each phase and again at the gate. The gate entry fills `End`, `Wall-clock`, `Agents spawned`, and `Streams` for the phase. A missing entry is a pipeline error; stop and write it before proceeding.
 9. **The pipeline has exactly 10 phases: P0–P9. There is no phase beyond P9.** P9 (Ship) is the terminal phase. Never cite a phase number outside P0–P9 in any output.
-10. **Every pipeline route archives its working folder.** A completed run, Feature Pipeline (ship-agent P7) or Change Pipeline (change-agent Phase 6 - Archive), ends with `plan/current/` moved to `plan/_archive/{feature-id}-{date}/` and incoming links updated. Never leave a permanent `plan/{feature-id}/` folder behind.
+10. **Every pipeline route archives its working folder.** A completed run, Feature Pipeline (ship-agent P7), ends with `plan/current/` moved to `plan/_archive/{feature-id}-{date}/` and incoming links updated. Never leave a permanent `plan/{feature-id}/` folder behind.
 11. **`discovery.md` must exist and be complete for the confirmed adoption mode before the first coaching question, in every adoption mode.** A missing or incomplete `discovery.md` before coaching begins is a pipeline error; stop and write it before proceeding.
 
 ---
@@ -47,7 +47,6 @@ Every response you produce **must** begin with the phase prefix below.
 | `P7:` | Archive |
 | `P8:` | Build Assessment |
 | `P9:` | Ship |
-| `PC:` | Change Pipeline |
 
 Standard formats:
 - Entering a phase: `Px: Starting: {one-liner of what you are about to do}`
@@ -161,7 +160,9 @@ Do not assume you know the formatting or content of any RAVINTIO template or pha
 
 ## Routing Directive
 
-Every request must be triaged before any action is taken. This includes every request after P9, whether or not a run is active. Route to exactly one of four tracks.
+Every request must be triaged before any action is taken. This includes every request after P9, whether or not a run is active. Triage has two outcomes. A request that meets a standalone skill trigger invokes that skill. Every other request goes to the Feature Pipeline.
+
+Route each request to one of those two outcomes: a standalone skill or the Feature Pipeline. The Feature Pipeline also takes a change with no `src/` target, such as documentation, governance, or tooling.
 
 ### Standalone Skills
 
@@ -173,25 +174,8 @@ These skills exist outside the main pipeline phases. Invoke them directly when t
 | `ravintio-implementer` | Making a failing test pass in the TDD green phase | Sub-agent of P3 codegen; do not invoke independently |
 | `ravintio-refactor` | Improving code quality after a test goes green | Sub-agent of P3 codegen; do not invoke independently |
 | `ravintio-optimise-agent` | Human asks to optimise or trim a skill file | Standalone: invoke any time, outside pipeline context |
-
-### Three-Track Decision Tree
-
-| Signal | Track |
-|--------|-------|
-| Confined to UI styling, copy/text changes, or an isolated pure-function bug | **Fast Path** - if ALL Fast Path criteria are met |
-| Dependency version bump with no API changes | **Fast Path** - if ALL Fast Path criteria are met |
-| A change with no `src/` target, such as documentation, governance, or tooling. It never touches `ravintio-framework/hooks/`, `ravintio-framework/scripts/`, `ravintio-framework/standards/autonomous-run-standards.md`, `setup.sh`, `setup.ps1`, or an enforcement hook. Those take the Change or Feature Pipeline. | **Fast Path** - if ALL Fast Path criteria are met |
-| Bug fix or targeted change to 1–2 existing components | **Change Pipeline** |
-| Adds a new component to an existing feature | **Change Pipeline** (change-agent creates it) |
-| New user stories that fit within an existing feature's scope (< 3 stories) | **Change Pipeline** |
-| New features, new user stories (≥ 3), or new problem statement | **Feature Pipeline** |
-| Touches > 3 components or requires new infrastructure | **Feature Pipeline** |
-| Requires a new stack choice | **Feature Pipeline** |
-| New target users or different domain | **Feature Pipeline** |
-
-### Fast Path Criteria and Execution
-
-Do not use Fast Path for changes that "feel" minor - use the heuristics deterministically. Full criteria and execution steps: `ravintio-framework/workflows/fast-path.md`. Fast Path admits a change with no `src/` target, and its four criteria still apply. It never admits a change to an enforcement path that `fast-path.md` lists.
+| `ravintio-refresh-setup` | Human asks to refresh the framework setup, or to re-run setup with the current settings | Standalone: invoke any time, outside pipeline context |
+| Retrofit workflow (`ravintio-framework/workflows/retrofit.md`) | Human asks to onboard an existing codebase into the framework | Standalone entry point: its codebase scan feeds the P0 discovery pass |
 
 ---
 
@@ -435,11 +419,5 @@ Toggle `reversal_protocol` (default off; ADR-003). This is the *agent-initiated*
 **4. Human gates (REQ-019).** Interactive mode: every executed reversal stops for confirmation before the pipeline resumes. **Always stop regardless of run mode** (in `interactive` and `continuous`): (a) classification *altering*: the design the human confirmed has changed, so continuous-run authorization is void; (b) any re-exit from P0; (c) budget exhaustion (a third petition); (d) cascade larger than 3 artifacts (ADR-005). Continuous mode: non-gating reversals proceed, but notify the human and write a build-log entry for every one. In `autonomous`, cases (a), (b), and (c) become exception-list items per `standards/autonomous-run-standards.md`. Case (d) proceeds with a build-log entry.
 
 Budget counters persist in the git-tracked loop-state file; an interrupt/resume cannot reset them.
-
----
-
-## Invoking the Change Pipeline
-
-When routed to the Change Pipeline, confirm scope and invoke the **change-agent** skill per `ravintio-framework/workflows/change-pipeline.md`. You do not need to re-run Phase 0 coaching for a change - the requirements already exist.
 
 ---

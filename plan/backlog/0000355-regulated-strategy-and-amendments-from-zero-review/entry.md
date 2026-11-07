@@ -92,13 +92,13 @@ Framework builds one feature at a time. Each row below is one pipeline run, in o
 | F1 | Retire Fast Path | 0000358. Closes 0000152 and 0000200, and narrows 0000308. | Feature |
 | F2 | Make enforcement fail closed | 0000310 first, so tests can fail. Then 0000297, 0000298, 0000299, 0000130, 0000179, and 0000309. | Feature |
 | F3 | Block AI attribution everywhere | 0000276 | Feature |
-| F4 | Make setup safe | 0000272, 0000300, 0000314, 0000321, and 0000329 | Change |
+| F4 | Make setup safe | 0000272, 0000300, 0000314, 0000321, and 0000329 | Feature |
 | F5 | Remove bundled skills and govern your own | 0000301, 0000302, and 0000318 | Feature |
 | F6 | Protect policy and attribute approvals | 0000288, 0000286, 0000325, and 0000327 | Feature |
 | F7 | Tamper-evident audit trail and evidence | 0000289, 0000290, 0000312, 0000323, 0000326, and 0000351 | Feature |
 | F8 | Git and run guards | 0000303, 0000304, 0000305, 0000308, 0000311, 0000313, 0000320, and 0000322 | Feature |
-| F9 | Test integrity | 0000315, 0000316, and 0000324 | Change |
-| F10 | Permanent ADR homes and timestamps | 0000296 and 0000294 | Change |
+| F9 | Test integrity | 0000315, 0000316, and 0000324 | Feature |
+| F10 | Permanent ADR homes and timestamps | 0000296 and 0000294 | Feature |
 | F11 | Plan work in Jira | 0000295, 0000280, 0000282, and 0000354 | Feature |
 | F12 | Jira approvals and the change record | 0000352 and 0000353 | Feature |
 | F13 | Compliance profiles and defaults | 0000356 decision first, then 0000348, 0000285, 0000287, 0000306, and 0000307 | Feature |
@@ -111,7 +111,9 @@ Framework builds one feature at a time. Each row below is one pipeline run, in o
 | F20 | Trends and periodic review | 0000335 and 0000336 | Feature |
 | F21 | Medical device risk and SOUP | 0000284, 0000349, and 0000350 | Feature |
 | F22 | Report skill | 0000360 | Feature |
-| F23 | Agent conduct fixes | 0000319, 0000328, and 0000059 | Change |
+| F23 | Agent conduct fixes | 0000319, 0000328, and 0000059 | Feature |
+
+Feature 0000040 (F1) retired the Change Pipeline on 2026-11-07, so F4, F9, F10, and F23 now take the Feature Pipeline.
 
 Points on the order:
 

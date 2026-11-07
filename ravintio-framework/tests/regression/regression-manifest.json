@@ -260,6 +260,13 @@
       "promotionDate": "2026-10-25",
       "promotedBy": "agent",
       "filePath": "tests/regression/test-0000039-req-007-brand-guard.sh"
+    },
+    {
+      "name": "test-0000040-req-006-residue-guard.sh",
+      "sourceFeature": "0000040-retire-fast-path",
+      "promotionDate": "2026-11-07",
+      "promotedBy": "agent",
+      "filePath": "tests/regression/test-0000040-req-006-residue-guard.sh"
     }
   ]
 }

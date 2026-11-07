@@ -1,12 +1,12 @@
 ---
-version: "0.37.2"
-feature: "0000039-ravintio-rebrand"
-updated: "31 Oct 2026"
+version: "0.38.0"
+feature: "0000040-retire-fast-path"
+updated: "07 Nov 2026"
 ---
 # About
 
 | Field | Value |
 |-------|-------|
-| Version | `0.37.2` |
-| Last feature | `0000039-ravintio-rebrand` |
-| Updated | `25 Oct 2026` |
+| Version | `0.38.0` |
+| Last feature | `0000040-retire-fast-path` |
+| Updated | `07 Nov 2026` |

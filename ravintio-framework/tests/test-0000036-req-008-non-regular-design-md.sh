@@ -51,8 +51,6 @@ HEAD_ID="$(git -C "$FX" rev-parse HEAD)"
 
 NO_DESIGN="No confirmed design at plan/current/design.md"
 NOT_REGULAR="[RAVINTIO] plan/current/design.md is not a regular file, so the gate treats it as no design."
-NOT_LISTED="is not listed in the Fast Path scope record"
-ENFORCEMENT="is an enforcement path, so Fast Path never admits it"
 
 IS_ROOT=no
 [ "$(id -u 2>/dev/null)" = "0" ] && IS_ROOT=yes
@@ -71,7 +69,8 @@ reset_design() {
   rm -rf "$DESIGN" "$FX/plan/.fast-path-scope"
 }
 
-# record <head> <path>...: a scope record for the current branch and <head>.
+# record <head> <path>...: a file at plan/.fast-path-scope for the current
+# branch and <head>. No gate reads it (0000040 req-002).
 record() {
   local head="$1"
   shift
@@ -139,7 +138,7 @@ blocks_as_non_regular() {
 
 # =============================================================================
 echo ""
-echo "=== req-008: a non-regular design.md with no scope record ==="
+echo "=== req-008: a non-regular design.md with no record ==="
 
 reset_design
 mkdir -p "$DESIGN"
@@ -164,39 +163,29 @@ fi
 
 # =============================================================================
 echo ""
-echo "=== req-008: a folder at design.md takes the scope record route ==="
+echo "=== req-008: a folder at design.md with a current record at plan/.fast-path-scope ==="
 
+# 0000040 req-002: no gate reads the record, so each write takes the no-design route.
 reset_design
 mkdir -p "$DESIGN"
 record "$HEAD_ID" "src/a.js" ".claude/settings.json"
 
-run_gate "src/a.js"
-assert_equals "0" "$CODE" "req-008: a current record still admits src/a.js with a folder at design.md"
-assert_contains "Fast Path: admitted" "$ERR" "req-008: the admit prints the Fast Path notice"
-assert_equals "no" "$([[ "$ERR" == *"$NOT_REGULAR"* ]] && echo yes || echo no)" "req-008: the admit carries no not-a-regular-file line"
-
-run_gate "src/b.js"
-assert_equals "2" "$CODE" "req-008: a current record blocks unlisted src/b.js with a folder at design.md"
-assert_equals "yes" "$(in_order "$NOT_LISTED" "$NOT_REGULAR" "$ERR")" "req-008: the not-listed reason comes before the not-a-regular-file line"
-run_guard "touch src/b.js"
-assert_equals "2" "$CODE" "req-008: shell-write-guard blocks unlisted src/b.js with a folder at design.md"
-assert_equals "yes" "$(in_order "$NOT_LISTED" "$NOT_REGULAR" "$ERR")" "req-008: shell-write-guard gives the not-listed reason, then the not-a-regular-file line"
+blocks_as_non_regular "a folder and a current record"
+assert_equals "no" "$([[ "$ERR" == *"Fast Path"* ]] && echo yes || echo no)" "req-008: the block with a current record names no Fast Path"
 
 run_gate ".claude/settings.json"
-assert_equals "2" "$CODE" "req-008: a record never admits an enforcement path with a folder at design.md"
-assert_equals "yes" "$(in_order "$ENFORCEMENT" "$NOT_REGULAR" "$ERR")" "req-008: the enforcement-path reason comes before the not-a-regular-file line"
+assert_equals "2" "$CODE" "req-008: .claude/settings.json blocks with a folder at design.md and a current record"
+assert_equals "yes" "$(in_order "$NO_DESIGN" "$NOT_REGULAR" "$ERR")" "req-008: the .claude/settings.json block gives the no-design reason, then the not-a-regular-file line"
 
 # =============================================================================
 echo ""
-echo "=== req-008: a folder at design.md with a stale scope record ==="
+echo "=== req-008: a folder at design.md with a stale record at plan/.fast-path-scope ==="
 
 reset_design
 mkdir -p "$DESIGN"
 record "0000000000000000000000000000000000000000" "src/a.js"
-run_gate "src/a.js"
-assert_equals "2" "$CODE" "req-008: a stale record admits nothing with a folder at design.md"
-assert_equals "yes" "$(in_order "$NO_DESIGN" "The gate ignored plan/.fast-path-scope" "$ERR")" "req-008: the stale block names why the record was ignored"
-assert_equals "yes" "$(in_order "The gate ignored plan/.fast-path-scope" "$NOT_REGULAR" "$ERR")" "req-008: the stale block ends with the not-a-regular-file line"
+blocks_as_non_regular "a folder and a stale record"
+assert_equals "no" "$([[ "$ERR" == *"fast-path-scope"* ]] && echo yes || echo no)" "req-008: the block with a stale record never names the record"
 
 # =============================================================================
 echo ""

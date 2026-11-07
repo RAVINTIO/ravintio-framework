@@ -26,8 +26,8 @@
  *     The Write and Edit gates also judge the target with .. collapsed as
  *     text first, as those tools place it, and block if either verdict
  *     blocks (G-S01). The shell guard keeps the physical walk only.
- *   - plan/.orchestrator-active, plan/current/design.md, and
- *     plan/.fast-path-scope are looked up from the root, not from cwd.
+ *   - plan/.orchestrator-active and plan/current/design.md are looked up
+ *     from the root, not from cwd.
  *   - Comparisons use the 0000009-ADR-005 normalisation: forward slashes and
  *     lower case.
  *
@@ -36,19 +36,17 @@
  *   resolveTarget(root, cwd, target) { status: inside | outside | unresolvable } for a target
  *   resolveTargetBoth(root, cwd, target) the physical and text placements, deduplicated
  *   hookCwd(input)                   the folder a hook judges from, or null
- *   evaluateWrite(root, relPath)     { allowed, reason?, warning?, notice? } for a root-relative path
+ *   evaluateWrite(root, relPath)     { allowed, reason?, warning? } for a root-relative path
  *   judgeWrite(cwd, target)          resolveRoot, resolveTarget, and evaluateWrite in one call
  *   unjudgeable(base, target)        a warning when the path is too long to judge, or null
  *   norm(p)                          the shared comparison normalisation
  *   shown(p, max)                    p with control characters escaped, cut to max, for a reason (G-S11)
- *   parseScopeRecord(text)           the Fast Path scope record fields, or { error }
- *   readGitState(root)               { branch, head } read from .git files, or { error }
- *   isEnforcementPath(relPath)       whether FAST_PATH_ENFORCEMENT_PATHS covers relPath
- *   FAST_PATH_ENFORCEMENT_PATHS      paths no scope record admits (0000035 ADR-004)
+ *   isEnforcementPath(relPath)       whether ENFORCEMENT_PATHS covers relPath
+ *   ENFORCEMENT_PATHS                paths where a permitted file name gets no shortcut (0000040 ADR-004)
  */
 
 import {
-  closeSync, constants as fsConstants, existsSync, fstatSync, lstatSync, openSync, readFileSync, readlinkSync, readSync,
+  closeSync, constants as fsConstants, existsSync, fstatSync, lstatSync, openSync, readlinkSync, readSync,
   realpathSync, statSync,
 } from "node:fs";
 import { dirname, isAbsolute, join, normalize, parse, relative, resolve, sep } from "node:path";
@@ -474,28 +472,16 @@ function matchesComponentPath(relPath, componentPaths) {
 }
 
 // ---------------------------------------------------------------------------
-// Fast Path scope record (0000035 ADR-002 and ADR-003)
+// Enforcement paths (0000040 ADR-004)
 // ---------------------------------------------------------------------------
 
-export const FAST_PATH_SCOPE_FILE = "plan/.fast-path-scope";
-const SCOPE_MAX_BYTES = 16 * 1024;
-const SCOPE_MAX_PATHS = 64;
-const GIT_FILE_MAX_BYTES = 4 * 1024;
-const PACKED_REFS_MAX_BYTES = 4 * 1024 * 1024;
-
-const BRANCH_RE = /^[A-Za-z0-9._/-]{1,255}$/;
-const HEAD_RE = /^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$/;
-const SCOPE_PATH_RE = /^[A-Za-z0-9._@+ /-]{1,512}$/;
-const REF_RE = /^refs\/[A-Za-z0-9._/-]{1,255}$/;
-const DETACHED = "(detached)";
-
-// Paths a Fast Path scope record never admits (0000035 ADR-004, 0000033
-// ADR 009). workflows/fast-path.md names the same entries, and a suite
-// checks both directions. An entry ending in / covers that folder and
-// everything below it. Any other plain entry covers that file and anything
-// below it. An entry that starts with **/ matches at any depth: **/name
-// matches a last segment, and **/a/b/ matches a segment pair.
-export const FAST_PATH_ENFORCEMENT_PATHS = Object.freeze([
+// Paths where a permitted file name such as CLAUDE.md gets no shortcut, so
+// the write takes the normal design route (0000036 ADR-003). An entry ending
+// in / covers that folder and everything below it. Any other plain entry
+// covers that file and anything below it. An entry that starts with **/
+// matches at any depth: **/name matches a last segment, and **/a/b/ matches
+// a segment pair.
+export const ENFORCEMENT_PATHS = Object.freeze([
   // Framework enforcement
   "ravintio-framework/hooks/",
   "ravintio-framework/scripts/",
@@ -521,7 +507,7 @@ export const FAST_PATH_ENFORCEMENT_PATHS = Object.freeze([
   // Tool-local settings files, which can also register or turn off hooks
   ".claude/settings.local.json",
   "opencode.jsonc",
-  // The CI workflow setup installs, which enforces the fix(fast-path) commit rule (G-S03)
+  // The CI workflow setup installs, which enforces the source folder rule (0000040 ADR 003)
   ".github/workflows/ravintio.yml",
   ".github/workflows/planifest.yml", // old-name read, removed at 1.0.0 (ADR-004)
 ]);
@@ -531,19 +517,15 @@ export const FAST_PATH_ENFORCEMENT_PATHS = Object.freeze([
 // APFS folds names this way, so hookſ can name the hooks folder there.
 const foldWide = (p) => norm(p).normalize("NFKC").toUpperCase().toLowerCase();
 
-// A character outside printable ASCII. The Fast Path record admits no
-// target that holds one (G-S02).
-const NON_ASCII_RE = /[^\x00-\x7f]/;
-
 /**
- * Whether relPath matches an entry in FAST_PATH_ENFORCEMENT_PATHS. Matching
- * compares foldWide(relPath) with foldWide(entry), so it ignores case and
+ * Whether relPath matches an entry in ENFORCEMENT_PATHS. Matching compares
+ * foldWide(relPath) with foldWide(entry), so it ignores case and
  * compatibility lookalikes.
  */
 export function isEnforcementPath(relPath) {
   const target = foldWide(relPath || ".");
   const segments = target.split("/");
-  return FAST_PATH_ENFORCEMENT_PATHS.some((raw) => {
+  return ENFORCEMENT_PATHS.some((raw) => {
     const entry = foldWide(raw);
     if (entry.startsWith("**/")) {
       const rest = entry.slice(3);
@@ -553,214 +535,6 @@ export function isEnforcementPath(relPath) {
     const bare = entry.replace(/\/$/, "");
     return target === bare || target.startsWith(bare + "/");
   });
-}
-
-// readCapped: the UTF-8 text of file, or null when it is missing, larger than
-// max bytes, or unreadable. The size check runs before the read.
-function readCapped(file, max) {
-  try {
-    const stats = statSync(file);
-    if (!stats.isFile() || stats.size > max) return null;
-    return readFileSync(file, "utf-8");
-  } catch {
-    return null;
-  }
-}
-
-const validBranch = (b) => b === DETACHED || (BRANCH_RE.test(b) && !b.includes("..") && !b.startsWith("-"));
-
-// validScopePath: whether p is a root-relative path the record may list. No
-// glob, no backslash, no drive letter, and no empty, . or .. segment.
-function validScopePath(p) {
-  if (!SCOPE_PATH_RE.test(p) || p.startsWith("/")) return false;
-  const segments = p.replace(/\/$/, "").split("/");
-  return segments.every((s) => s !== "" && s !== "." && s !== "..");
-}
-
-/**
- * Parses the scope record text. Returns { branch, head, paths } or
- * { error } when any line breaks the grammar. The error names the line
- * number and the rule, never a raw value. Blank and # lines are skipped.
- */
-export function parseScopeRecord(text) {
-  const expected = ["branch", "head", "paths"];
-  const record = { paths: [] };
-  let step = 0;
-  const lines = text.split(/\r?\n/);
-  for (let n = 0; n < lines.length; n++) {
-    const line = lines[n];
-    const at = `line ${n + 1}`;
-    if (line.trim() === "" || line.startsWith("#")) continue;
-    if (step < expected.length) {
-      const key = expected[step];
-      if (key === "paths") {
-        if (!/^paths:\s*$/.test(line)) return { error: `${at}: expected 'paths:'` };
-      } else {
-        const m = line.match(new RegExp(`^${key}: (.*?)\\s*$`));
-        if (!m) return { error: `${at}: expected '${key}: <value>'` };
-        if (key === "branch" && !validBranch(m[1])) return { error: `${at}: the branch breaks the allowed pattern` };
-        if (key === "head" && !HEAD_RE.test(m[1])) return { error: `${at}: the head is not a 40 or 64 character hex commit` };
-        record[key] = m[1];
-      }
-      step += 1;
-      continue;
-    }
-    const m = line.match(/^- (.*)$/);
-    if (!m) return { error: `${at}: expected '- <path>'` };
-    if (!validScopePath(m[1])) return { error: `${at}: the path breaks the allowed pattern` };
-    record.paths.push(m[1]);
-    if (record.paths.length > SCOPE_MAX_PATHS) return { error: `${at}: more than ${SCOPE_MAX_PATHS} paths` };
-  }
-  if (step < expected.length) return { error: `the record ends before '${expected[step]}'` };
-  if (!record.paths.length) return { error: "the record lists no paths" };
-  return record;
-}
-
-/**
- * Reads the current branch and HEAD commit from the git files at or above
- * root, with no process spawn (0000035 ADR-003). Returns { branch, head } or
- * { error } when any step fails, such as a reftable store, an unborn branch,
- * or a file over its size limit.
- */
-export function readGitState(root) {
-  let dir = root;
-  let dotGit = null;
-  for (;;) {
-    try {
-      statSync(join(dir, ".git"));
-      dotGit = join(dir, ".git");
-      break;
-    } catch { /* keep climbing */ }
-    const parent = dirname(dir);
-    if (parent === dir) return { error: "no .git found" };
-    dir = parent;
-  }
-
-  let gitDir = dotGit;
-  try {
-    if (!statSync(dotGit).isDirectory()) {
-      const text = readCapped(dotGit, GIT_FILE_MAX_BYTES);
-      const m = text?.match(/^gitdir: (.+?)\s*$/m);
-      if (!m) return { error: "the .git file has no readable gitdir line" };
-      gitDir = resolve(dirname(dotGit), m[1]);
-    }
-  } catch {
-    return { error: "the .git entry can't be read" };
-  }
-
-  const headText = readCapped(join(gitDir, "HEAD"), GIT_FILE_MAX_BYTES);
-  if (headText === null) return { error: "HEAD can't be read" };
-  const headLine = headText.trim();
-  if (HEAD_RE.test(headLine)) return { branch: DETACHED, head: headLine.toLowerCase() };
-  const refMatch = headLine.match(/^ref: (.+)$/);
-  if (!refMatch || !REF_RE.test(refMatch[1]) || refMatch[1].includes("..")) return { error: "HEAD holds no readable ref" };
-  const ref = refMatch[1];
-  const branch = ref.startsWith("refs/heads/") ? ref.slice("refs/heads/".length) : ref;
-
-  const commonText = readCapped(join(gitDir, "commondir"), GIT_FILE_MAX_BYTES);
-  const commonDir = commonText === null ? gitDir : resolve(gitDir, commonText.trim());
-
-  for (const folder of [gitDir, commonDir]) {
-    const value = readCapped(join(folder, ...ref.split("/")), GIT_FILE_MAX_BYTES)?.trim();
-    if (value !== undefined) {
-      return HEAD_RE.test(value) ? { branch, head: value.toLowerCase() } : { error: "the branch ref can't be read" };
-    }
-  }
-  const packed = readCapped(join(commonDir, "packed-refs"), PACKED_REFS_MAX_BYTES);
-  if (packed !== null) {
-    for (const line of packed.split(/\r?\n/)) {
-      if (line.startsWith("#") || line.startsWith("^")) continue;
-      const space = line.indexOf(" ");
-      if (space > 0 && line.slice(space + 1).trim() === ref) {
-        const value = line.slice(0, space);
-        return HEAD_RE.test(value) ? { branch, head: value.toLowerCase() } : { error: "the packed ref can't be read" };
-      }
-    }
-  }
-  return { error: "the branch has no commit" };
-}
-
-// Each hook process reads the record and the git state at most once per root.
-const scopeCache = new Map();
-
-/**
- * The scope record state for root: { status: "absent" }, { status: "ignored",
- * why }, or { status: "current", paths }.
- */
-function loadScope(root) {
-  if (scopeCache.has(root)) return scopeCache.get(root);
-  const state = readScope(root);
-  scopeCache.set(root, state);
-  return state;
-}
-
-function readScope(root) {
-  const file = join(root, ...FAST_PATH_SCOPE_FILE.split("/"));
-  let stats;
-  try {
-    stats = statSync(file);
-  } catch {
-    return { status: "absent" };
-  }
-  if (!stats.isFile() || stats.size > SCOPE_MAX_BYTES) {
-    return { status: "ignored", why: `it is not a file of at most ${SCOPE_MAX_BYTES} bytes` };
-  }
-  let text;
-  try {
-    text = readFileSync(file, "utf-8");
-  } catch {
-    return { status: "ignored", why: "it can't be read" };
-  }
-  const record = parseScopeRecord(text);
-  if (record.error) return { status: "ignored", why: `it is invalid (${record.error})` };
-  const git = readGitState(root);
-  if (git.error) return { status: "ignored", why: `the git state can't be read (${git.error})` };
-  if (record.branch !== git.branch) return { status: "ignored", why: "its branch differs from the current branch" };
-  if (record.head.toLowerCase() !== git.head) return { status: "ignored", why: "its head differs from the current HEAD commit" };
-  return { status: "current", paths: record.paths };
-}
-
-// scopeVerdict: the gate result for relPath when design.md is absent.
-function scopeVerdict(root, relPath) {
-  const scope = loadScope(root);
-  if (scope.status === "absent") return { allowed: false, reason: NO_DESIGN_REASON };
-  // The enforcement list runs before the record match (0000035 ADR-004).
-  if (isEnforcementPath(relPath)) {
-    return {
-      allowed: false,
-      reason:
-        `[RAVINTIO] Path '${shown(relPath, 200)}' is an enforcement path, so Fast Path never admits it, ` +
-        `whatever ${FAST_PATH_SCOPE_FILE} lists (0000033 ADR 009). Use the Change or Feature Pipeline.\n`,
-    };
-  }
-  if (scope.status === "ignored") {
-    return {
-      allowed: false,
-      reason: NO_DESIGN_REASON + `[RAVINTIO] The gate ignored ${FAST_PATH_SCOPE_FILE}: ${scope.why}.\n`,
-    };
-  }
-  // A file system can fold a non-ASCII name onto an enforcement path, so the
-  // record admits ASCII targets only (G-S02).
-  if (NON_ASCII_RE.test(relPath)) {
-    return {
-      allowed: false,
-      reason:
-        `[RAVINTIO] Path '${shown(relPath, 80)}' holds a non-ASCII character, so ${FAST_PATH_SCOPE_FILE} ` +
-        "never admits it. Rename the target, or take the Change Pipeline.\n",
-    };
-  }
-  if (matchesComponentPath(relPath, scope.paths.map((p) => p.replace(/\/$/, "")))) {
-    return {
-      allowed: true,
-      notice: `[RAVINTIO] Fast Path: admitted '${shown(relPath, 200)}' through ${FAST_PATH_SCOPE_FILE}.\n`,
-    };
-  }
-  return {
-    allowed: false,
-    reason:
-      `[RAVINTIO] Path '${shown(relPath, 80)}' is not listed in the Fast Path scope record ${FAST_PATH_SCOPE_FILE}. ` +
-      "Add it to the record, or take the Change Pipeline.\n",
-  };
 }
 
 // O_NONBLOCK keeps a FIFO from holding the open, and O_NOFOLLOW makes the
@@ -848,10 +622,8 @@ function readDesign(designPath) {
  *   1. always-permitted prefixes and basenames. A basename counts only when
  *      isEnforcementPath is false for the path (0000036 ADR-003), so such a
  *      name inside an enforcement path goes on to step 2.
- *   2. design.md existence. With no design.md, a current Fast Path scope
- *      record admits a listed path and blocks the rest (0000035 ADR-002).
- *      A stale or invalid record admits nothing, and no record admits a
- *      path in FAST_PATH_ENFORCEMENT_PATHS (0000035 ADR-004).
+ *   2. design.md existence. With no design.md, every write blocks with the
+ *      no-design reason (0000040 ADR-002).
  *      A design.md that isn't a regular file, or that lstatSync can't read,
  *      counts as no design. Each block for a non-regular file gains a line
  *      that says so. A design.md over DESIGN_MAX_BYTES also counts as no
@@ -861,9 +633,8 @@ function readDesign(designPath) {
  *      (0000036 ADR-002, which narrows 0000003-ADR-005).
  *   3. the component-path check, which warns and allows when design.md has no
  *      parseable paths section
- * Returns { allowed: true }, { allowed: true, warning }, { allowed: true,
- * notice } for a write the scope record admits, or { allowed: false, reason }.
- * Each string ends with a newline.
+ * Returns { allowed: true }, { allowed: true, warning }, or { allowed: false,
+ * reason }. Each string ends with a newline.
  */
 export function evaluateWrite(root, relPath) {
   const normRel = norm(relPath || ".");
@@ -881,17 +652,11 @@ export function evaluateWrite(root, relPath) {
   if (isAlwaysPermitted(relPath)) return { allowed: true };
 
   const design = readDesign(join(root, "plan", "current", "design.md"));
-  if (design.kind === "missing") return scopeVerdict(root, relPath);
-  if (design.kind === "non-regular") {
-    // The same route as a missing design, and each block says why (ADR-002).
-    const verdict = scopeVerdict(root, relPath);
-    return verdict.allowed ? verdict : { ...verdict, reason: verdict.reason + NOT_REGULAR_LINE };
-  }
-  if (design.kind === "oversize") {
-    // The same route as a missing design, and each block names the cap (ADR-002).
-    const verdict = scopeVerdict(root, relPath);
-    return verdict.allowed ? verdict : { ...verdict, reason: verdict.reason + OVERSIZE_LINE };
-  }
+  if (design.kind === "missing") return { allowed: false, reason: NO_DESIGN_REASON };
+  // The same route as a missing design, and each block says why (ADR-002).
+  if (design.kind === "non-regular") return { allowed: false, reason: NO_DESIGN_REASON + NOT_REGULAR_LINE };
+  // The same route as a missing design, and each block names the cap (ADR-002).
+  if (design.kind === "oversize") return { allowed: false, reason: NO_DESIGN_REASON + OVERSIZE_LINE };
   if (design.kind === "unreadable") return { allowed: true }; // can't read design.md, so fail open (0000003-ADR-005)
 
   const componentPaths = extractComponentPaths(design.content);
@@ -916,7 +681,7 @@ export function evaluateWrite(root, relPath) {
  * file-system walk (F7). A target that can't be resolved inside the root
  * returns { allowed: false, reason } (0000035 ADR-005). Otherwise returns the
  * evaluateWrite result with the root and relPath added. When both placements
- * pass, it carries the notice and the warning of each one (G-N2).
+ * pass, it carries the warning of each one (G-N2).
  */
 export function judgeWrite(cwd, target) {
   const tooLongWarning = typeof cwd === "string" ? unjudgeable(cwd, target) : null;
@@ -936,11 +701,10 @@ export function judgeWrite(cwd, target) {
       allowed = verdict;
       continue;
     }
-    // Every placement's notice and warning still print. A write the scope
-    // record admits must show its notice even when the other placement is
-    // always permitted (G-N2).
-    for (const key of ["notice", "warning"]) {
-      if (verdict[key] && !(allowed[key] ?? "").includes(verdict[key])) allowed[key] = (allowed[key] ?? "") + verdict[key];
+    // Every placement's warning still prints, even when the other placement
+    // is always permitted (G-N2).
+    if (verdict.warning && !(allowed.warning ?? "").includes(verdict.warning)) {
+      allowed.warning = (allowed.warning ?? "") + verdict.warning;
     }
   }
   return allowed ?? { allowed: true, outside: true };

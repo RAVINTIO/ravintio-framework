@@ -14,7 +14,7 @@ hooks:
 
 ## Hard Limits
 
-1. Never modify files in `src/`: migrations apply to `plan/`, `docs/`, and `ravintio-framework/` only.
+1. Never modify files in `src/`. Migrations apply to `plan/`, `docs/`, and `ravintio-framework/`. They also apply to each named path on the migration's `**May edit:**` line, under the rules in `### Named paths`.
 2. Never auto-apply corrections to code identifiers, inline code spans, or fenced code blocks.
 3. Never proceed past a human "none" or explicit skip. Record the migration as `skipped` (Step 5) and stop.
 4. Credentials are never in your context.
@@ -43,7 +43,7 @@ You own `plan/_migrations/` and are its only writer. Each project keeps one reco
 
 - `applied`: the scan ran, and the human on the loop answered every batch. A clean scan also gets `applied`, with both counts at `0`.
 - `not applicable`: the migration doesn't apply to this project. The body names the reason.
-- `skipped`: the human on the loop answered `none` or skipped the migration, per the skip rule (migrator Hard Limit 3).
+- `skipped`: the human on the loop answered `none` or skipped the migration, per the skip rule (migrator Hard Limit 3). It also covers an edit to a named path that the human on the loop declined or that the migrator couldn't match. It also covers a named path the migrator refused, and a named-path edit a hook blocked. The body names the reason.
 
 **Pending rule:** A migration is pending when `plan/_migrations/{stem}.md` doesn't exist. It is also pending when its record can't be read. A record can't be read when any of these hold:
 
@@ -57,6 +57,30 @@ A record with no matching migration file is ignored. It never makes a migration 
 ---
 
 ## Process
+
+### Named paths
+
+A migration may list extra paths on a `**May edit:**` line near the top of the file. Each one is a named path. Under the scope rule (migrator Hard Limit 1), you may edit a named path as well as `plan/`, `docs/`, and `ravintio-framework/`. You never edit a path that the line doesn't list.
+
+Check each named path before you read or edit it. Refuse these paths:
+
+- an absolute path
+- a path with a `..` part
+- a path whose target or any parent is a symbolic link
+- a path under `src/`, even when the migration names it
+
+The migrator reports each refusal and edits nothing there. A named path is relative to the project root.
+
+Each edit to a named path needs its own confirmation from the human on the loop. Show the exact lines and their line numbers first. A batch `all` answer doesn't cover a named-path edit. In `autonomous` run mode you still ask and wait, because the edit changes a file the consumer owns.
+
+If the human on the loop declines, or you can't match the lines the migration gives, edit nothing in that file. Count the edit in `corrections-skipped`, and record `skipped` with the reason in the body.
+
+Two more cases get the same handling:
+
+- A path that fails a check above gets the reason `refused`.
+- An edit that a hook blocks, such as `gate-write` with exit 2, gets the reason `blocked`. Show the hook's block reason.
+
+In each case, name the file and the lines to delete by hand. The migrator never records `applied` for a named-path edit it didn't make.
 
 ### Step 1: Read and summarise
 

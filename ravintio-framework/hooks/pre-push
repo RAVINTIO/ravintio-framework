@@ -1,59 +1,167 @@
 #!/bin/bash
 # RAVINTIO Pre-Push Hook: Enforce Branch Completeness
-# Tier 2: Developer gate — evaluates the cumulative diff of the entire branch.
+# Tier 2: Developer gate. It evaluates the cumulative diff of the entire branch.
+#
+# Source folder rule (feature 0000040, ADR-003). A source folder is src/, or
+# the folder of a component.yml that product.yml lists. A diff that touches a
+# source folder must also touch a record, a file under plan/ or docs/. The
+# Validate Code/Doc Parity step in hooks/ravintio.yml applies the same rule.
+# Keep the two in step by hand.
 
 TARGET_BRANCH="origin/main"
 
 # Fetch latest to ensure accurate comparison
 git fetch origin main > /dev/null 2>&1
 
-# Get the cumulative list of files changed on this branch compared to main
-CHANGED_FILES=$(git diff --name-only $TARGET_BRANCH...HEAD)
-
-# Get all commit messages on this branch
-COMMIT_MESSAGES=$(git log $TARGET_BRANCH...HEAD --format="%s")
-
-# Check if this branch is entirely Fast Path commits
-# Fast Path commits use the convention: fix(fast-path): description
-if echo "$COMMIT_MESSAGES" | grep -qE "^fix\(fast-path\):"; then
-    if ! echo "$COMMIT_MESSAGES" | grep -vqE "^fix\(fast-path\):"; then
-        # All commits are fast-path — require only component.yml or changelog
-        if echo "$CHANGED_FILES" | grep -q "^src/"; then
-            if ! echo "$CHANGED_FILES" | grep -qE "(component\.yml|plan/changelog/)"; then
-                echo "❌ RAVINTIO FAST PATH ENFORCEMENT FAILED: Push Rejected."
-                echo "----------------------------------------------------------------"
-                echo "Fast Path commits must update component.yml or plan/changelog/."
-                echo "----------------------------------------------------------------"
-                exit 1
-            fi
-        fi
-        exit 0
-    fi
+# With no origin/main ref, the branch has nothing to diff against. A master
+# repo or a first push then relies on CI.
+if ! git rev-parse --verify --quiet "$TARGET_BRANCH^{commit}" > /dev/null; then
+    echo "⚠️  RAVINTIO WARNING: no $TARGET_BRANCH ref, so pre-push checks nothing."
+    echo "   CI runs the source folder rule on the pull request."
+    exit 0
 fi
 
-# Standard check: any src/ change requires plan/, docs/, or component.yml
-# also touched in the same diff. This is a presence check, not a
-# correspondence guarantee — it does not verify that the plan/docs/manifest
-# content actually corresponds to the src/ change.
-if echo "$CHANGED_FILES" | grep -q "^src/"; then
+# The base commit is the merge base. A shallow clone can't supply it, so fail closed.
+if ! BASE=$(git merge-base "$TARGET_BRANCH" HEAD 2>/dev/null); then
+    echo "❌ RAVINTIO ENFORCEMENT FAILED: Push Rejected."
+    echo "----------------------------------------------------------------"
+    echo "Pre-push can't read the merge base of $TARGET_BRANCH and HEAD."
+    echo "This is usually a shallow clone. Fetch the full history, as"
+    echo "fetch-depth: 0 does in CI, with: git fetch --unshallow origin"
+    echo "----------------------------------------------------------------"
+    exit 1
+fi
 
-    # Check if plan/, docs/, or ANY component.yml was updated
-    if ! echo "$CHANGED_FILES" | grep -qE "^(plan/|docs/|.*component\.yml)"; then
-        echo "❌ RAVINTIO ENFORCEMENT FAILED: Push Rejected."
-        echo "----------------------------------------------------------------"
-        echo "Your branch contains code under src/, but no file under plan/,"
-        echo "docs/, or a component.yml was also touched in this diff."
-        echo "This is a presence check, not a correspondence guarantee — it"
-        echo "does not verify the content actually matches your change."
-        echo "You cannot push this branch until you commit updates to:"
-        echo "  - plan/ (current or archived feature docs)"
-        echo "  - docs/ (living documentation)"
-        echo "  - OR the relevant component.yml in the component folder"
-        echo "----------------------------------------------------------------"
-        echo "AGENT INSTRUCTION: The push failed. You must generate the missing"
-        echo "architectural or component documentation, commit it, and try pushing again."
-        exit 1 # Blocks the push
+CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
+
+warn() {
+    echo "⚠️  RAVINTIO WARNING: $1"
+}
+
+# list_path_values: prints each path: value under components: in the
+# product.yml text on stdin. Each line starts with = so an empty value survives.
+list_path_values() {
+    awk -v sq="'" '
+        /^components:/ { on = 1; next }
+        on && /^[^[:space:]]/ { on = 0 }
+        on && /^[[:space:]]*(-[[:space:]]+)?path:/ {
+            v = $0
+            sub(/\r$/, "", v)
+            sub(/^[[:space:]]*(-[[:space:]]+)?path:[[:space:]]*/, "", v)
+            q = substr(v, 1, 1)
+            if (q == "\"" || q == sq) {
+                v = substr(v, 2)
+                i = index(v, q)
+                if (i > 0) v = substr(v, 1, i - 1)
+            } else {
+                sub(/[[:space:]]+#.*$/, "", v)
+                sub(/[[:space:]]+$/, "", v)
+            }
+            print "=" v
+        }
+    '
+}
+
+# folder_of <path>: prints the folder part of a path, or . for a root file.
+folder_of() {
+    local p="$1"
+    while [ "${p#./}" != "$p" ]; do p="${p#./}"; done
+    case "$p" in
+        */*) printf '%s\n' "${p%/*}" ;;
+        *) printf '.\n' ;;
+    esac
+}
+
+SOURCE_FOLDERS="src"
+SEEN_BLOBS=""
+
+# add_listed_folders <commit> <label>: adds the folders that product.yml at
+# that commit lists. An absent file adds nothing and prints nothing.
+add_listed_folders() {
+    local rev="$1" label="$2" blob content value folder found=0
+    if ! git cat-file -e "$rev:product.yml" 2>/dev/null; then
+        return 0
     fi
+    blob=$(git rev-parse "$rev:product.yml" 2>/dev/null || true)
+    if [ -n "$blob" ] && grep -qxF -- "$blob" <<< "$SEEN_BLOBS"; then
+        return 0
+    fi
+    SEEN_BLOBS="$SEEN_BLOBS
+$blob"
+    if [ "$(git cat-file -t "$rev:product.yml" 2>/dev/null || true)" != "blob" ] \
+        || ! content=$(git show "$rev:product.yml" 2>/dev/null); then
+        warn "can't read product.yml at $label, so only src/ is checked for it."
+        return 0
+    fi
+    while IFS= read -r value; do
+        value="${value#=}"
+        case "$value" in
+            "")
+                warn "product.yml at $label has an empty path: value. The rule ignores it." ;;
+            /*|\\*|[A-Za-z]:*)
+                warn "product.yml at $label path \"$value\" is an absolute path. The rule ignores it." ;;
+            ..|../*|*/..|*/../*)
+                warn "product.yml at $label path \"$value\" has a .. part. The rule ignores it." ;;
+            *)
+                folder=$(folder_of "$value")
+                SOURCE_FOLDERS="$SOURCE_FOLDERS
+$folder"
+                found=1 ;;
+        esac
+    done <<< "$(list_path_values <<< "$content")"
+    if [ "$found" = 0 ]; then
+        warn "product.yml at $label lists no components the rule can read, so only src/ is checked for it."
+    fi
+}
+
+# Read both commits, so a branch that drops a component still has it checked.
+add_listed_folders "$BASE" "the base commit"
+add_listed_folders HEAD "HEAD"
+
+# Records are files under plan/ or docs/. A component.yml is source, not a record.
+HAS_RECORD=0
+TOUCHED=""
+while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    case "$file" in
+        plan/*|docs/*) HAS_RECORD=1; continue ;;
+    esac
+    while IFS= read -r folder; do
+        [ -z "$folder" ] && continue
+        case "$file" in
+            "$folder"/*) ;;
+            *) [ "$folder" = "." ] || continue ;;
+        esac
+        if ! grep -qxF -- "$folder" <<< "$TOUCHED"; then
+            TOUCHED="$TOUCHED
+$folder"
+        fi
+    done <<< "$SOURCE_FOLDERS"
+done <<< "$CHANGED_FILES"
+
+if [ -n "$TOUCHED" ] && [ "$HAS_RECORD" = 0 ]; then
+    echo "❌ RAVINTIO ENFORCEMENT FAILED: Push Rejected."
+    echo "----------------------------------------------------------------"
+    echo "Your branch changes these source folders, but no file under"
+    echo "plan/ or docs/ was also touched in this diff:"
+    while IFS= read -r folder; do
+        [ -z "$folder" ] && continue
+        if [ "$folder" = "." ]; then
+            echo "  - the whole repository (product.yml lists a root component.yml)"
+        else
+            echo "  - $folder/"
+        fi
+    done <<< "$TOUCHED"
+    echo "A component.yml counts as source, not as a record."
+    echo "This is a presence check, not a correspondence guarantee. It"
+    echo "does not verify the content actually matches your change."
+    echo "You cannot push this branch until you commit updates to:"
+    echo "  - plan/ (current or archived feature docs)"
+    echo "  - docs/ (living documentation)"
+    echo "----------------------------------------------------------------"
+    echo "AGENT INSTRUCTION: The push failed. You must generate the missing"
+    echo "architectural or component documentation, commit it, and try pushing again."
+    exit 1 # Blocks the push
 fi
 
 exit 0
