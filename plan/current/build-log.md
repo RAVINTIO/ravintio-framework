@@ -315,15 +315,15 @@ Gate passed: P5
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T04:02:54Z` |
-| End | |
-| Wall-clock | |
+| End | `2026-11-07T05:22:15Z` |
+| Wall-clock | 1h19m, about 55m of it waiting on exception 1 |
 | Streams | n/a |
 | Model tier | primary, `claude-sonnet-5-5` for the cross-model review |
-| Skills loaded | ravintio-docs-agent |
-| Agents spawned | |
+| Skills loaded | ravintio-docs-agent, ravintio-reversal-assessor (in subagent), ravintio-migrator |
+| Agents spawned | 5: three docs agents, deviation review, cross-model review |
 | MCP calls | 0 |
-| Parallel task batches | |
-| Notes | Autonomous run. |
+| Parallel task batches | 2 |
+| Notes | Autonomous run. Exception 1 confirmed by the human on the loop. |
 
 P6 Gate A: `docs/` exists.
 P6 Gate B: docs update assessment (autonomous, auto-accepted). Feature 0000040 retired Fast Path and the Change Pipeline, added the source folder rule to pre-push and CI, and added the 0.38.0 consumer migration. Auto-accepted: updating `docs/architecture-overview.md`, `docs/component-registry.md`, `docs/decisions-index.md`, and `docs/dependency-graph.md`. No component exposes an API, so `docs/api-index.md` stays absent.
@@ -338,3 +338,5 @@ Cross-model review (P6, cycle 1 of 3): APPROVE. Reviewer `claude-sonnet-5-5`, im
 Setup re-run (P6): `ravintio-framework/setup.sh claude-code --strict-orchestrator` exited 0. Only `writtenAt` in `ravintio-overrides/setup-config/claude-code.md` changed. No retired-track copy remains, and skill-drift-check reports 20 skills matching source.
 Migration (P6): migrate-0.38.0 recorded `applied` with both counts at 0. The pack reads 0.38.0, no scope record or unfinished run exists, `plan` is not a link, and the CI file holds no exemption line. The 0000035 req-010 records suite passes 98 of 98, and req-005 passes 106 of 106.
 Progress: P6 work done at 2026-11-07T04:27Z. The P6 gate and P7 wait on exception 1 (deviation row 2).
+Exception resolved (P6, 1): the human on the loop confirmed deviation row 2 at 2026-11-07T05:22:15Z ("yes"). The human runs the scope record delete, and the migrator checks the result.
+Gate passed: P6
