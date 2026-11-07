@@ -354,6 +354,8 @@ Docs (P6): living docs updated (a0ca4af4). Pack component docs created under src
 Drift (P6): docs/decisions-index.md links the 0000041 ADRs at plan/current/adr/, which moves at P7. P7 repoints it to the archive folder.
 Drift (P6): src/ravintio-framework/docs/ ships in the release copy, which backlog 0000384 already tracks.
 Revalidation (P6): P4 steps 0-5, fail, test-0000036-req-005-hard-limits-cited-by-name.sh, cycle 1. Four P6 doc lines cited boot Hard Limit 8 without the rule name. The docs now name the Write-or-Edit rule (6f2405c9, 12ccea9d), and the suite passes 12 of 12. A full rerun follows the cross-model review.
+Cross-model review (P6, iteration 1): REJECT on claude-fable-5-1, with implementers claude-opus-5-5 and Sonnet. 0 critical, 2 major, 5 minor. See cross-model-review-1.md.
+Decision (P6): fix majors 1 and 2 and minors 3, 6, and 7, record minor 4 as tech debt, and accept minor 5 until the P7 rebuild puts docs/ in the root copy / reason: each fix is a few lines, and minor 5 resolves at P7 with backlog 0000384 open for the shipped docs
 Deviation review (P6): 19 lines reviewed in a fresh context. 9 additive, 10 altering, 5 of them destructive, 0 schema. See deviation-review.md.
 Exception waiting (P6, 3): approve the P0 `git rm` of the six picked-up backlog folders, a shell delete outside the one P0-approved git pass (review row 1)
 Exception waiting (P6, 1): approve the release script's three-folder write and delete boundary in place of the confirmed root copy only (review row 3)
