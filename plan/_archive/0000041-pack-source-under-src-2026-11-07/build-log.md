@@ -432,12 +432,27 @@ Progress: P8 done at 2026-11-07T20:08:08Z: build report filed, 0 touchpoints, 10
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T20:08:08Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T20:30:11Z` |
+| Wall-clock | 22m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent |
-| Agents spawned | 0 |
+| Agents spawned | 1: the CI fixer |
 | MCP calls | 0 |
 | Parallel task batches | 0 |
 | Notes | Autonomous run. |
+
+Marker step (P9): the session markers are cleared in afda2f03. No marker stays tracked.
+Tag (P9): product-version.mjs prints 0.39.0, above v0.38.0. Local tag v0.39.0 created.
+Branch check (P9): feat/0000041-pack-source-under-src, so the push may run.
+Decision (P9): take Option [1] and raise the PR as a draft / reason: no local-git-only override matches, the repo instructions say P9 pushes and raises the PR, and exception items wait
+Credential scan (P9): PR text clean (regex only)
+PR: #77 https://github.com/RAVINTIO/ravintio-framework/pull/77
+Clean-tree check (P9, Step 10b): one leftover, the changelog PR field, committed in d2e77649 and pushed.
+CI checks (P9): 2 failed: Test suite (windows-latest, shard 5 of 7) https://github.com/RAVINTIO/ravintio-framework/actions/runs/42409694287/job/128514941416, Test suite (windows-latest, shard 6 of 7) https://github.com/RAVINTIO/ravintio-framework/actions/runs/42409694287/job/128514941456. 12 passed.
+CI fix attempt 1 (P9): the failing cases are link, import-path, and byte-compare cases in test-0000041-req-005 and test-0000041-req-006 under Git Bash. A fixer adds the Windows skip convention, a file URL import, and a git blob comparison.
+CI fix attempt 1 (P9): blocked. gate-write refused every edit under src/, because P7 archived plan/current/design.md. The fixer made no change, ran no shell write, and confirmed the cause and the planned edits. Recreating design.md would bypass the confirmed-design gate, so the run makes no further attempt.
+Exception waiting (P9, 6): CI checks Test suite (windows-latest, shard 5 of 7) and (windows-latest, shard 6 of 7) stay red, and no fix can land after the archive. Fix the Windows link, import-path, and byte-compare cases in test-0000041-req-005-applies-to-header.sh and test-0000041-req-006-consumer-migration.sh in a new run. Backlog 0000426 holds the planned edits.
+Backlog filed (P9): 0000426 P9 CI fix blocked by the gate after archive
+Tag push (P9): v0.39.0 goes to origin at the last head, because CI stays red with no fix possible in this run.
+Progress: P9 blocked at 2026-11-07T20:30:11Z: CI 2 failed: Test suite (windows-latest, shard 5 of 7), Test suite (windows-latest, shard 6 of 7)
