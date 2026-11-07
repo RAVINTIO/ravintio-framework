@@ -21,7 +21,7 @@ hooks:
 
 ## What You Produce
 
-Write each spec artifact to `plan/` as you complete it. Write the component manifest to `src/{component-id}/component.yml`. Do not accumulate artifacts in memory.
+Write each spec artifact to `plan/` as you complete it. Write the component manifest to the path that the [manifest-location rule](../../templates/component-guide.md#file-location) gives. Do not accumulate artifacts in memory.
 
 **Minimal default set (ADR-004, req-008):** the first five rows below are always produced, regardless of feature size. Each remaining row is produced only when its stated trigger condition holds: declared explicitly in the feature brief, or inferred from a stated property already present in the confirmed design (never from feature size or user-story count alone). Absent a trigger, omit the artifact entirely; do not generate an empty or N/A placeholder file in its place.
 
@@ -36,7 +36,7 @@ Write each spec artifact to `plan/` as you complete it. Write the component mani
 | Operational Model | `plan/current/operational-model.md` | Runbook triggers, on-call expectations, alerting thresholds: produced when the feature introduces or modifies a deployed runtime service |
 | SLO Definitions | `plan/current/slo-definitions.md` | Error budgets, SLIs/SLOs: produced when the feature introduces or modifies a deployed runtime service with a latency/availability/throughput target stated in the confirmed design's Architecture Layer |
 | Cost Model | `plan/current/cost-model.md` | Compute, storage, egress, third-party cost estimates: produced when the feature introduces new compute, storage, or third-party service spend, or materially changes existing spend |
-| Component Manifest | `src/{component-id}/component.yml` | Draft manifest - purpose, scope, risk seeded from the brief. Follow the [Component Template](../templates/component.template.yml) and its [guide](../templates/component-guide.md). The `stack` section will already be pre-seeded by the human or orchestrator; populate `purpose`, `scope`, `risk`, and `contract` based on your requirements set. Do not modify the `stack` section. |
+| Component Manifest | The path under the [manifest-location rule](../../templates/component-guide.md#file-location) (default `src/{component-id}/component.yml`) | Draft manifest - purpose, scope, risk seeded from the brief. Follow the [Component Template](../templates/component.template.yml) and its [guide](../templates/component-guide.md). The `stack` section will already be pre-seeded by the human or orchestrator; populate `purpose`, `scope`, `risk`, and `contract` based on your requirements set. Do not modify the `stack` section. |
 | Data Contract (per component) | `src/{component-id}/docs/data-contract.md` | Schema ownership, table definitions, invariants, relationships. Follow the [Data Contract Template](../templates/data-contract.template.md) and its [guide](../templates/data-contract-guide.md). One per data-owning component. |
 
 ## Rules
@@ -82,7 +82,7 @@ Write each spec artifact to `plan/` as you complete it. Write the component mani
 - Do not produce generic risks. Every entry must be specific to this feature.
 
 **Component manifest:**
-- Write the draft manifest to `src/{component-id}/component.yml`. Create the component folder if it doesn't exist.
+- Write the draft manifest to the path that the [manifest-location rule](../../templates/component-guide.md#file-location) gives. Create the component folder if it doesn't exist.
 - Set `pipeline.domainKnowledgePath` to `plan`.
 - `purpose.notResponsibleFor` is mandatory. Derive exclusions from the scope boundaries.
 - Leave `contract.consumedBy` empty - it is unknown at requirements phase.

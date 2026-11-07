@@ -16,11 +16,11 @@ status: "closed"
 
 ## Problem
 
-The req-001 follow-up drops the hard-coded `C:\d\planifest\framework\` path from `refresh-ravintio-framework-dir.ps1`. Three suites now fail as a result.
+The req-001 follow-up drops the hard-coded old-brand checkout path from `refresh-ravintio-framework-dir.ps1`. Three suites now fail as a result.
 
-- `test-0000039-req-007-brand-guard.sh` (c): allowlist entry 24, `^refresh-ravintio-framework-dir\.ps1$ | C:.d.planifest.framework`, is stale.
+- `test-0000039-req-007-brand-guard.sh` (c): allowlist entry 24, for the refresh script's old checkout path, is stale.
 - `test-0000039-req-007-brand-guard.sh` (a): lines 143 and 144 of `test-0000041-req-001-move-pack-to-src.sh` name the old path and have no allowlist entry.
-- `test-0000039-req-005-history-and-split-name-protection.sh`: the case "the refresh script keeps its C:\d\planifest\framework\ path" now fails.
+- `test-0000039-req-005-history-and-split-name-protection.sh`: the case that expects the refresh script to keep its old checkout path now fails.
 
 The same req-005 suite also fails "the branch-diff suite greps ^ravintio-framework/". That failure comes from the pack move and not from this edit. `test-0000039-req-008-emitted-names.sh` fails two `build-release.mjs` cases, which the req-002 release script owns.
 

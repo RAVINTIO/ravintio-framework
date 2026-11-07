@@ -123,7 +123,7 @@ Run this step before Step 6 archives `design.md` (0000035 ADR-010). You own `pro
 3. Act on the exit code:
    - Exit 0: `product.yml` names this release's `version` and `feature`. Continue.
    - Exit 5: the policy is `external`, and only `feature` changed. Step 9 consults the external anchor or the human on the loop.
-   - Exit 4: no `product.yml` exists. With exactly one component, do nothing, because Step 9 reads that `component.yml`. With two or more components, rerun the call with `--create --product-id "{id}" --product-name "{name}"` and one `--component` for each component. Take `{id}` and `{name}` from the design.
+   - Exit 4: no `product.yml` exists. With exactly one component, do nothing, because Step 9 reads that `component.yml` (its path follows the rule in [component-guide.md](../../templates/component-guide.md)). With two or more components, rerun the call with `--create --product-id "{id}" --product-name "{name}"` and one `--component` for each component. Take `{id}` and `{name}` from the design.
    - Exit 2: the script wrote nothing, and stderr names the reason. If an argument broke a rule, correct it and rerun. If the reason names a file-system error code, such as `EACCES`, fix the file or folder permission and rerun. If the manifest is invalid or the derived version differs from `{version}`, stop and report the reason. Never tag a fabricated version.
 4. Log the line the script printed in the P7 build-log block.
 
@@ -304,7 +304,7 @@ Determine the release version (ADR-002, product-level versioning):
    Exit 0 → use the printed version. Exit 5 (`versionPolicy: external`) → present the external-anchor constraint and ask the human for the version. Exit 2 (invalid version, unknown policy, or a `components[]` entry pointing at a missing/unversioned `component.yml`) → show the script's reason and prompt the human for a manual value; never tag a fabricated version. `components[]` entries hold `{id, path}`, not a cached version: the script reads each referenced `component.yml`'s own `version:` field live, so there is nothing to sync here before tagging.
 
    Step 9 only reads `product.yml`. Step 5b set its release fields at P7 (0000035 ADR-010). If the derived version differs from the version the human on the loop confirmed at P0, stop and report the difference. Leave the file as it is. A stale file waits for the next P7.
-2. **No `product.yml` and the project has exactly one component** (exit 4): read the `version` field from the single `component.yml` (for this repo: `ravintio-framework/component.yml`). This is the unchanged pre-0000016 behaviour.
+2. **No `product.yml` and the project has exactly one component** (exit 4): read the single component from the archived design at `plan/_archive/{feature-folder}/design.md`, because Step 6 has archived it. Then read the `version` field from that component's manifest under the rule in [component-guide.md](../../templates/component-guide.md). With no `product.yml`, the rule gives the default path. If the design lists no component, or more than one, stop and report it. Never tag in that case.
 3. **No `product.yml` and the project has 2+ components**: Step 5b runs the script with `--create` at P7, so the file exists by now. If it is still missing, stop and report it. Don't tag.
 
 Validate the final value: must match `[0-9]+\.[0-9]+(\.[0-9]+)?` and be ≤20 characters, and must not be lower than the last release tag. If validation fails, prompt the human to supply the version manually: do not create the tag with an unvalidated value.

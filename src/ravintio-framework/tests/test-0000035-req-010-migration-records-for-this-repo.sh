@@ -124,7 +124,7 @@ for path in "$MIGRATIONS"/*.md; do
       "req-010: the build log holds exactly one Exception waiting line for $name"
   fi
 done
-assert_equals "13" "$COUNT" "req-010: the repo has thirteen migrations to account for"
+assert_equals "14" "$COUNT" "req-010: the repo has fourteen migrations to account for"
 
 # =============================================================================
 echo ""
