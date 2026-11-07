@@ -66,6 +66,7 @@ As a consumer repo owner, I upgrade and lose any leftover scope record and the C
   - A run where the human on the loop declines the CI edit leaves the CI file byte-identical. It names the file and the lines, and records `skipped` with the reason `declined`.
   - A run on an edited block does the same with the reason `no match`.
   - P5 revision, within the confirmed design per defect verdict 001: two more reasons record `skipped` with the same handling as `declined` and `no match`. The reason `blocked` applies when a hook, such as `gate-write`, blocks the CI edit. The migrator shows the hook's block reason. The reason `refused` applies when the CI path fails a named-path check. Neither case records `applied`. Step 3 also checks whether `plan` itself is a symbolic link. If it is, the migrator doesn't show the `rm` command. It names `plan/.fast-path-scope` for the human on the loop to check by hand, and the record body names that path.
+  - P5 resolution of exception 001: the human on the loop chose option 3. In a consumer with `gate-write` installed and no design, `blocked` is the expected outcome, and the CI block stays in place. This narrows the confirmed design line about the removal.
 - [ ] The migrator `SKILL.md` states the scope rule (migrator Hard Limit 1) with the `**May edit:**` line. It also states the per-edit confirmation, the refusal of `src/`, absolute, `..`, and linked paths, and the widened `skipped` outcome. Verified by: integration
 
 ## Dependencies

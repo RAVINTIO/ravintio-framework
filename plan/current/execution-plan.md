@@ -73,7 +73,7 @@ Not applicable. The feature owns no data store.
 ```mermaid
 flowchart LR
     S[setup.sh and setup.ps1] -->|retired list| T[consumer tool folders]
-    M[0.38.0 migration] -->|confirmed edit| C[consumer CI file]
+    M[0.38.0 migration] -->|confirmed edit, skipped if blocked| C[consumer CI file]
     P[product.yml] -->|source folders| G[pre-push and CI]
 ```
 
