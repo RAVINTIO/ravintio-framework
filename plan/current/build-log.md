@@ -219,14 +219,14 @@ Gate passed: P2
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T16:20:02Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T17:56:23Z` |
+| Wall-clock | 96m |
 | Streams | n/a |
-| Model tier | primary for orchestration, cheaper for TDD subagents |
+| Model tier | primary for orchestration and two security-sensitive implementers, cheaper for the other TDD subagents |
 | Skills loaded | ravintio-codegen-agent |
-| Agents spawned | pending |
+| Agents spawned | 31: test-writers, implementers, refactor agents, and one full-suite fixer |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 7 |
 | Notes | Autonomous run. Build order from execution-plan.md. |
 
 Skills inbox (P3): ravintio-framework/skills-inbox/ is absent, so nothing to process. The stack is Bash and Node.js with no capability skill installed.
@@ -257,5 +257,16 @@ TDD (P3, step 6, req-006): RED 28 passed, 99 failed (d6e31e2a). GREEN 127 passed
 Decision (P3): this repo's 0.39.0 record states framework-version 0.38.0 / reason: no release.yml exists yet and the manifest read 0.38.0 when the record was written, as the record rule states
 Note (P3): commit b1c985dd also holds the req-004 implementer's unfinished skill edits, because the orchestrator staged every changed path while that agent was still running. A later commit holds the rest.
 TDD (P3, step 7, req-007): RED 8 passed, 19 failed (61cc92df). GREEN 27 passed, 0 failed (fc5134a6). The req-008 suite reads 49 passed, 0 failed, so req-008 AC2's scan closes.
+Close-out (P3, step 8): src/ravintio-framework/component.yml 0.38.0 to 0.39.0 and src/setup-hook-integration/component.yml 0.7.0 to 0.8.0, both with feature 0000041 (c8a6f183). product-version.mjs prints 0.39.0. test-0000040-req-007 now reads the v0.38.0 manifest from history, because the live manifest moved on.
+Note (P3): the req-004 edits all landed in b1c985dd. Its suite passes on the committed tree, so no follow-up commit was needed.
+Refactor (P3, steps 6 and 7): one migrator sentence tightened (4925c58a). req-004, req-006, and req-007 needed no change.
+Full suite (P3, gate): first run 134 feature suites passed, 5 failed. The five broke on this feature's own changes: a pinned 0.38.0 in the req-002 suite, a citation form in the 0.39.0 migration, three portability-lint path literals, a missing Windows skip table row, and the boot template hash in 0000038 req-007. One fixer resolved all five (b14d0abc). Second run: 139 feature suites and 37 regression suites passed, 0 failed, 176 suites run.
+Decision (P3): test-0000038-req-007 drops the Sanctioned scripts line from its template hash / reason: 0000041 req-002 changes that line on purpose, and its own suites check it. The frozen v0.38.0 template gives the same hash, so no other line changed.
+req-001 AC1 checks (P3, close-out): 0 paths outside src/ravintio-framework/ in a5055f44. The pass tree equals v0.38.0:ravintio-framework. `git diff --quiet v0.38.0 HEAD -- ravintio-framework` exits 0.
+Requirement-ID scan (P3): 8 requirements, 0 unmapped. req-005 gained a missing `# Verified by: integration` header (1660a3d1). The execution and manual criteria of req-001, req-002, req-005, req-006, and req-007 are deferred to P4.
 Rule breach (P3): the req-008 AC3 test-writer subagent ran `sed -i` once on test-0000041-req-008-tests-and-ci-from-src.sh to rename two helper calls, which breaks the Write-or-Edit rule (boot Hard Limit 8). The orchestrator reviewed the diff before commit, and the content matches what an Edit would produce. The final report lists it.
 Note (P3): test-0000040-req-007-docs-and-adr-supersede.sh asserts component.yml version 0.38.0, so the step 8 version bump turns it red. Step 8 handles it with the req-007 released-tree rule or an Edit.
+Gate summary (P3): eight requirements GREEN under TDD. The pack source sits at src/ravintio-framework/, and the root copy stays byte-identical to v0.38.0. New scripts: project-kind.mjs, build-release.mjs, release-check.mjs, and the pack-root.sh resolver. New migration: 0.39.0, with this repo's not applicable record. CI runs from src/ and gains the release-copy-integrity job. The full suite passes. Backlog filed: 0000402. Backlog closed: 0000403. One rule breach logged.
+Skill Map (P3): unchanged.
+Progress: P3 done at 2026-11-07T17:56:23Z: eight requirements GREEN, full suite 176 passed, pack at 0.39.0, P4 next
+Gate passed: P3
