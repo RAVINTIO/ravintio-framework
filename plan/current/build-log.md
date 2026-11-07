@@ -235,3 +235,7 @@ Git pass (P3, step 1): ran `git mv ravintio-framework src/ravintio-framework`, t
 req-001 AC1 checks (P3, after the pass): 0 paths outside src/ravintio-framework/. `git rev-parse a5055f44:src/ravintio-framework` equals `git rev-parse v0.38.0:ravintio-framework`. `git diff --quiet v0.38.0 HEAD -- ravintio-framework` exits 0.
 req-001 product.yml (P3, step 1): path now src/ravintio-framework/component.yml, commit 4600b7b4. `node src/ravintio-framework/scripts/product-version.mjs` prints 0.38.0 and exits 0.
 TDD (P3, step 2, req-005 project-kind.mjs): RED 12 passed, 32 failed (6feeeb59). GREEN 44 passed, 0 failed (3f4e54f5). Refactor: no change needed.
+TDD (P3, step 3, req-008 resolver): RED 12 passed, 23 failed (b9db2f32). pack-root.sh GREEN on all 13 AC1 cases (104c3485). The real-scan case stays red until step 7, as the build order expects. The release-copy-integrity cases stay red until step 5.
+Decision (P3): the req-008 suite finds its pack from its own folder and doesn't source pack-root.sh / reason: the resolver is the unit under test, so a source would abort the whole suite before its cases run
+Decision (P3): the CI path edits land at step 3, and the release-copy-integrity job lands at step 5 with release-check.mjs / reason: the job runs that script, so an earlier job would fail on every push
+Decision (P3): the step 3 suite edits run as one parallel batch of five implementers, each on its own file set / reason: no two groups share a file, and each regression copy stays with its twin
