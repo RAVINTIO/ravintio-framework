@@ -56,6 +56,12 @@ sg() {
     -c commit.gpgsign=false -c core.autocrlf=false "$@"
 }
 
+# mode_of <path>: the permission bits in octal, read through Node so the
+# suite needs neither GNU nor BSD stat.
+mode_of() {
+  node -e 'process.stdout.write((require("fs").statSync(process.argv[1]).mode & 0o777).toString(8))' "$1" 2>/dev/null
+}
+
 # run_build <dir> [args...]: run the script in <dir>. Sets OUT, ERR, CODE.
 run_build() {
   local d="$1"; shift
@@ -466,7 +472,7 @@ else
   R="$(fresh p5nf03)"
   run_build "$R"
   assert_equals "0" "$CODE" "req-002 P5 NF-03: the build for the root copy mode check exits 0"
-  assert_equals "755" "$(stat -c %a "$R/$COPY_DIR" 2>/dev/null || stat -f %Lp "$R/$COPY_DIR" 2>/dev/null)" "req-002 P5 NF-03: the root copy folder has mode 0755 after a build"
+  assert_equals "755" "$(mode_of "$R/$COPY_DIR")" "req-002 P5 NF-03: the root copy folder has mode 0755 after a build"
 fi
 
 # Work folder mode: poll while a build runs and read the build folder mode.
@@ -479,7 +485,7 @@ else
   P5_PID=$!
   while kill -0 "$P5_PID" 2>/dev/null; do
     if [ -d "$R/.ravintio-framework-build" ]; then
-      P5_MODE="$(stat -c %a "$R/.ravintio-framework-build" 2>/dev/null || stat -f %Lp "$R/.ravintio-framework-build" 2>/dev/null)"
+      P5_MODE="$(mode_of "$R/.ravintio-framework-build")"
       break
     fi
   done

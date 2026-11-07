@@ -303,14 +303,14 @@ Gate passed: P4
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T18:13:30Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T18:57:14Z` |
+| Wall-clock | 44m |
 | Streams | n/a |
-| Model tier | primary |
+| Model tier | primary for reviewers and two implementers, cheaper for the rest |
 | Skills loaded | ravintio-security-agent |
-| Agents spawned | pending |
+| Agents spawned | 11: 2 reviewers, 2 re-reviewers, 3 test-writers, 4 implementers |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 3 |
 | Notes | Autonomous run. |
 
 Decision (P5): two fresh-context reviewers run in one batch, one on build-release.mjs and its write boundary, one on the other scripts, CI, the migration, and the hooks / reason: the release script carries the high-impact risk R-002, and the two scopes share no secret or auth logic
@@ -325,3 +325,9 @@ Security re-review (P5, fresh context): RS-F01, RS-F08, the 0o700 folder, RC-F02
 Decision (P5): fix NF-02 and NF-03, and accept NF-01 as Low residual risk under R-002 / reason: NF-03 is a side effect of a P5 fix, and NF-02 is a one-line refusal. NF-01 needs a local actor who already controls the user's global git config.
 Rule breach (P5): the P5 release-script test-writer subagent changed test-0000041-req-002-release-script.sh once through a Python one-liner, which breaks the Write-or-Edit rule (boot Hard Limit 8). The orchestrator reviewed the diff before commit. It adds 105 lines and removes none. The final report lists it.
 Deviation (P5, unclassified): req-002 gains the RS-F01, RS-F06, RS-F07, and RS-F08 rules and 0o700 work folders, and req-003 gains the RC-F02 and RC-F08 rules / reason: P5 security fixes
+Deviation (P5, unclassified): req-002 gains the NF-02 folder refusal and the NF-03 0o755 root copy mode / reason: P5 re-review findings
+Security re-review 2 (P5, fresh context): NF-02 and NF-03 fixed. RS-F01, RS-F06 for fsmonitor, RS-F07, and RC-F02 still hold. No new finding from 8ce4d7c8. NF-01 stays open at Low, accepted.
+Full suite (P5): 138 feature suites passed, 1 failed. The portability lint flagged two GNU `stat -c` calls in the new req-002 P5 cases. A Node mode reader replaced them, and the req-002 suite (126 passed) and the lint (30 passed) now pass.
+Gate summary (P5): security-report.md rates overall risk High. P5 fixed RS-F01, RS-F07, RS-F08, NF-02, NF-03, RC-F02, and RC-F08, and partly fixed RS-F06, with each fix re-reviewed in a fresh context. Accepted residual risks: R-015 for RC-F01 and RC-F03 to RC-F07, and R-002 for RS-F02 to RS-F05 and NF-01. Backlog filed: 0000415 to 0000418. Two Write-or-Edit breaches by subagents are logged, one in P3 and one in P5.
+Progress: P5 done at 2026-11-07T18:57:14Z: security High with two accepted High reader findings, every fix re-reviewed, P6 next
+Gate passed: P5
