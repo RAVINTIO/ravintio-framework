@@ -519,7 +519,7 @@ Release 0.39.0 moves the pack source to `src/ravintio-framework/` (0000041 ADR-0
 
 ### Release copy and release script
 
-`scripts/build-release.mjs` rebuilds the root copy from `src/ravintio-framework/` without `component.yml` (0000041 ADR-003). It builds in `.ravintio-framework-build/` and swaps the folders. The old copy waits in `.ravintio-framework-previous/` until the swap succeeds, and an interrupted build leaves the old copy whole. It writes only inside those three folders and refuses a path that resolves outside them. It runs only in the source repo, which `project-kind.mjs` decides. Boot Hard Limit 8 sanctions the script, and ship Step 5c runs it at P7. `release-check.mjs` compares the root copy with its `release.yml` and refuses a `release.yml` folder.
+`scripts/build-release.mjs` rebuilds the root copy from `src/ravintio-framework/` without `component.yml` (0000041 ADR-003). It builds in `.ravintio-framework-build/` and swaps the folders. The old copy waits in `.ravintio-framework-previous/` until the swap succeeds, and an interrupted build leaves the old copy whole. It writes only inside those three folders and refuses a path that resolves outside them. It runs only in the source repo, which `project-kind.mjs` decides. The Write-or-Edit rule (boot Hard Limit 8) sanctions the script, and ship Step 5c runs it at P7. `release-check.mjs` compares the root copy with its `release.yml` and refuses a `release.yml` folder.
 
 ### release.yml and update detection
 
