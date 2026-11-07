@@ -15,8 +15,9 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
 SET="$FRAMEWORK/scripts/set-product-release.mjs"
 STANDARD_BOOT="$FRAMEWORK/templates/standard-boot.md"
 CURSOR_BOOT="$FRAMEWORK/templates/cursor-boot.md"

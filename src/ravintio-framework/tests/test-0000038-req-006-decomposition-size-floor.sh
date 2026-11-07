@@ -11,10 +11,11 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FW="$SCRIPT_DIR/.."
+FW="$RAVINTIO_PACK_DIR"
 STD="$FW/standards/agent-dispatch-standards.md"
-OVR="$FW/../ravintio-overrides/instructions/custom-002-prefer-subagent-decomposition.md"
+OVR="$RAVINTIO_REPO_ROOT/ravintio-overrides/instructions/custom-002-prefer-subagent-decomposition.md"
 
 # floor <file>: prints the floor paragraph, the line that starts with "**Size floor".
 floor() {

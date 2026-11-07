@@ -16,9 +16,10 @@ unset CLAUDE_PROJECT_DIR
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(cd "$FRAMEWORK/.." && pwd)"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO="$RAVINTIO_REPO_ROOT"
 MIGRATIONS="$FRAMEWORK/migrations"
 MIGRATOR_FILE="$FRAMEWORK/skills/ravintio-migrator/SKILL.md"
 ORCH_FILE="$FRAMEWORK/skills/ravintio-orchestrator/SKILL.md"
