@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Verified by: unit
+# Verified by: integration
 #
 # Tests for feature 0000041-pack-source-under-src, req-005: applies-to header
 # and the source-repo signal (ADR-007).
