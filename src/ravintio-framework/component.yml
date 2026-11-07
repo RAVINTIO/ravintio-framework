@@ -79,6 +79,11 @@ responsibilities:
   - "Keep the old-name reads listed in 0000039-ADR-004 through 0.x, removed at 1.0.0: the old session ID variable in the OpenCode adapter, and the old boot-file markers and ignore-file headers. Setup reads neither old setup marker file and stops while one exists, because the migration helper renames both (0000039-ADR-003, ADR-004)"
   - "Fail a test when a tracked live file brings back the old name, with a path-and-line allowlist whose stale entries also fail, while history under plan/_archive/, plan/changelog/, and plan/_migrations/ stays as written (0000039-ADR-007, ADR-009)"
   - "Own the consumer marker files .ravintio-session, .ravintio-manifest, and .ravintio-setup-flags, which consumer repos read and never write (0000039-ADR-010)"
+  - "Keep the pack source at src/ravintio-framework/ and rebuild the root ravintio-framework/ release copy with scripts/build-release.mjs, which writes release.yml and never ships component.yml (0000041-ADR-002, ADR-003)"
+  - "Detect a release update and each changed pack file with scripts/release-check.mjs, reading release.yml first and falling back to component.yml only for a pack before 0.39.0 (0000041-ADR-004)"
+  - "Decide the project kind with scripts/project-kind.mjs, so the migrator skips a migration whose Applies to header names the other kind (0000041-ADR-007)"
+  - "Offer to remove a leftover ravintio-framework/component.yml in a consumer with migrate-0.39.0-remove-pack-component-yml (0000041-ADR-008)"
+  - "Resolve the pack and repo root for every suite through tests/helpers/pack-root.sh, and check the root copy against release.yml in the CI release-copy-integrity job (0000041-ADR-009)"
 
 exceptions:
   - "Does not write to ravintio-overrides/ — that directory is user-owned"
@@ -115,6 +120,15 @@ contract:
     - name: "migrate-0.37.0-ravintio-rename.sh and .ps1 exit code and stdout (0000039)"
       type: "cli"
       description: "Run from the consumer project root. Exit 0 on success or when nothing is left to do, non-zero on a stop. A stop names the step and the files already moved. Moves the old overrides folder to ravintio-overrides/, renames the workflow to ravintio.yml, removes the old session marker, and moves the old pack into .ravintio-backup/. Deletes no pack file and refuses links and junctions."
+    - name: "build-release.mjs exit code and stdout (0000041)"
+      type: "cli"
+      description: "Exit 0 when the new copy is in place, 1 on a file-system or git failure, 2 on a refusal. Prints added:, changed:, removed:, restored:, and a summary: line. Writes ravintio-framework/release.yml."
+    - name: "release-check.mjs exit code and stdout (0000041)"
+      type: "cli"
+      description: "Exit 0 nothing to confirm, 1 a candidate update or file line, 2 the check could not run. Prints release:, recorded:, update:, record:, changed:, missing:, unlisted:, warn:, and skipped: lines."
+    - name: "project-kind.mjs stdout (0000041)"
+      type: "cli"
+      description: "Prints framework source or downstream. Exit 0, or 2 on a bad argument."
     - name: "setup.sh and setup.ps1 stop message (0000039)"
       type: "cli"
       description: "While the old pack folder or the old overrides folder exists, setup exits 1 and names migrate-0.37.0-ravintio-rename."
@@ -173,6 +187,9 @@ scope:
     - "The setup stop while a tool folder holds the old setup flags or manifest file, and the helper step that renames both in eight tool folders and rewrites the manifest entries (0000039-ADR-004, ADR-005)"
     - "The brand guard suite tests/test-0000039-req-007-brand-guard.sh with its path-and-line allowlist, and the other 0000039 suites test-0000039-req-001 to req-010 (0000039-ADR-007)"
     - "Version 0.37.0 in product.yml, this manifest, and docs/about.md (0000039-ADR-003)"
+    - "The pack source under src/ravintio-framework/, scripts/build-release.mjs, scripts/release-check.mjs, scripts/project-kind.mjs, and tests/helpers/pack-root.sh (0000041)"
+    - "The ravintio-framework/release.yml file contract, plan/framework-release.yml, and the Applies to migration header (0000041-ADR-004, ADR-007)"
+    - "migrations/migrate-0.39.0-remove-pack-component-yml.md and the eight test-0000041 suites (0000041-ADR-008, ADR-009)"
   outOfScope:
     - "Application-level code generation (handled by ravintio-codegen-agent)"
     - "CI pipeline configuration for consumer projects"
@@ -193,19 +210,28 @@ risk:
     - "The consumer migration moves files in a consumer repo. It refuses links and junctions, backs up the old pack and deletes nothing, and a clash stops it before the first move (0000039-ADR-005)"
     - "Windows Git Bash skips some checks (symlinks, NTFS modes, cwd deletion), tracked in backlog 0000208, 0000210, 0000211, and 0000209 records a real enforcement gap on Windows (0000037)"
     - "The em dash guard's bypass sentinel is matched anywhere in the payload, including inside prose that merely quotes it, so any document explaining the rule exempts itself from the rule (0000028-P5 SEC-005)"
+    - "R-002: build-release.mjs checks its boundary folders with lstat, and Node has no openat, so a same-user writer can race the checks. P5 fixed the root escape and accepted the race (0000041, backlog 0000417)"
+    - "R-015: a writer of the pack can also rewrite release.yml, plan/framework-release.yml, release-check.mjs, and the source-repo signal, so step 1a reports no update. A trust anchor outside the repo is backlog 0000416 (0000041)"
 
 quality:
   testCoverage:
     unit: 0
     integration: 613
     e2e: 0
-  techDebt: []
+  techDebt:
+    - "Backlog 0000402: the migration branch diff does not map the old pack layout to src/ravintio-framework/ (0000041)"
+    - "Backlog 0000416: no trust anchor for step 1a outside the repo (0000041, R-015)"
+    - "Backlog 0000417: build-release.mjs reads working-tree bytes, not HEAD bytes (0000041)"
+    - "Backlog 0000418: the CI integrity job passes when release.yml is deleted (0000041)"
+    - "Backlog 0000384: pack docs ship in the release copy (0000041)"
   quirks:
     - "gate-write component path matching is prefix-based; very short prefixes may over-permit"
     - "ratchet-check treats a reworded criterion as remove+add and blocks it (conservative); the .ratchet-approve marker is the intended path for legitimate rewording"
     - "ratchet-check cannot verify who wrote .ratchet-approve (ADR-004 same-changeset detection not implemented in 0.16.0); marker forgery is audit-detected via ratchet-log.md and P8, not prevented"
     - "product-version.mjs parses only the constrained product.template.yml shape, not arbitrary YAML"
     - "The brand guard reads git ls-files minus the history paths and plan/current/, so an untracked file with the old name passes until it is added. Each allowlist entry needs a path regex, a line regex, and a reason (0000039-ADR-007)"
+    - "The root ravintio-framework/ copy stays at v0.38.0 until this run's P7 runs build-release.mjs from src/, and the CI integrity job reports skipped until then (0000041)"
+    - "The pack docs under src/ravintio-framework/docs/ ship in the release copy (backlog 0000384)"
     - "The migration helpers rename the old setup flags and manifest files in place, and drop any manifest entry whose name fails the strict allowlist, with a warning. A hand-run helper leaves .ravintio-backup/, so the migrator records applied and not not-applicable (0000039-ADR-006)"
     - "The em dash guard only matches the Write and Edit tools and only inspects paths that resolve under 5 relative prefixes, so a write made through Bash, or through an absolute path outside cwd, is not inspected at all. This is a style rule with a deliberately narrow reach, not an authorisation control (0000028-req-006)"
 
@@ -289,6 +315,9 @@ metadata:
   # rule 1 to named paths with confirmation (ADR-006). A CI edit that
   # gate-write blocks records skipped with the reason blocked. Added the
   # residue guard with a closed allowlist (ADR-007).
+  # Updated by 0000041 (docs-agent) P6: version 0.39.0. Added the pack docs
+  # under docs/, and the responsibilities, scope, risk, and quirks entries for
+  # the release script, release.yml readers, project kind, and migration.
   createdBy: "agent"
   lastModifiedBy: "ravintio-docs-agent"
   skill: "ravintio-docs-agent"
