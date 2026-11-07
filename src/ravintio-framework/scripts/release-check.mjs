@@ -182,18 +182,22 @@ function walkCopy(top) {
 function fileLines(top, files) {
   const found = walkCopy(top);
   const out = [];
+  const report = (kind, rel) => out.push([rel, `${kind}: ${COPY}/${clean(rel)}`]);
   for (const [rel, entry] of found) {
-    const base = rel.split("/").pop();
     const listed = files.get(rel);
-    if (entry.link) out.push([rel, `changed: ${COPY}/${clean(rel)}`]);
-    else if (listed !== undefined) { if (listed !== entry.hash) out.push([rel, `changed: ${COPY}/${clean(rel)}`]); }
-    else if (!(TOP_SKIP.has(rel) || ANY_SKIP.has(base))) out.push([rel, `unlisted: ${COPY}/${clean(rel)}`]);
+    if (entry.link) {
+      report("changed", rel);
+    } else if (listed !== undefined) {
+      if (listed !== entry.hash) report("changed", rel);
+    } else if (!(TOP_SKIP.has(rel) || ANY_SKIP.has(rel.split("/").pop()))) {
+      report("unlisted", rel);
+    }
   }
   for (const rel of files.keys()) {
-    if (!found.has(rel)) out.push([rel, `missing: ${COPY}/${clean(rel)}`]);
+    if (!found.has(rel)) report("missing", rel);
   }
-  out.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
-  return out.map((p) => p[1]);
+  out.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  return out.map(([, line]) => line);
 }
 
 // ownBuild: each release.yml entry matches the same path under src/, and git
