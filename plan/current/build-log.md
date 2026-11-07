@@ -94,3 +94,47 @@ Decision (P1): P1 runs as parallel spec subagents rather than stream files / rea
 Decision (P1): P1 writes no src/ravintio-framework/component.yml draft / reason: the folder must not exist before the P3 git pass, or git mv would nest the pack inside it. The manifest moves with the pack, and P3 updates its purpose and scope.
 Agents spawned (P1): 4 spec subagents in 1 parallel batch, primary tier (req-001, req-007, and req-008, then req-002 and req-003, then req-004, req-005, and req-006, then scope, risk register, and glossary). Backlog IDs 0000382 to 0000385 reserved, one per subagent.
 Backlog filed (P1): 0000386, plan/backlog/.next-id holds 0000363 while entries reach 0000381, and no pack file reads it.
+Decision (P1): split step for req-001: keep / reason: the pass and its path fixes form one outcome, and neither ships alone
+Decision (P1): req-001 AC1 is execution, logged at P3 / reason: a squash merge drops the pass commit, so no lasting suite can find it
+Decision (P1): source-location paths move to src/ravintio-framework/, and runtime paths stay ravintio-framework/ / reason: the design keeps the consumer runtime path
+Decision (P1): .gitattributes gains eol=lf lines for the src/ hook scripts and keeps the root lines / reason: after git mv, the existing rules cover only the root copy
+Decision (P1): refresh-ravintio-framework-dir.ps1 uses $PSScriptRoot and keeps running the root setup / reason: it hard-codes an old path, and US-001 needs .claude/ installed from the release
+Decision (P1): no edit to CLAUDE.md or .claude/ in this run / reason: both are setup output that .gitignore excludes, and an agent never edits its own instruction file to sanction a script. The final report recommends a setup refresh after P7.
+Decision (P1): req-002 AC4 now checks the P7 Decision line and the setup refresh recommendation, in place of a local CLAUDE.md edit / reason: req-001 and req-002 disagreed, and the P0-approved recorded decision covers this run's P7
+Deviation (P1, unclassified): req-001 adds the three src/ravintio-framework/ prefixes to em-dash-guard.mjs scope / reason: after the move, pack prose edits would skip the guard (R-011)
+Decision (P1): split step for req-007: keep / reason: the skip rule and the resolver move change one suite's verdict
+Decision (P1): req-007 skips only the three equality checks and prints SKIP (open run): {check}. {reason} / reason: the other checks agree from P3 on, and the format matches SKIP (windows):
+Decision (P1): split step for req-008: keep / reason: the integrity check guards the same risk as the resolver
+Decision (P1): the resolver is src/ravintio-framework/tests/helpers/pack-root.sh, sourced, setting RAVINTIO_PACK_DIR, RAVINTIO_REPO_ROOT, RAVINTIO_PACK_REL, and RAVINTIO_SOURCE_REPO / reason: it follows the helpers/assert.sh pattern
+Decision (P1): the resolver check becomes a run-time exit 1 from the root copy plus a static scan with a # root-copy-ok: {reason} marker / reason: a run-time check can't see a literal path
+Decision (P1): regression copies change by Edit with their twins, and regression-manifest.json stays unchanged / reason: 0000040 precedent
+Decision (P1): the CI integrity job release-copy-integrity runs release-check.mjs --root . --files-only on ubuntu only / reason: one hash reader
+Decision (P1): split step for req-002: keep / reason: one concern, a release copy a consumer can trust
+Decision (P1): split step for req-003: keep / reason: step 1a, the policy, and the migrator read one source, and none ships alone
+Deviation (P1, unclassified): build-release.mjs also writes .ravintio-framework-build/ and .ravintio-framework-previous/ beside the root copy, so its write boundary is three folders. design.md Security updated.
+Decision (P1): build-release.mjs copies only git ls-files output, refuses a dirty src/ravintio-framework/, takes no arguments, and reads the version from the src/ manifest / reason: source-commit must match the content, and Hard Limit 8 sanctions the shown arguments
+Decision (P1): release.yml carries format: 1, a UTC built date, and SHA-256 hashes after CRLF reads as LF, and lists neither itself nor component.yml / reason: same-day reruns stay byte-identical, and Windows checkouts don't read as changed
+Decision (P1): the recorded value lives in plan/framework-release.yml, written only by step 1a / reason: no file records a source commit today
+Decision (P1): read-only scripts/release-check.mjs runs step 1a's comparison, with --files-only for CI / reason: hashing about 1,200 files must be deterministic, and a read-only script needs no Hard Limit 8 sanction
+Decision (P1): in the source repo, a root copy that matches the hashes of the current src/ is an own build and needs no confirmation / reason: the maintainer's own P7 rebuild must not read as an untrusted update
+Decision (P1): an unreadable release.yml exits 2 and never falls back to component.yml / reason: the fallback is for a pack before 0.39.0 only
+Decision (P1): split step for req-004: keep / reason: one manifest rule, which codegen and ship only apply
+Decision (P1): component-guide.md ## File location owns the manifest rule, and spec-agent and docs-agent link to it / reason: one owner, worded once
+Decision (P1): the ship Step 9 case 2 fallback reads the archived design.md and stops on zero or 2+ components / reason: Step 6 archives design.md before P9
+Decision (P1): split step for req-005: keep / reason: the script and the header have no use without the Step 1b rule
+Decision (P1): project-kind.mjs decides the project kind, read-only, and the Target check reads it too / reason: one source-repo signal
+Decision (P1): an unknown **Applies to:** value stops the run with no record / reason: never guess a skip
+Deviation (P1, unclassified): req-005 adds a migrator table that maps the released retroactive-release-tags.md to framework source / reason: the file can't change, and backlog 0000136 names it. design.md Dependencies updated.
+Decision (P1): split step for req-006: keep / reason: one concern, removing the leftover manifest
+Decision (P1): the migrator never deletes the manifest and shows rm -- ravintio-framework/component.yml for the human on the loop / reason: Write and Edit can't delete (backlog 0000366)
+Deviation (P1, unclassified): req-006 adds step 3a. If product.yml lists the leftover manifest, the migration records skipped with the reason listed in product.yml / reason: product-version.mjs would exit 2 (R-013)
+Decision (P1): this repo's not applicable record for the 0.39.0 migration lands at P3 / reason: the installed migrator is 0.38.0, and P4 runs the records suite
+Decision (P1): the P3 close-out bumps src/ravintio-framework/component.yml to 0.39.0 and src/setup-hook-integration/component.yml by one minor version, by Edit / reason: the installed 0.38.0 codegen close-out names only the root manifest, which no agent writes
+Decision (P1): backlog 0000382, the gate root under src/, stays out of scope / reason: a probe showed both gates fail closed, and Claude Code sets CLAUDE_PROJECT_DIR. R-006 is accepted.
+Decision (P1): the execution plan's file ownership table gives each file one owner, with second-section edits named and ordered / reason: four files had edits from two requirements
+Decision (P1): risk R-003's design likelihood certain is recorded as high, and the overall risk level is high / reason: the scale is low, medium, high
+Decision (P1): the glossary uses root copy, with release copy as its alias / reason: the design uses root copy throughout
+Decision (P1): discovery.md's count of 13 suites naming the manifest stays as written / reason: discovery holds raw P0 findings, and req-008 names the real 12
+Decision (P1): wrote other features' ADR references as ADR NNN without the hyphen / reason: consistency-check reads ADR-NNN as a local file (backlog 0000252). Notation only, no meaning changed
+Backlog filed (P1): 0000382 gate root resolves to src/ in the source repo, 0000383 migrations run before step 1a confirms the pack, 0000384 pack docs would ship in the release copy, 0000387 src/README.md links a missing file
+Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-check clean, with one warning for req-002's four criteria, which has a recorded keep answer.

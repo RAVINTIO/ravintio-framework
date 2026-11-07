@@ -47,7 +47,7 @@ All paths below use the post-move layout. A consumer runs the same files at `rav
   4. If the value is `all` or matches the kind, read the `**Target:**` line as today.
 - The `**Target:**` check keeps its released behaviour. It takes the project kind from the same script, in place of the `id: "ravintio-framework"` test. In this repo both tests agree, so its records don't change.
 - The migrator reports each `not applicable` record and its reason to the human on the loop. That meets the design's observability line.
-- The rule narrows 0000035 ADR-019 for migrations that carry the header. Existing records in `plan/_migrations/` stay as written. P2 records the narrowing, and P6 updates the ADR-019 entry in `docs/decisions-index.md`.
+- The rule narrows 0000035 ADR 019 for migrations that carry the header. Existing records in `plan/_migrations/` stay as written. P2 records the narrowing, and P6 updates the 0000035 ADR 019 entry in `docs/decisions-index.md`.
 - The migrator never deletes, rewrites, or seeds a record because of this rule.
 
 ### Tests
@@ -73,4 +73,4 @@ Split step: keep, at three criteria. The one concern is the skip by project kind
 - req-002 (release-script) imports `projectKind(root)` to refuse a run outside the source repo.
 - req-003 (release-yml-readers) also edits the migrator `SKILL.md`, for the record's `framework-version` source. The two edits touch different sections.
 - req-006 (consumer-migration) is the first migration that carries the header.
-- 0000035 ADR-016 to ADR-019 define the records, the outcomes, and the pending rule this rule writes through.
+- 0000035 ADR 016 to ADR 019 define the records, the outcomes, and the pending rule this rule writes through.

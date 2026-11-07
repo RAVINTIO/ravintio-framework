@@ -70,4 +70,4 @@ Split step: keep, at three criteria. The one concern is that each skill finds a 
 - req-001 (move-pack-to-src) moves the four files to `src/ravintio-framework/` and points `product.yml` at `src/ravintio-framework/component.yml`.
 - req-003 (release-yml-readers) owns the other live texts that name `ravintio-framework/component.yml`: the orchestrator, the migrator, and `standards/framework-update-policy.md`. This requirement touches none of them.
 - req-008 (tests-and-ci-from-src) provides the resolver the new suite uses to read the pack from `src/ravintio-framework/`.
-- Existing pattern: 0000040 ADR-003 reads component folders from `product.yml`.
+- Existing pattern: 0000040 ADR 003 reads component folders from `product.yml`.

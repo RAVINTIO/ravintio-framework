@@ -40,7 +40,7 @@ version: "0.1.0"
 - The `**Applies to:**` migration header and the source-repo signal (backlog 0000378, 0000136). Maps to req-005-applies-to-header (US-003).
   - The header takes `framework source`, `downstream`, or `all`. An absent line reads as `all`.
   - A repo is the framework source when `product.yml` lists `ravintio-framework` at `src/ravintio-framework/component.yml` and that file exists.
-  - The migrator records `not applicable` with the reason when the project kind differs. This narrows 0000035 ADR-019 for future migrations only.
+  - The migrator records `not applicable` with the reason when the project kind differs. This narrows 0000035 ADR 019 for future migrations only.
 - A new 0.39.0 consumer migration under `src/ravintio-framework/migrations/` with `**Applies to:** downstream`. If `ravintio-framework/component.yml` remains beside a `release.yml`, it offers to remove it in one confirmed edit. If the human on the loop declines, it records `skipped` and names the file. Maps to req-006-consumer-migration (US-002).
 - The version equality suite (backlog 0000368). The 0000039 req-010 equality checks run only on a released tree, where `plan/current/design.md` is absent. On an open run, the suite reports them skipped with the reason. Maps to req-007-released-tree-version-suite (US-001).
 - Tests and CI from `src/`. Maps to req-008-tests-and-ci-from-src (US-001).

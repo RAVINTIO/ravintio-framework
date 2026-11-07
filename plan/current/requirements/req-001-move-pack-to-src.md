@@ -24,7 +24,7 @@ As a framework maintainer, I change the pack under `src/ravintio-framework/` whi
   1. `git mv ravintio-framework src/ravintio-framework`
   2. `git checkout v0.38.0 -- ravintio-framework`
 - The pass commit holds no content edit. It adds the files under `src/ravintio-framework/` and leaves the root `ravintio-framework/` byte-identical to `v0.38.0`, `component.yml` included.
-- The pass is the recorded exception to the Write-or-Edit rule (boot Hard Limit 8), as 0000039 ADR-008 was. The build log records the two commands and the commit hash.
+- The pass is the recorded exception to the Write-or-Edit rule (boot Hard Limit 8), as 0000039 ADR 008 was. The build log records the two commands and the commit hash.
 - The commit subject follows `ravintio-framework/standards/commit-standards.md`. It stays under 72 characters.
 - P3 runs the AC1 checks right after the commit, before any follow-up edit, and logs their output in the build log.
 
