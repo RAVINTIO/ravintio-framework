@@ -19,6 +19,6 @@ versionPolicy: "max-component-version"
 
 components:
   - id: "ravintio-framework"
-    path: "ravintio-framework/component.yml"
+    path: "src/ravintio-framework/component.yml"
   - id: "setup-hook-integration"
     path: "src/setup-hook-integration/component.yml"
