@@ -33,7 +33,7 @@ Add `src/ravintio-framework/migrations/migrate-0.39.0-remove-pack-component-yml.
 
 **Steps.** The migrator runs the steps of req-006 in order. Each step is safe to repeat.
 
-1. If `release.yml` is missing or reports a version older than `0.39.0`, stop and record nothing.
+1. If `release.yml` is missing, breaks the format, or reports a version older than `0.39.0`, stop and record nothing.
 2. If the leftover file doesn't exist, record `applied` with both counts at `0`.
 3. If `ravintio-framework` itself is a link, show no command. Record `skipped` with the reason `refused`.
 4. If `product.yml` lists the leftover file, offer no removal. Name the entry and ask the human on the loop to remove it. Record `skipped` with the reason `listed in product.yml` (step 3a, a P1 deviation for R-013).

@@ -86,7 +86,12 @@ Unchanged: Bash and PowerShell setup, Node.js `.mjs` hooks and scripts, Bash sui
 
 ## Scenario Paths
 
-Empty. The Scope Lock Challenge drafts the four paths at P0.
+The human on the loop accepted the four Scope Lock drafts at P0. The build log holds the original wording.
+
+- **Happy path:** a maintainer changes the pack under `src/`. The root copy stays the release until P7 rebuilds it with `release.yml` and no `component.yml`. Consumer runs never bump or tag the pack.
+- **First-run path:** this repo's first P7 gives the root copy `release.yml` and drops `component.yml`. A consumer's first upgrade reads `release.yml`, falls back to `component.yml`, and is offered removal of a leftover manifest.
+- **Error path:** a consumer that copies the new folder over the old keeps `component.yml`. The migration offers one confirmed removal, or records `skipped` and names the file.
+- **Cross-session path:** an interrupted release keeps the old copy through the swap and reruns. An interrupted migration offers the removal again. An interrupted move recovers by state and never resets (P2 deviation, ADR-002). The accepted draft said the move resets to the last commit and repeats.
 
 ## Acceptance Criteria
 

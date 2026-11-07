@@ -14,7 +14,7 @@ status: "active"
 | Loop id | `design_critic-p2` |
 | Owning phase | `P2` |
 | Toggle level | `on` |
-| Iteration | `2` of cap `3` (approach 1) |
+| Iteration | `3` of cap `3` (approach 1) |
 | Approach | `1 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
 | Last decision | `continue` |
@@ -35,6 +35,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 ### Iteration 2 (2026-11-07T16:12:00Z)
 - **Approach:** 1
 - **Action:** a new fresh-context critic reviews the revision. Verdict in `critic-verdict-p2-2.md`.
+- **Observation:** REJECT. Mechanical check clean. All 10 iteration 1 findings resolved. One major finding: `## Component Paths` lacked `product.yml`, so the gate would block build order step 1. Four minor findings: the malformed `product.yml` skip at Step 5c, the recovery rule missing from req-001 and the brief, two unchecked rules in req-002 AC3 and req-003 AC3, and the ADR-008 step 1 summary.
+- **Decision:** continue. Revised by addition: two Component Paths entries, a req-001 recovery rule, the brief's Scenario Paths, the Step 5c log and warning, AC sub-bullets in req-002 and req-003, and ADR-003 and ADR-008 wording.
+
+### Iteration 3 (2026-11-07T16:22:00Z)
+- **Approach:** 1
+- **Action:** a new fresh-context critic reviews the revision. Verdict in `critic-verdict-p2-3.md`.
 - **Observation:** pending
 - **Decision:** pending
 

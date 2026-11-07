@@ -43,7 +43,7 @@ The root copy refreshes only at P7. The release script rebuilds it from `src/rav
 
 `ravintio-framework/` stays the consumer runtime path in every pack file. Consumers copy the root folder and run setup from it, as today.
 
-If the pass stops after `git mv` and before the checkout, P3 runs only the checkout, which is the second named command. In any other partial state, P3 runs no further git command. It stops and reports the tree state to the human on the loop under the boot Escalation rule. The exception never covers a reset (P2 critic finding 4).
+If the pass stops after `git mv` and before the checkout, P3 runs only the checkout, which is the second named command. If both commands ran with no commit, P3 runs the req-001 AC1 checks and commits. In any other partial state, P3 runs no further git command. It stops and reports the tree state to the human on the loop under the boot Escalation rule. The exception never covers a reset (P2 critic finding 4).
 
 ## Alternatives Considered
 

@@ -27,6 +27,10 @@ As a framework maintainer, I change the pack under `src/ravintio-framework/` whi
 - The pass is the recorded exception to the Write-or-Edit rule (boot Hard Limit 8), as 0000039 ADR 008 was. The build log records the two commands and the commit hash.
 - The commit subject follows `ravintio-framework/standards/commit-standards.md`. It stays under 72 characters.
 - P3 runs the AC1 checks right after the commit, before any follow-up edit, and logs their output in the build log.
+- If the pass stops partway, P3 recovers by state (ADR-002):
+  - After `git mv` and before the checkout, P3 runs only the checkout, then commits.
+  - After both commands with no commit, P3 runs the AC1 checks on the working tree, then commits.
+  - In any other state, P3 runs no further git command. It stops and reports the tree state to the human on the loop under the boot Escalation rule. P3 never resets the tree.
 
 ### Follow-up path fixes (Edit only, after the pass commit)
 

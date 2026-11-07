@@ -109,6 +109,7 @@ The decision adds a sanctioned script that deletes a whole folder tree. That wid
 **Negative:**
 - Hard Limit 8 grows to eight sanctioned scripts, and this one deletes a folder tree. A defect in its boundary checks has high impact (R-002).
 - Each release commit carries the full diff of the root copy beside the `src/` diff. Reviewers read most changes twice.
+- A malformed `product.yml` makes `project-kind.mjs` print `downstream`, so P7 skips the build. Step 5c logs the kind and a warning when `src/ravintio-framework/` exists, but the run carries on without a release copy.
 - This run's P7 runs the script from `src/`, outside the sanctioned path. It relies on a recorded Decision line, not on the rule text (R-003).
 - This repo's `CLAUDE.md` names the new script only after a manual setup refresh after P7, because setup writes that file and git ignores it.
 - The script ships in every consumer copy, where it can only refuse. Backlog 0000384 tracks the wider question of pack files that ship but serve only the source repo.

@@ -65,6 +65,8 @@
 - `./CLAUDE.md`
 - `.claude/skills/`
 - `refresh-ravintio-framework-dir.ps1`
+- `./refresh-ravintio-framework-dir.ps1`
+- `./product.yml`
 
 ## Scope
 - In:

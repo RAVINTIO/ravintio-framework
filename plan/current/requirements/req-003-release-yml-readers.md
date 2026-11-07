@@ -163,6 +163,7 @@ In `src/ravintio-framework/skills/ravintio-migrator/SKILL.md`:
   - Step 1b names `release-check.mjs` exit 2 as a detection that couldn't run.
   - The policy states both signals, the first-upgrade rule, the recorded file, and the fallback. It also states the hash rule and the own-build exception.
   - The migrator reads `release.yml` first for `framework-version` and for a version a migration reads. It falls back to `component.yml`.
+  - The migrator states that a `release.yml` which breaks the format stops the run, names the file, and records nothing.
 
 ## Dependencies
 

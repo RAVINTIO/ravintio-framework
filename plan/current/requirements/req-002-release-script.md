@@ -106,7 +106,7 @@ files:
 - The Write-or-Edit rule (boot Hard Limit 8) names `ravintio-framework/scripts/build-release.mjs` as a sanctioned script, with no arguments. Add it to the one `Sanctioned scripts:` sentence in `src/ravintio-framework/templates/standard-boot.md` and `src/ravintio-framework/templates/cursor-boot.md`. Both templates keep the same sentence, which then names eight scripts.
 - This repo's `CLAUDE.md` gets no edit. Setup writes it, and `.gitignore` line 10 excludes it. An agent never edits its own instruction file to sanction a script. After P7 rebuilds the root copy, a setup refresh writes the new sentence into `CLAUDE.md`. The final report recommends that refresh to the human on the loop.
 - `src/ravintio-framework/skills/ravintio-ship-agent/SKILL.md` gains `### Step 5c: Build the release copy`, between Step 5b and Step 6:
-  1. Run `node ravintio-framework/scripts/project-kind.mjs`. If it prints anything other than `framework source`, skip this step and log `P7: Step 5c skipped: not the framework source`.
+  1. Run `node ravintio-framework/scripts/project-kind.mjs`. If it prints anything other than `framework source`, skip this step and log `P7: Step 5c skipped: project kind {output}`. If `src/ravintio-framework/` exists in that case, also log `P7: Step 5c warning: src/ravintio-framework/ exists, so check product.yml`. A malformed `product.yml` reads as `downstream`, and the warning makes that skip visible (P2 critic finding 2).
   2. Run `node ravintio-framework/scripts/build-release.mjs`. The step runs the root copy, the last release, so a broken change under `src/` can't break the build that ships it (US-001).
   3. On exit 0, log the `summary:` line in the P7 build-log block.
   4. On exit 2, stop and report the reason. Never copy the pack by hand, and never write the root copy through **Write** or **Edit**.
@@ -146,6 +146,7 @@ files:
   - With a leftover `.ravintio-framework-previous/` and no root copy, the next run restores the old copy, prints `restored:`, and then builds.
   - `.gitignore` holds a `.ravintio-framework-build/` line and a `.ravintio-framework-previous/` line.
 - [ ] Both boot templates carry one identical `Sanctioned scripts:` sentence. It names eight scripts, `ravintio-framework/scripts/build-release.mjs` among them. The ship skill holds Step 5c between Step 5b and Step 6. Step 5c holds the `project-kind.mjs` check, the `build-release.mjs` call, and the exit handling. Step 7 holds the source-repo `git add -A -- ravintio-framework/` line and keeps its existing `git add` line. Verified by: integration
+  - The Step 7 line gates on the `project-kind.mjs` output, and Step 5c holds the skip line with the printed kind and the `src/` warning.
   - Verified by: integration - the new suite and the updated 0000035 req-008 and 0000039 req-008 suites
 - [ ] The P7 build-log block holds the Decision line for the run from `src/`. The final report recommends a setup refresh, so that this repo's `CLAUDE.md` gains the eight-script sentence. Verified by: manual - git ignores `CLAUDE.md`, and no P7 log exists before P7
 
