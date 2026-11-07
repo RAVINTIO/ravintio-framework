@@ -283,15 +283,15 @@ Progress: P4 complete at 2026-11-06T17:10:09Z: one self-correct cycle, verify-by
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-06T17:12:00Z` |
-| End | |
-| Wall-clock | |
+| End | `2026-11-07T04:02:19Z` |
+| Wall-clock | 10h50m, most of it waiting on exception 001 |
 | Streams | n/a |
 | Model tier | primary |
-| Skills loaded | ravintio-security-agent (in subagents) |
-| Agents spawned | |
+| Skills loaded | ravintio-security-agent (in subagents), ravintio-reversal-assessor (in subagent) |
+| Agents spawned | 5: three security reviewers, reversal assessor, req-005 TDD fix |
 | MCP calls | 0 |
-| Parallel task batches | |
-| Notes | Autonomous run. |
+| Parallel task batches | 1 |
+| Notes | Autonomous run. Exception 001 resolved by the human on the loop with option 3. |
 
 Decision (P5): three security reviewers run in parallel, one each for the enforcement hooks, pre-push with both CI files, and setup with the migration and migrator. The orchestrator runs the secrets and dependency scan inline / reason: the three areas share no code, and the scan is a few grep calls
 Secrets and dependencies (P5): credential-scan passes on all 120 added or changed files. The secret-pattern matches are prose and test tokens. No dependency manifest changed, and the branch adds no new GitHub Action.
@@ -306,3 +306,6 @@ TDD (P5, req-005 fix): RED exit 1 (88 passed, 18 failed), GREEN exit 0 (106 pass
 Deviation (P5, unclassified): migration 0.38.0 steps 3, 5, and 7 and migrator Named paths add skipped reasons blocked and refused and a linked plan check (defect verdict 001, S-1, S-4, and S-5). req-005 and ADR-006 record it by addition.
 Decision (P5): filed backlog 0000372 to 0000377 for the Low and Info findings outside the defect report / reason: each predates the feature, is Info, or changes a standard outside the confirmed scope
 Exception resolved (P5, altering design): the human on the loop chose option 3 at 2026-11-07. A blocked CI edit records skipped with reason blocked, and the block stays. design.md, execution-plan.md, ADR-006, req-005, and the risk register (R-014) record it. No code change, because deaf863f already ships that outcome.
+Decision (P5): filed backlog 0000378 for a source-repo migration skip / reason: the human on the loop asked why migrations run in the framework source repo, and the change reverses 0000035 ADR-019, outside the confirmed scope
+Security report (P5): overall risk low. 15 findings: 1 Medium (S-1, mitigated, leftover accepted as R-014), 12 Low, 2 Info. 3 mitigated, 3 accepted, 9 open in backlog. R-002, R-011, and R-012 set to mitigated. See security-report.md.
+Gate passed: P5
