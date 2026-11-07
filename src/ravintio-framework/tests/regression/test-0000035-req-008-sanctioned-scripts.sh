@@ -4,7 +4,7 @@
 # req-008: Hard Limit 8 gains a narrow carve-out for fixed framework scripts
 #          that a skill step runs to write files (ADR-011). Both boot
 #          templates carry one `Sanctioned scripts:` sentence that names the
-#          same seven scripts. set-product-release.mjs treats every argument
+#          same eight scripts. set-product-release.mjs treats every argument
 #          as untrusted. A rule break exits 2, writes nothing, names the
 #          argument, and never echoes the raw value. A product.yml link that
 #          resolves elsewhere exits 2 and leaves the link target unchanged.
@@ -433,6 +433,7 @@ echo "=== req-008: Hard Limit 8 sanctioned scripts in both boot templates ==="
 EXPECTED=$(printf '%s\n' \
   ravintio-framework/scripts/archive-current.mjs \
   ravintio-framework/scripts/set-product-release.mjs \
+  ravintio-framework/scripts/build-release.mjs \
   ravintio-framework/scripts/promote-to-regression.sh \
   ravintio-framework/scripts/refresh-delete-boot-files.sh \
   ravintio-framework/scripts/refresh-delete-boot-files.ps1 \
@@ -453,7 +454,7 @@ for T in "$STANDARD_BOOT" "$CURSOR_BOOT"; do
   assert_contains "Sanctioned scripts:" "$HL8" "req-008: $NAME puts the sentence inside Hard Limit 8"
   assert_contains "no other script counts" "$HL8" "req-008: $NAME says no other script counts"
   assert_contains "skill step" "$HL8" "req-008: $NAME says a named script counts only when a skill step runs it"
-  assert_equals "$EXPECTED" "$(sanctioned "$T")" "req-008: $NAME names exactly the seven sanctioned scripts"
+  assert_equals "$EXPECTED" "$(sanctioned "$T")" "req-008: $NAME names exactly the eight sanctioned scripts"
   # P-S10: setup counts only with a tool name and the two refresh flags.
   assert_contains "--include-full-skill-library" "$HL8" "req-008: $NAME names the setup flags it sanctions"
   assert_contains "--strict-orchestrator" "$HL8" "req-008: $NAME names --strict-orchestrator"

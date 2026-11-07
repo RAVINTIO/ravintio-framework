@@ -175,7 +175,7 @@ assert_equals "" "$BAD" "req-008 AC3: no generated boot file holds a planifest-f
 
 # Sanctioned scripts from Hard Limit 8 exist under ravintio-framework/.
 CLAUDE_MD="$(cat "$B/CLAUDE.md" 2>/dev/null)"
-for s in scripts/archive-current.mjs scripts/set-product-release.mjs scripts/promote-to-regression.sh \
+for s in scripts/archive-current.mjs scripts/set-product-release.mjs scripts/build-release.mjs scripts/promote-to-regression.sh \
          scripts/refresh-delete-boot-files.sh scripts/refresh-delete-boot-files.ps1 setup.sh setup.ps1; do
   assert_equals "yes" "$(yes_no test -f "$RAVINTIO_PACK_DIR/$s")" "req-008 AC3: ravintio-framework/$s exists"
   assert_equals "yes" "$(yes_no grep -qF "ravintio-framework/$s" <<< "$CLAUDE_MD")" "req-008 AC3: generated CLAUDE.md lists ravintio-framework/$s"
