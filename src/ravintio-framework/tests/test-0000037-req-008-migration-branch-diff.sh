@@ -69,9 +69,12 @@ is_delivered_prefix() {
   return 1
 }
 
-# mig_check REPO: print PASS, FAIL, or SKIP lines into CHECK_OUT. Return 1 on FAIL.
+# mig_check REPO [PACK_REL]: print PASS, FAIL, or SKIP lines into CHECK_OUT. Return 1 on FAIL.
+# PACK_REL is the pack folder inside REPO. It defaults to ravintio-framework, the consumer
+# layout that the scratch fixtures use. The real-repository case passes $RAVINTIO_PACK_REL.
 mig_check() {
-  local repo="$1" fw="$1/ravintio-framework"
+  local repo="$1" pack_rel="${2:-ravintio-framework}"
+  local fw="$repo/$pack_rel"
   local f v tag tv target_file="" target_ver="" max_ver="" base="" base_ver=""
   CHECK_OUT=""
 
@@ -120,9 +123,9 @@ mig_check() {
   # FR-008.4: filter the diff to setup-delivered files.
   local diff_list="" p
   while IFS= read -r p; do
-    p="${p#ravintio-framework/}"
+    p="${p#"$pack_rel"/}"
     if is_delivered "$fw" "$p"; then diff_list="$diff_list$p"$'\n'; fi
-  done < <(git -C "$repo" diff --name-only "$base..HEAD" -- ravintio-framework | grep '^ravintio-framework/')
+  done < <(git -C "$repo" diff --name-only "$base..HEAD" -- "$pack_rel" | grep -F -- "$pack_rel/")
 
   # FR-008.6: backticked setup-delivered paths in the Background section.
   local list="" line in_bg=0 span
@@ -262,7 +265,7 @@ assert_equals "0" "$rc" "req-008 AC-008.2: no tags exits 0"
 assert_contains "SKIP: no v* tags fetched" "$CHECK_OUT" "req-008 FR-008.5a: SKIP says no v* tags fetched"
 
 echo "req-008 FR-008.1: this repository"
-mig_check "$REPO_ROOT"; rc=$?
+mig_check "$REPO_ROOT" "$RAVINTIO_PACK_REL"; rc=$?
 echo "  info: $CHECK_OUT"
 assert_equals "0" "$rc" "req-008 AC-008.3: the check passes or skips against this repository"
 
