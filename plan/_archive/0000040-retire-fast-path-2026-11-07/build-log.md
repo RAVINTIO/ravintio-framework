@@ -346,8 +346,8 @@ Gate passed: P6
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T05:22:39Z` |
-| End | |
-| Wall-clock | |
+| End | `2026-11-07T05:41:00Z` |
+| Wall-clock | 18m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent |
@@ -362,3 +362,9 @@ Skips (P7): no `plan/current/.skips` file.
 Backlog (P7): 0000355 section 5 routes F4, F9, F10, and F23 to the Feature Pipeline. 0000308 narrows to the advisory pre-commit and the presence-only record checks.
 Decision (P7): promote `test-0000040-req-006-residue-guard.sh` to the regression pack / reason: the P1 decision, and it guards a standing rule
 Decision (P7): keep `test-0000040-req-001-one-track-routing.sh` out of the regression pack / reason: it reads this feature's doc wording, the residue guard already keeps one track, and the pack has no retire step (backlog 0000365)
+Regression (P7): promote-to-regression.sh copied the residue guard to `tests/regression/` and updated the manifest. The copy passes 29 of 29. Committed in bd2c0b8b.
+Test report (P7): `plan/changelog/0000040-retire-fast-path-test-report-2026-11-07.md`. All 7 feature suites pass, and the regression pack holds 37 suites.
+Release (P7): product.yml: version "0.38.0", feature "0000040-retire-fast-path"
+Archive (P7): archive-current.mjs moved 31 items and removed plan/current/.feature-id. archive-dir: plan/_archive/0000040-retire-fast-path-2026-11-07
+About (P7): `docs/about.md` reads 0.38.0 and feature 0000040-retire-fast-path, updated 07 Nov 2026. The version suite now passes 9 of 9, and product-version.mjs prints 0.38.0.
+Progress: P7 done at 2026-11-07T05:41:00Z: archive committed, P8 next
