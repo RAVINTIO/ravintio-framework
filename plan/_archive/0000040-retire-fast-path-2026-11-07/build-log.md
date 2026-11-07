@@ -403,4 +403,11 @@ Progress: P8 done at 2026-11-07T05:37:35Z: build report filed, P9 next
 | Agents spawned | 0 |
 | MCP calls | 0 |
 | Parallel task batches | 0 |
-| Notes | Autonomous run. |
+| Notes | Autonomous run. Raised ready for review: each of the 3 Exception waiting lines has an Exception resolved line. |
+
+Marker step (P9): cleared plan/.orchestrator-active, plan/.orchestrator-ack, and plan/.run-mode in ad64930b. No marker stays tracked. Two leftovers outside the archive stay unstaged (P8 decision).
+Tag (P9): v0.38.0 created locally on ad64930b. product-version.mjs printed 0.38.0, above the last tag v0.37.1.
+Decision (P9): take Option [1] / reason: `custom-005-p9-push-and-raise-pr.md` says to push and raise the PR, and `custom-001-local-git-only.md` grants push despite its file name. Its text holds none of the local-git-only phrases.
+Credential scan (P9): PR text clean (regex only)
+PR: #76 https://github.com/RAVINTIO/ravintio-framework/pull/76
+Clean-tree check (P9): committed the changelog PR link. `plan/backlog/.next-id` and the 0000362 entry stay unstaged, as at P8.
