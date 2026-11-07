@@ -395,8 +395,8 @@ Progress: P8 done at 2026-11-07T05:37:35Z: build report filed, P9 next
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T05:38:00Z` |
-| End | |
-| Wall-clock | |
+| End | `2026-11-07T05:55:39Z` |
+| Wall-clock | 18m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent |
@@ -412,4 +412,7 @@ Credential scan (P9): PR text clean (regex only)
 PR: #76 https://github.com/RAVINTIO/ravintio-framework/pull/76
 CI checks (P9): all passed (13 of 13 at 2595f850, run 42343656450)
 R-013 (P9): the Setup under Windows PowerShell 5.1 job took 2m27s against its 10-minute cap. Backlog 0000380 can close.
+Tag (P9): v0.38.0 recreated on 2595f850, the head CI passed, before its first push. The first local tag sat on ad64930b. Pushed to origin.
+Final report (P9): `final-report.md` committed in d18d3559.
+Progress: P9 done at 2026-11-07T05:55:39Z: PR #76 ready for review, CI all passed on the head that P9 read
 Clean-tree check (P9): committed the changelog PR link. `plan/backlog/.next-id` and the 0000362 entry stay unstaged, as at P8.
