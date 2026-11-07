@@ -17,7 +17,7 @@ version: "0.1.0"
 **Feature:** pack source under src
 **Pipeline run:** P0 to P9 in `autonomous` mode. No phases skipped.
 **Version:** 0.39.0
-**PR:** pending, updated after the PR is raised at P9
+**PR:** [#77](https://github.com/RAVINTIO/ravintio-framework/pull/77), raised as a draft while exception items wait
 
 ### What was built
 
