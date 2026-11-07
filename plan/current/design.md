@@ -105,7 +105,7 @@
 None
 
 ## Skill Map
-P1 owns the final requirement split. This draft maps the expected requirements.
+P1 confirmed this split into eight requirements at its gate on 2026-11-07. Each row matches a file under `plan/current/requirements/`.
 
 | Requirement | Best-fit Skill | Rationale |
 |-------------|----------------|-----------|

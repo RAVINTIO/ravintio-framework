@@ -1,7 +1,7 @@
 ---
 title: "Loop State: design_critic"
 summary: "Persisted state for one loop instance; survives context resets and session interrupts."
-status: "active"
+status: "done"
 ---
 # Loop State: design_critic
 
@@ -13,11 +13,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `2` of cap `3` (approach 2) |
+| Iteration | `3` of cap `3` (approach 2) |
 | Approach | `2 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `continue` |
-| Last updated | `2026-11-07T15:52:00Z` |
+| Last decision | `done` |
+| Last updated | `2026-11-07T15:53:09Z` |
 
 ---
 
@@ -54,6 +54,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** fresh-context critic pass after the iteration 4 fixes (critic-verdict-5.md).
 - **Observation:** REJECT with 0 critical, 0 major, and 1 minor finding. Both iteration 4 findings resolved. Item 8 fails because `product.yml` changed at step 4, after the step 3 suites read the source-repo signal.
 - **Decision:** continue: one finding with a direct fix. The `product.yml` edit moves to step 1, and step 3 names the scan case that stays red until step 7.
+
+### Iteration 3 of approach 2 (2026-11-07T15:53:09Z)
+- **Approach:** 2
+- **Action:** fresh-context critic pass after the iteration 5 fix (critic-verdict-6.md).
+- **Observation:** APPROVE with 0 findings. The iteration 5 finding is resolved. Rubric items 1, 2, and 5 to 9 pass. Items 3 and 4 are not applicable at P1.
+- **Decision:** done: the pass condition is met, so the loop disarms.
 
 ---
 

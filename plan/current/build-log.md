@@ -76,14 +76,14 @@ Run mode confirmed: autonomous (2026-11-07T15:18:43Z)
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T15:21:00Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T15:53:09Z` |
+| Wall-clock | 32 |
 | Streams | n/a |
 | Model tier | primary |
-| Skills loaded | ravintio-orchestrator, ravintio-spec-agent |
-| Agents spawned | pending |
+| Skills loaded | ravintio-orchestrator, ravintio-spec-agent, ravintio-loop-runner |
+| Agents spawned | 10: 4 spec subagents and 6 design critics |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 1 |
 | Notes | Autonomous run, resumed in a new session after the context reset the human on the loop asked for at P0. |
 
 Resume detection (P1): no pending migrations. Skill drift check exit 0, 20 skills match. run-mode.mjs prints autonomous. No pause.md, .skips, or stream files.
@@ -158,3 +158,9 @@ Decision (P1): design.md and scope.md state that the codegen close-out takes com
 Decision (P1): scope gains a sub-bullet saying no agent edits ./CLAUDE.md or .claude/skills/ in this run / reason: the approach 2 sweep found the P1 clarification still implied a boot file edit
 Critic verdict (P1, approach 2 iteration 2): REJECT. 0 major and 1 minor finding. Both iteration 4 findings resolved. See critic-verdict-5.md.
 Decision (P1): req-001's product.yml edit lands at build order step 1, in its own commit after the pass, and step 3 names the req-008 scan case that stays red until step 7 / reason: critic finding 1, suites read the source-repo signal before product.yml changed
+Critic verdict (P1, approach 2 iteration 3): APPROVE. 0 findings. The iteration 5 finding resolved. See critic-verdict-6.md.
+Loop done (P1): design_critic passed at approach 2 iteration 3, after six critic passes. loop-state-design_critic.md set to done, so ratchet-check disarms.
+Gate summary (P1): eight requirements written (US-001: req-001, req-007, req-008. US-002: req-002, req-003, req-004, req-006. US-003: req-005). No OpenAPI spec, because the feature adds no API. No operational model, SLO, or cost model, because no trigger holds. Scope defers nothing. Five deviations wait for the pre-P7 deviation review. Six backlog entries filed: 0000382 to 0000384, 0000386, and 0000387, with 0000388 unused.
+Skill Map (P1): unchanged. Its eight rows match the eight requirement files.
+Progress: P1 done at 2026-11-07T15:53:09Z: eight requirements and the P1 set written, design critic approved after six passes
+Gate passed: P1
