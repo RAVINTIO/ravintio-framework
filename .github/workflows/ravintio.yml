@@ -159,7 +159,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Verify README matches repository structure
-        run: node ravintio-framework/scripts/self-description-check.mjs .
+        run: node src/ravintio-framework/scripts/self-description-check.mjs .
 
   # The test-suite and setup-powershell jobs test this repository's own
   # framework and are deliberately NOT mirrored into
@@ -208,7 +208,7 @@ jobs:
         env:
           RAVINTIO_SHARD_INDEX: ${{ matrix.shard }}
           RAVINTIO_SHARD_COUNT: ${{ matrix.shard && 7 || '' }}
-        run: bash ravintio-framework/tests/run-tests.sh
+        run: bash src/ravintio-framework/tests/run-tests.sh
 
   setup-powershell:
     name: Setup under PowerShell 7 (Windows)
@@ -230,7 +230,7 @@ jobs:
 
       - name: Run test_setup.ps1
         shell: pwsh
-        run: ./ravintio-framework/tests/test_setup.ps1
+        run: ./src/ravintio-framework/tests/test_setup.ps1
 
   # This job is repository-only and deliberately NOT mirrored into
   # ravintio-framework/hooks/ravintio.yml. It runs test_setup.ps1 under
@@ -260,14 +260,14 @@ jobs:
 
       - name: Run test_setup.ps1
         shell: powershell
-        run: ./ravintio-framework/tests/test_setup.ps1
+        run: ./src/ravintio-framework/tests/test_setup.ps1
 
       # 0000039 req-006 AC4 (X-001): the migration helper must parse and
       # match the .sh helper under Windows PowerShell 5.1 as well as 7.
       - name: Parse the migration helper under 5.1
         shell: powershell
         run: |
-          $path = Join-Path $PWD 'ravintio-framework\migrations\migrate-0.37.0-ravintio-rename.ps1'
+          $path = Join-Path $PWD 'src\ravintio-framework\migrations\migrate-0.37.0-ravintio-rename.ps1'
           $tokens = $null
           $errors = $null
           $null = [System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$errors)
@@ -291,7 +291,7 @@ jobs:
             echo "powershell.exe reports major version $major, not 5."
             exit 1
           fi
-          bash ravintio-framework/tests/test-0000039-req-006-consumer-migration.sh
+          bash src/ravintio-framework/tests/test-0000039-req-006-consumer-migration.sh
 
       # 0000040 req-004 AC3: setup.ps1 removes the retired track files under
       # Windows PowerShell 5.1 as well as 7. The .sh runs happen in test-suite.
@@ -306,4 +306,4 @@ jobs:
             echo "powershell.exe reports major version $major, not 5."
             exit 1
           fi
-          bash ravintio-framework/tests/test-0000040-req-004-remove-track-files.sh
+          bash src/ravintio-framework/tests/test-0000040-req-004-remove-track-files.sh

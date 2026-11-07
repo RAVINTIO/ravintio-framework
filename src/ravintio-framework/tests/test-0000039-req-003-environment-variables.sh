@@ -10,7 +10,7 @@
 #   AC3: run-tests.sh honours the RAVINTIO shard pair and CI sets the same pair.
 # The full-suite half of AC1 is covered by the P4 run, not by this suite,
 # because a suite cannot run the full suite that contains it.
-# Run from any directory: bash ravintio-framework/tests/test-0000039-req-003-environment-variables.sh
+# Run from any directory: bash src/ravintio-framework/tests/test-0000039-req-003-environment-variables.sh
 
 set -o pipefail
 
@@ -19,11 +19,20 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+ROOT="$RAVINTIO_REPO_ROOT"
+PACK="$RAVINTIO_PACK_REL"
+# In the source repo, scans skip the frozen root release copy.
+if [ "$RAVINTIO_SOURCE_REPO" = "yes" ]; then
+  SKIP_RELEASE=':!ravintio-framework'
+else
+  SKIP_RELEASE=':!plan/_archive'
+fi
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-ADAPTER="$ROOT/ravintio-framework/hooks/adapters/opencode/index.ts"
+ADAPTER="$ROOT/$PACK/hooks/adapters/opencode/index.ts"
 RUNNER="$SCRIPT_DIR/run-tests.sh"
 WORKFLOW="$ROOT/.github/workflows/ravintio.yml"
 
@@ -31,7 +40,7 @@ WORKFLOW="$ROOT/.github/workflows/ravintio.yml"
 # AC1: inventory command
 # ---------------------------------------------------------------------------
 
-INVENTORY="$(git -C "$ROOT" grep -ohE 'PLANIFEST_[A-Z_]+' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' ':!ravintio-framework/migrations' ':!ravintio-framework/tests/test-0000039-*' ':!ravintio-framework/tests/regression/test-0000039-*' | sort -u)"
+INVENTORY="$(git -C "$ROOT" grep -ohE 'PLANIFEST_[A-Z_]+' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' "$SKIP_RELEASE" ":!$PACK/migrations" ":!$PACK/tests/test-0000039-*" ":!$PACK/tests/regression/test-0000039-*" | sort -u)"
 
 EXPECTED_NAMES="PLANIFEST_SESSION_ID
 PLANIFEST_TELEMETRY
@@ -39,20 +48,19 @@ PLANIFEST_TELEMETRY_URL"
 assert_equals "$EXPECTED_NAMES" "$INVENTORY" "req-003 AC1: the inventory returns only PLANIFEST_SESSION_ID and PLANIFEST_TELEMETRY*"
 
 # Every file that holds a kept name must be a kept file.
-SESSION_FILES="$(git -C "$ROOT" grep -lE 'PLANIFEST_SESSION_ID' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' ':!ravintio-framework/migrations' ':!ravintio-framework/tests/test-0000039-req-006*' | sort)"
+SESSION_FILES="$(git -C "$ROOT" grep -lE 'PLANIFEST_SESSION_ID' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' "$SKIP_RELEASE" ":!$PACK/migrations" ":!$PACK/tests/test-0000039-req-006*" | sort)"
 BAD_SESSION=0
 while IFS= read -r f; do
   [ -z "$f" ] && continue
   case "$f" in
-    ravintio-framework/hooks/adapters/opencode/index.ts) ;;
-    ravintio-framework/tests/*) ;;
+    "$PACK"/hooks/adapters/opencode/index.ts) ;;
+    "$PACK"/tests/*) ;;
     *) BAD_SESSION=1; echo "  unexpected PLANIFEST_SESSION_ID file: $f" ;;
   esac
 done <<< "$SESSION_FILES"
 assert_equals "0" "$BAD_SESSION" "req-003 AC1: PLANIFEST_SESSION_ID appears only in the adapter and test files"
 
-TELEMETRY_FILES="$(git -C "$ROOT" grep -lE 'PLANIFEST_TELEMETRY' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' ':!ravintio-framework/migrations' ':!ravintio-framework/tests/test-0000039-req-006*' ':!ravintio-framework/tests/test-0000039-*' ':!ravintio-framework/tests/regression/test-0000039-*' | sort)"
-PACK="ravintio-framework"
+TELEMETRY_FILES="$(git -C "$ROOT" grep -lE 'PLANIFEST_TELEMETRY' -- . ':!plan/_archive' ':!plan/changelog' ':!plan/_migrations' ':!plan/current' ':!plan/backlog/*/_reference' "$SKIP_RELEASE" ":!$PACK/migrations" ":!$PACK/tests/test-0000039-req-006*" ":!$PACK/tests/test-0000039-*" ":!$PACK/tests/regression/test-0000039-*" | sort)"
 EXPECTED_TELEMETRY_FILES="$PACK/tests/test-0000030-req-003-telemetry-pipeline-text-removal.sh
 $PACK/tests/test-0000030-req-004-install-clean-up-and-retired-flags.sh"
 assert_equals "$EXPECTED_TELEMETRY_FILES" "$TELEMETRY_FILES" "req-003 AC1: PLANIFEST_TELEMETRY* appears only in the two 0000030 test files"

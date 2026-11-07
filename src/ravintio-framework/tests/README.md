@@ -12,15 +12,17 @@ To run the tests, execute the scripts from the root of the repository or from wi
 
 ```powershell
 # From the repository root
-& .\ravintio-framework\tests\test_setup.ps1
+& .\src\ravintio-framework\tests\test_setup.ps1
 ```
 
 ### Bash (macOS / Linux / WSL)
 
 ```bash
 # From the repository root
-./ravintio-framework/tests/test_setup.sh
+./src/ravintio-framework/tests/test_setup.sh
 ```
+
+In the source repo, run every suite from `src/ravintio-framework/tests/`. The root `ravintio-framework/` is a frozen release copy.
 
 ## How It Works
 

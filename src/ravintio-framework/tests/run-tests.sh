@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Test runner for ravintio-framework tests
-# Usage: bash ravintio-framework/tests/run-tests.sh [--quiet]
+# Usage: bash src/ravintio-framework/tests/run-tests.sh [--quiet]
+# (in a consumer repo the pack sits at ravintio-framework/, so use that path there)
 
 set -uo pipefail
 
