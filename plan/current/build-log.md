@@ -138,3 +138,4 @@ Decision (P1): discovery.md's count of 13 suites naming the manifest stays as wr
 Decision (P1): wrote other features' ADR references as ADR NNN without the hyphen / reason: consistency-check reads ADR-NNN as a local file (backlog 0000252). Notation only, no meaning changed
 Backlog filed (P1): 0000382 gate root resolves to src/ in the source repo, 0000383 migrations run before step 1a confirms the pack, 0000384 pack docs would ship in the release copy, 0000387 src/README.md links a missing file
 Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-check clean, with one warning for req-002's four criteria, which has a recorded keep answer.
+Critic verdict (P1, iteration 1): REJECT. 0 major and 4 minor findings, on traceability and internal consistency. See critic-verdict-1.md.
