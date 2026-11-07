@@ -7,7 +7,7 @@ The full in-scope list for earlier features lives in `component.yml`. This file 
 ## In scope
 
 - The pack source at `src/ravintio-framework/` and its `component.yml`.
-- `scripts/build-release.mjs`, its sanction in boot Hard Limit 8, and the P7 Step 5c ship step.
+- `scripts/build-release.mjs`, its sanction in the Write-or-Edit rule (boot Hard Limit 8), and the P7 Step 5c ship step.
 - `ravintio-framework/release.yml` and its readers, with the `component.yml` fallback for a pack before 0.39.0.
 - `scripts/release-check.mjs` and file-level update detection in step 1a.
 - `scripts/project-kind.mjs` and the `**Applies to:**` migration header.

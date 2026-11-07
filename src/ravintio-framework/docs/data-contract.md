@@ -8,7 +8,7 @@ Last updated: 0000041-pack-source-under-src
 
 | Data | Owner | Who writes it |
 |---|---|---|
-| Every file under `src/ravintio-framework/`, `component.yml` included | `ravintio-framework` | Agents, through **Write** or **Edit** only (boot Hard Limit 8) |
+| Every file under `src/ravintio-framework/`, `component.yml` included | `ravintio-framework` | Agents, through **Write** or **Edit** only, under the Write-or-Edit rule (boot Hard Limit 8) |
 | The root `ravintio-framework/` copy, `release.yml` included | `build-release.mjs` | The release script only, at P7 Step 5c |
 | `.ravintio-framework-build/` and `.ravintio-framework-previous/` | `build-release.mjs` | The release script only, during a build or a recovery |
 | A consumer's `ravintio-framework/component.yml` | The consumer | The human on the loop. The 0.39.0 migration only offers the removal. |
