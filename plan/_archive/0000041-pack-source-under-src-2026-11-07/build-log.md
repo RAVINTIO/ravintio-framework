@@ -412,12 +412,32 @@ Progress: P7 done at 2026-11-07T20:02:19Z: plan/current archived, root copy rebu
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T20:04:00Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T20:08:08Z` |
+| Wall-clock | 4m |
 | Streams | n/a |
 | Model tier | cheaper |
 | Skills loaded | ravintio-build-assessment-agent |
-| Agents spawned | pending |
+| Agents spawned | 1: the build assessment agent |
+| MCP calls | 0 |
+| Parallel task batches | 0 |
+| Notes | Autonomous run. |
+
+Build report (P8): build-report.md written. It counts 0 human touchpoints and 10 waiting exception items. It names three Write-or-Edit breaches, including the P0 `git rm`, which the P5 gate summary left out.
+Decision (P8): the build report's point that the orchestrator wrongly classed the deviation lines doesn't stand / reason: the deviation review step says the orchestrator rewrites each line with the assessor's class, and every class came from deviation-review.md
+Clean-tree check: clean. The one untracked file is build-report.md under the archive folder, which the P9 marker step commits.
+Progress: P8 done at 2026-11-07T20:08:08Z: build report filed, 0 touchpoints, 10 exception items waiting
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T20:08:08Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent |
+| Agents spawned | 0 |
 | MCP calls | 0 |
 | Parallel task batches | 0 |
 | Notes | Autonomous run. |
