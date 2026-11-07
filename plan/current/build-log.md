@@ -105,7 +105,7 @@ Decision (P1): split step for req-007: keep / reason: one outcome, every live re
 Decision (P1): the residue guard joins the regression pack through promote-to-regression.sh at P7 / reason: same treatment as the 0000039 brand guard
 Decision (P1): the residue guard also skips plan/_migrations/, plan/current/, plan/backlog/, and plan/reports/, and strips the feature ID and migration slug before matching / reason: those hold history or name the retired tracks as their subject
 Decision (P1): ADR superseding notes go in docs/decisions-index.md and the new 0000040 ADRs, never in archived ADR files / reason: precedent from 0000033 ADR-010
-Deviation (P1, unclassified): req-007 also supersedes 0000035 ADR-003, scope record staleness from git files, which the design's list of four ADRs omits
+Deviation (P1, additive): req-007 also supersedes 0000035 ADR-003, scope record staleness from git files, which the design's list of four ADRs omits
 Backlog filed (P1): 0000365, the regression pack has no sanctioned retire step, so removing the test-0000017-req-007 regression copy and its manifest entry needs a recorded hand edit.
 Decision (P1): split step for req-001: keep / reason: one concern, the route a request takes
 Decision (P1): split step for req-004: keep / reason: one concern, no track file survives in the pack or a tool folder
@@ -176,7 +176,7 @@ Decision (P2): ADR-001 written in the main thread, ADR-002 to ADR-007 by six par
 Decision (P2): ADR-003 treats a product.yml with no readable path value as src/ only, with a warning / reason: matches req-003's rule for an unreadable file, and the check never drops below src/. The P2 critic reviews it.
 Decision (P2): ADR-003 takes the merge base with origin/main as the base commit / reason: the hooks already diff with three dots
 Decision (P2): ADR-005 status accepted and component ravintio-framework / reason: the human on the loop let the req-004 two-array form stand on 2026-11-06, and the design names ravintio-framework as the only component. The manifest prune path gap the subagent raised is backlog 0000255.
-Deviation (P2, unclassified): req-005 step 3 changes from the migrator deleting plan/.fast-path-scope to the human on the loop running the delete, with the migrator checking the result. Hard Limit 8 names no delete route. Filed backlog 0000366.
+Deviation (P2, additive, destructive): req-005 step 3 changes from the migrator deleting plan/.fast-path-scope to the human on the loop running the delete, with the migrator checking the result. Hard Limit 8 names no delete route. Filed backlog 0000366.
 Decision (P2): req-002 keeps test-0000039-req-008 unchanged and moves direct isEnforcementPath coverage before any retirement of test-0000035-req-009 / reason: ADR-004 keeps the function name, and the list's matching must keep its tests
 Loop armed (P2): design_critic-p2, toggle on, cap 3, approach 1 of 3. consistency-check clean.
 Critic verdict (P2, iteration 1): REJECT. 3 major and 4 minor findings. See critic-verdict-p2-1.md.
@@ -208,34 +208,34 @@ Decision (P3): batch 1 runs four TDD subagents in parallel: req-002 with req-004
 Decision (P3): each TDD subagent runs the test-writer, implementer, and refactor steps in its own context, loading each step skill in turn / reason: one requirement per context keeps the red and green evidence together. Each subagent runs only its own suites, and the orchestrator runs the full suite at each join.
 Decision (P3): subagents write files but never commit. The orchestrator scans and commits each requirement's TDD cycle after it returns / reason: parallel commits in one working tree would race on the git index.
 TDD (P3, req-005): RED exit 1 (12 passed, 71 failed), GREEN exit 0 (83 passed) on attempt 1. test-0000040-req-005-consumer-migration.sh.
-Deviation (P3, unclassified): req-005 migration adds a seventh step, Record the outcome, and a section that holds the quoted exemption block.
-Deviation (P3, unclassified): req-005 edits test-0000035-req-007 and test-0000035-req-010, which count migration files, to add the 0.38.0 migration.
-Deviation (P3, unclassified): req-005 no match case names each line holding the exemption markers, because an edited block has no known bounds.
+Deviation (P3, additive): req-005 migration adds a seventh step, Record the outcome, and a section that holds the quoted exemption block.
+Deviation (P3, additive): req-005 edits test-0000035-req-007 and test-0000035-req-010, which count migration files, to add the 0.38.0 migration.
+Deviation (P3, additive): req-005 no match case names each line holding the exemption markers, because an edited block has no known bounds.
 TDD (P3, req-001): RED exit 1 (30 of 43 failed), then 38 of 43 pass. The 5 left read req-007 docs and wait for batch 2. Rewritten 0000032 req-003 and req-004 suites RED then GREEN in both copies.
 Decision (P3): the orchestrator removed test-0000033-req-011 with git rm / reason: req-001 retires it, and git rm is the route req-004 uses for tracked pack files (backlog 0000366)
-Deviation (P3, unclassified): req-001 re-pinned the baseline hashes in test-0000038-req-004 and test-0000038-req-007, which pin files req-001 changes.
-Deviation (P3, unclassified): req-001 adds to ship Hard Limit 6 that a step meeting a standalone skill trigger names that skill.
-Deviation (P3, unclassified): the req-001 suite also checks that the orchestrator SKILL.md holds no retired-track words, which is stricter than criterion 1.
+Deviation (P3, additive): req-001 re-pinned the baseline hashes in test-0000038-req-004 and test-0000038-req-007, which pin files req-001 changes.
+Deviation (P3, additive): req-001 adds to ship Hard Limit 6 that a step meeting a standalone skill trigger names that skill.
+Deviation (P3, additive): the req-001 suite also checks that the orchestrator SKILL.md holds no retired-track words, which is stricter than criterion 1.
 TDD (P3, req-003): RED exit 1 (64 passed, 44 failed), GREEN exit 0 (108 passed). Rewritten test-0000019-req-002 RED then GREEN in both copies.
-Deviation (P3, unclassified): req-003 CI fails closed when origin/{base_ref} is missing. Only pre-push warns and passes on a missing ref.
-Deviation (P3, unclassified): req-003 treats a product.yml path starting with a backslash or a drive letter as absolute, and ignores it with a warning.
-Deviation (P3, unclassified): req-003 ends the components block at a column 1 comment line, and a blank line doesn't end it.
+Deviation (P3, additive): req-003 CI fails closed when origin/{base_ref} is missing. Only pre-push warns and passes on a missing ref.
+Deviation (P3, additive): req-003 treats a product.yml path starting with a backslash or a drive letter as absolute, and ignores it with a warning.
+Deviation (P3, additive): req-003 ends the components block at a column 1 comment line, and a blank line doesn't end it.
 TDD (P3, req-002 and req-004): RED exit 1 (183 and 72 failed), GREEN exit 0 (487 and 128 passed), with the ps1 cases run under pwsh. The req-002 no-assertion-change suites pass unchanged.
-Deviation (P3, unclassified): req-004 adds a Windows skip table row for its suite in tests/README.md, which test-0000037-req-010 needs.
-Deviation (P3, unclassified): req-004 changes the skill count in test-0000039-req-001 from 21 to 20.
-Deviation (P3, unclassified): req-004 cleanup functions skip an empty skills folder, so opencode never checks a path at the project root.
+Deviation (P3, additive): req-004 adds a Windows skip table row for its suite in tests/README.md, which test-0000037-req-010 needs.
+Deviation (P3, additive): req-004 changes the skill count in test-0000039-req-001 from 21 to 20.
+Deviation (P3, additive): req-004 cleanup functions skip an empty skills folder, so opencode never checks a path at the project root.
 Join (P3, batch 1): full suite 128 feature suites passed and 1 failed, 36 of 36 regression suites passed. The failing suite is test-0000040-req-001, on 5 checks that read req-007 docs.
 TDD (P3, req-007): RED exit 1 (3 passed, 51 failed), GREEN exit 0. test-0000040-req-001 now exits 0. Full suite 129 feature suites passed and 1 failed, 36 of 36 regression suites passed.
-Deviation (P3, unclassified): req-007 widens the 0.37-only version check in test-0000039-req-010 to accept 0.37 or a later 0.x release, and keeps every equality check.
-Deviation (P3, unclassified): req-007 capitalises the superseding notes in the architecture overview decision list, and adds one component.yml responsibility line for 0000040 routing.
+Deviation (P3, additive): req-007 widens the 0.37-only version check in test-0000039-req-010 to accept 0.37 or a later 0.x release, and keeps every equality check.
+Deviation (P3, additive): req-007 capitalises the superseding notes in the architecture overview decision list, and adds one component.yml responsibility line for 0000040 routing.
 Decision (P3): accept the 3 equality failures in test-0000039-req-010 until P7 sets product.yml and docs/about.md to 0.38.0. P4 must not fix them / reason: set-product-release.mjs is sanctioned only at P7 Step 5b, and req-007 gives both files to the ship agent. Filed backlog 0000368.
 Setup run (P3): ravintio-framework/setup.sh claude-code --strict-orchestrator, with the flags from .claude/.ravintio-setup-flags. Installed commands are feature-pipeline and retrofit, the change agent skill is gone, and the regenerated CLAUDE.md holds no scope record text. Only ravintio-overrides/setup-config/claude-code.md changed in git.
 TDD (P3, req-006): RED exit 1 on the real tree (12 lines flagged, 2 stale entries) and on a planted README line. GREEN exit 0 with 29 passed and 0 offences under /bin/bash 3.2. 7 matches pass by the history-line rule and 199 by allowlist entries. All 13 algorithm fixtures and the setup line regex passed as written.
-Deviation (P3, unclassified): req-006 widens the 0000040 suite entry to test-0000040-req-00[1-57]-.
-Deviation (P3, unclassified): req-006 adds an entry for one 0000038 req-004 history comment that req-001 wrote.
-Deviation (P3, unclassified): req-006 gives entries only to req-002 rewrite-table suites that still name a track.
-Deviation (P3, unclassified): req-006 makes every entry, .* included, go stale when it covers no match.
-Deviation (P3, unclassified): req-006 fixes a stale Fast Path comment in test-0000039-req-008-emitted-names.sh, a req-002 table file.
+Deviation (P3, additive): req-006 widens the 0000040 suite entry to test-0000040-req-00[1-57]-.
+Deviation (P3, additive): req-006 adds an entry for one 0000038 req-004 history comment that req-001 wrote.
+Deviation (P3, additive): req-006 gives entries only to req-002 rewrite-table suites that still name a track.
+Deviation (P3, additive): req-006 makes every entry, .* included, go stale when it covers no match.
+Deviation (P3, additive): req-006 fixes a stale Fast Path comment in test-0000039-req-008-emitted-names.sh, a req-002 table file.
 Decision (P3): req-006 records the P3 rules in a governing section "What P3 built" / reason: Hard Limit 7, the docs match what was built. Filed backlog 0000369 for the req-007 suite's copy of the guard logic.
 Decision (P3): the req-001 suite gains a Verified by: unit header line / reason: req-001 criteria 1 and 2 declare unit, and the scan blocks a type mismatch
 Requirement-ID scan (P3): 7 requirements, 0 unmapped. Execution criteria in req-005 and req-007 are deferred to P4.
@@ -268,8 +268,8 @@ Full suite (P4, before cycle 1): 130 feature suites passed and 1 failed, 36 of 3
 Verify-by-execution (P4): 21 criteria, 17 verified, 0 failed, 4 not-verifiable. The 4 need Linux, Windows, PowerShell 5.1, or P7. req-005 criterion 2 verified in a scratch consumer built from main, because no v0.37.2 tag exists.
 Decision (P4): treat the linked skills folder rerun deletion as a req-004 criterion 2 failure and add it to cycle 1 / reason: after two setup runs, the outside folder doesn't stay. The manifest lists the folder that the cleanup refused, and the prune then deletes it.
 Cycle 1 (P4) result: pass. RED exit 1 (157 passed, 6 failed), then exit 1 (159 passed, 12 failed) once the rerun case joined. GREEN exit 0 with 171 passed. The ps1-only mode gives 94 passed, and a missing RAVINTIO_TEST_PWSH binary fails as intended. The link and failed-delete cases passed on first run, so they found no bug.
-Deviation (P4, unclassified): the setup.sh and setup.ps1 manifest prunes skip names on the retired skills list, so only the retired-track cleanup removes them. ADR-005 and req-004 now record this.
-Deviation (P4, unclassified): the 5.1 CI run of the req-004 suite skips the link and failed-delete cases under Git Bash on Windows. PowerShell 7 covers them for setup.ps1.
+Deviation (P4, additive): the setup.sh and setup.ps1 manifest prunes skip names on the retired skills list, so only the retired-track cleanup removes them. ADR-005 and req-004 now record this.
+Deviation (P4, additive): the 5.1 CI run of the req-004 suite skips the link and failed-delete cases under Git Bash on Windows. PowerShell 7 covers them for setup.ps1.
 Decision (P4): keep the setup-powershell-51 timeout at 10 minutes and add risk R-013 / reason: 0000037 req-011 pins the cap, and the first CI run gives the real time
 Decision (P4): filed backlog 0000370 for a false empty path warning in pre-push and the CI step, and 0000371 for the missing v0.37.2 tag / reason: neither changes a verdict or a criterion
 Verify-by-execution (P4, after cycle 1): the linked skills folder repro, run on commit f6cbf141, keeps the outside folder across two setup.sh runs and two setup.ps1 runs.
@@ -303,7 +303,7 @@ Reversal (P5, 001): DENY, classified altering, budget 2 of 2 unspent. The false 
 Decision (P5): add blocked and refused skipped reasons and a linked plan check to the migration and migrator through a TDD subagent / reason: verdict 001 places them inside the current design, under the Scope Lock rule that an error path never reads as success
 Exception waiting (P5, altering design): how the confirmed CI block removal reaches a consumer with gate-write installed and no design. Options: a human-run edit, a sanctioned helper script, or a gate route for a confirmed named-path edit.
 TDD (P5, req-005 fix): RED exit 1 (88 passed, 18 failed), GREEN exit 0 (106 passed). The migration-text suites and consistency-check pass. A real gate-write check pins the blocked premise: the CI file Edit exits 2 with no design.
-Deviation (P5, unclassified): migration 0.38.0 steps 3, 5, and 7 and migrator Named paths add skipped reasons blocked and refused and a linked plan check (defect verdict 001, S-1, S-4, and S-5). req-005 and ADR-006 record it by addition.
+Deviation (P5, additive): migration 0.38.0 steps 3, 5, and 7 and migrator Named paths add skipped reasons blocked and refused and a linked plan check (defect verdict 001, S-1, S-4, and S-5). req-005 and ADR-006 record it by addition.
 Decision (P5): filed backlog 0000372 to 0000377 for the Low and Info findings outside the defect report / reason: each predates the feature, is Info, or changes a standard outside the confirmed scope
 Exception resolved (P5, altering design): the human on the loop chose option 3 at 2026-11-07. A blocked CI edit records skipped with reason blocked, and the block stays. design.md, execution-plan.md, ADR-006, req-005, and the risk register (R-014) record it. No code change, because deaf863f already ships that outcome.
 Decision (P5): filed backlog 0000378 for a source-repo migration skip / reason: the human on the loop asked why migrations run in the framework source repo, and the change reverses 0000035 ADR-019, outside the confirmed scope
@@ -330,6 +330,6 @@ P6 Gate B: docs update assessment (autonomous, auto-accepted). Feature 0000040 r
 Decision (P6): three docs subagents in one batch: living docs, the pack's component docs and manifest, and the recommendations with the changelog / reason: the three sets share no content. Backlog IDs 0000379 to 0000381 go to the recommendations agent.
 Backlog filed (P6): 0000379 (no reminder of a blocked CI exemption), 0000380 (5.1 job cap untimed, R-013), 0000381 (req-004 cases skipped on Windows). The orchestrator set the changelog's P5 deviation row to unclassified, because only the reversal assessor classifies.
 Drift (P6): the living-docs agent fixed two stale lines in the architecture overview, the `validate-branch` row and the P9 handover rule. The component-docs agent fixed the PowerShell list names in `tool-setup-reference.md`. ADR compliance, component boundaries, and data ownership pass. The glossary lacked `enforcement path`, and the orchestrator added it.
-Deviation (P6, process): the component-docs agent ran `git stash` and `git stash pop` for a baseline, against the Write-or-Edit rule (boot Hard Limit 8). The pop restored every file. The orchestrator confirmed the living-docs edits survived, and the req-007 suite passes 54 of 54.
+Deviation (P6, additive, process): the component-docs agent ran `git stash` and `git stash pop` for a baseline, against the Write-or-Edit rule (boot Hard Limit 8). The pop restored every file. The orchestrator confirmed the living-docs edits survived, and the req-007 suite passes 54 of 54.
 Deviation review (P6): 25 Deviation lines, all additive. Row 26, exception 001, is altering and already resolved by the human on the loop. Row 2 carries the destructive flag. No schema rows. Row 25, the git stash breach, is tracked by backlog 0000225, 0000304, and 0000113. See `plan/current/deviation-review.md`.
 Exception waiting (P6, 1): confirm deviation row 2. At P2 the delete of a consumer's `plan/.fast-path-scope` moved from the migrator to the human on the loop, who runs `rm` while the migrator checks the result. The end state and the consent are unchanged. Confirm, or ask for a change.
