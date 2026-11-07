@@ -4,11 +4,11 @@
 # Tests for feature 0000041-pack-source-under-src, req-005: applies-to header
 # and the source-repo signal (ADR-007).
 #
-# Scope of this step: AC1 only, the project-kind.mjs cases. The header and
-# migrator rule cases (AC2 and AC3) come at a later build step.
+# Scope: AC1 (project-kind.mjs cases) and the text half of AC2 and AC3 (the
+# migrator SKILL.md rule and the released retroactive-release-tags.md).
 #
-# The suite finds the pack from its own folder because the req-008 resolver
-# does not exist yet. Each case builds a scratch repo in a temporary folder.
+# The suite finds the pack through helpers/pack-root.sh (req-008 resolver).
+# Each project-kind case builds a scratch repo in a temporary folder.
 
 set -uo pipefail
 
@@ -16,8 +16,9 @@ unset CLAUDE_PROJECT_DIR
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FW="$(cd "$SCRIPT_DIR/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
 PK="$FW/scripts/project-kind.mjs"
 MANIFEST_PATH="src/ravintio-framework/component.yml"
 
@@ -156,5 +157,81 @@ BEFORE="$(cd "$R" && find . | sort | tr '\n' ' ')"
 run_pk --root "$R"
 AFTER="$(cd "$R" && find . | sort | tr '\n' ' ')"
 assert_equals "$BEFORE" "$AFTER" "req-005: project-kind.mjs writes no file"
+
+# ============================================================================
+# AC2: the migrator SKILL.md documents the header and the Step 1b rule
+# ============================================================================
+MIG="$FW/skills/ravintio-migrator/SKILL.md"
+if [ -f "$MIG" ]; then MIG_TEXT="$(cat "$MIG")"; else MIG_TEXT=""; fi
+
+# has <label> <extended regex> <text>: assert that a line of text matches.
+has() {
+  if printf '%s\n' "$3" | grep -Eiq -e "$2"; then
+    assert_equals "yes" "yes" "req-005: $1"
+  else
+    assert_equals "yes" "no" "req-005: $1"
+  fi
+}
+
+# Step 1b section: from its heading to the next heading of the same level.
+STEP1B="$(awk '/^### Step 1b/ {on=1; print; next} on && /^### / {exit} on {print}' "$MIG" 2>/dev/null)"
+
+# --- the header and its three values ----------------------------------------
+has "migrator documents the **Applies to:** line" '[*][*]Applies to:[*][*]' "$MIG_TEXT"
+has "migrator documents the value framework source for Applies to" 'Applies to:[*][*].*`framework source`' "$MIG_TEXT"
+has "migrator documents the value downstream for Applies to" 'Applies to:[*][*].*`downstream`' "$MIG_TEXT"
+has "migrator documents the value all for Applies to" 'Applies to:[*][*].*`all`' "$MIG_TEXT"
+has "migrator says an absent Applies to line reads as all" '(absent|no .*Applies to|no such line|no header).*reads? as `all`|reads? as `all`.*(absent|no header)' "$MIG_TEXT"
+
+# --- the released-migrations table ------------------------------------------
+TABLE="$(awk '/Released migrations by project kind/ {on=1; next} on && /^#/ {exit} on {print}' "$MIG" 2>/dev/null)"
+has "migrator holds a Released migrations by project kind heading" 'Released migrations by project kind' "$MIG_TEXT"
+has "table maps retroactive-release-tags.md to framework source" '^[|].*retroactive-release-tags[.]md.*framework source' "$TABLE"
+ROWS="$(printf '%s\n' "$TABLE" | grep -c '[.]md')"
+assert_equals "1" "$ROWS" "req-005: the Released migrations by project kind table has one row"
+has "migrator reads the table before a file with no header" 'table' "$STEP1B"
+
+# --- Step 1b order ----------------------------------------------------------
+has "Step 1b is the project-kind check" 'project[- ]kind' "$(printf '%s\n' "$STEP1B" | head -1)"
+has "Step 1b runs project-kind.mjs" 'project-kind[.]mjs' "$STEP1B"
+has "Step 1b stops and records nothing when the script fails" '(fails?|error).*stop|stop.*(fails?|error)' "$STEP1B"
+has "Step 1b stops for an Applies to value that is not one of the three" 'not one of|unknown value|invalid' "$STEP1B"
+has "Step 1b records nothing for a stop" 'record(s)? nothing|no record' "$STEP1B"
+has "Step 1b records not applicable on a kind mismatch" 'not applicable' "$STEP1B"
+has "Step 1b mismatch records both counts at 0" 'both counts at `0`' "$STEP1B"
+has "Step 1b mismatch body names the project kind and the header value" 'names? the project kind and the (header|Applies to)' "$STEP1B"
+has "Step 1b reads Target when the value is all or matches the kind" '(`all`|matches).*Target|Target.*(`all`|matches)' "$STEP1B"
+
+pos() { printf '%s\n' "$STEP1B" | grep -n -m1 -Ei -e "$1" | cut -d: -f1; }
+P_RUN="$(pos 'project-kind[.]mjs')"
+P_HDR="$(pos '[*][*]Applies to:[*][*]')"
+P_NA="$(pos 'not applicable')"
+P_TGT="$(pos '[*][*]Target:[*][*]')"
+if [ -n "$P_RUN" ] && [ -n "$P_HDR" ] && [ -n "$P_NA" ] && [ -n "$P_TGT" ] \
+   && [ "$P_RUN" -lt "$P_HDR" ] && [ "$P_HDR" -lt "$P_NA" ] && [ "$P_NA" -lt "$P_TGT" ]; then
+  assert_equals "yes" "yes" "req-005: Step 1b order is script, header, mismatch record, Target"
+else
+  assert_equals "yes" "no" "req-005: Step 1b order is script, header, mismatch record, Target (lines: ${P_RUN:-none} ${P_HDR:-none} ${P_NA:-none} ${P_TGT:-none})"
+fi
+
+# --- the Target check and the reporting rule --------------------------------
+has "Target check takes the kind from the same script" 'Target.*(same|that) script|(same|that) script.*Target' "$STEP1B"
+if printf '%s\n' "$STEP1B" | grep -Fq 'has `id: "ravintio-framework"`'; then
+  assert_equals "yes" "no" "req-005: Step 1b no longer tests the root product.yml id"
+else
+  assert_equals "yes" "yes" "req-005: Step 1b no longer tests the root product.yml id"
+fi
+has "migrator reports each not applicable record and its reason to the human" 'report.*not applicable.*reason|report.*reason.*not applicable' "$STEP1B"
+
+# ============================================================================
+# AC3: the released retroactive-release-tags.md matches v0.38.0 byte for byte
+# ============================================================================
+REL="$FW/migrations/retroactive-release-tags.md"
+git -C "$RAVINTIO_REPO_ROOT" show v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md > "$WORK/v038.md" 2>/dev/null # root-copy-ok: history stores the released file at the old path
+if [ -s "$WORK/v038.md" ] && [ -f "$REL" ] && cmp -s "$WORK/v038.md" "$REL"; then
+  assert_equals "yes" "yes" "req-005: retroactive-release-tags.md is byte-identical to v0.38.0"
+else
+  assert_equals "yes" "no" "req-005: retroactive-release-tags.md is byte-identical to v0.38.0"
+fi
 
 print_summary
