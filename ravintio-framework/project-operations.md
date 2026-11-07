@@ -74,7 +74,7 @@ This writes `plan/.orchestrator-strict`. When present, the hook injects a **hard
 
 ## Updating the Framework
 
-After pulling new files into `ravintio-framework/`, re-run the setup script to propagate changes. Pass the same flags used during initial setup. Re-running is idempotent.
+After pulling new files into `ravintio-framework/`, re-run the setup script to propagate changes. Pass the same flags used during initial setup. Re-running is idempotent. Each run also removes the installed copies of the two retired tracks, named in the retired lists in `setup.sh` and `setup.ps1`.
 
 ```bash
 # macOS / Linux

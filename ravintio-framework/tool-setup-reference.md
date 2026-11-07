@@ -37,7 +37,7 @@ For each tool, the script:
 1. **Creates the tool's skill directory** (e.g., `.claude/skills/`)
 2. **Copies each skill** as `{skill-name}/SKILL.md` with the required YAML frontmatter (`name` + `description`)
 3. **Copies supporting files** (templates, standards, schemas) into the skill directory as `_ravintio-*` folders
-4. **Copies workflows** (feature-pipeline, retrofit) into the tool's workflow directory. Each run also removes the workflow copies and the skill folder of the two retired tracks, named in `RETIRED_TRACK_WORKFLOWS` and `RETIRED_TRACK_SKILLS` in `setup.sh` and `setup.ps1`.
+4. **Copies workflows** (feature-pipeline, retrofit) into the tool's workflow directory. Each run also removes the workflow copies and the skill folder of the two retired tracks, named in `RETIRED_TRACK_WORKFLOWS` and `RETIRED_TRACK_SKILLS` in `setup.sh`. `setup.ps1` holds the same names in `$RetiredTrackWorkflows` and `$RetiredTrackSkills`.
 5. **Creates a boot file** (e.g., `CLAUDE.md`) if one doesn't already exist
 6. **Copies capability skills** from `ravintio-overrides/capability-skills/` directly into the tool's skill directory — no separate registry file needed; the tool discovers them the same way it discovers built-in skills
 7. **Appends override instructions** from `ravintio-overrides/instructions/*.md` to the boot file — idempotent, replaces the previous block on re-run

@@ -216,7 +216,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-10-31"
+  updatedAt: "2026-11-07"
   # Updated by 0000021 (spec-agent) P1: seeded requirements-derived
   # responsibilities/scope/risk entries for the regression-pack and
   # audit-findings-report/guardrailed-trim process ahead of P3 codegen.
@@ -273,6 +273,18 @@ metadata:
   # RAVINTIO. Added migrate-0.37.0-ravintio-rename with Bash and PowerShell
   # helpers, the old-name reads kept through 0.x (ADR-004), and the brand
   # guard suite plus the test-0000039 suites.
+  # Updated by 0000040 (docs-agent) P6: version 0.38.0. Retired Fast Path and
+  # the Change Pipeline, so every change runs the Feature Pipeline (ADR-002).
+  # Removed both workflows, ravintio-change-agent, the PC: prefix, and the
+  # change summary template. The gates no longer read plan/.fast-path-scope.
+  # The enforcement list survives as ENFORCEMENT_PATHS (ADR-004). Pre-push and
+  # both CI files drop the fix(fast-path): exemption and gain the source
+  # folder rule from product.yml (ADR-003). Setup removes installed
+  # retired-track copies by name (ADR-005). Added
+  # migrate-0.38.0-retire-fast-path-and-change-pipeline and widened migrator
+  # rule 1 to named paths with confirmation (ADR-006). A CI edit that
+  # gate-write blocks records skipped with the reason blocked. Added the
+  # residue guard with a closed allowlist (ADR-007).
   createdBy: "agent"
   lastModifiedBy: "ravintio-docs-agent"
   skill: "ravintio-docs-agent"

@@ -387,6 +387,8 @@ Proceeding to Phase 0 coaching — {x} of {y} questions pre-answered by discover
 
 Pass the same flags you used during initial setup. Re-running is idempotent — it overwrites generated copies but never touches `ravintio-overrides/`.
 
+Each run also removes the installed copies of the two retired tracks from the tool it sets up. That covers their workflow or command copies and their skill folder. `RETIRED_TRACK_WORKFLOWS` and `RETIRED_TRACK_SKILLS` in `setup.sh` name them. `setup.ps1` holds the same names in `$RetiredTrackWorkflows` and `$RetiredTrackSkills`. Setup removes them with or without a skill manifest.
+
 ```bash
 # macOS / Linux — basic
 ./ravintio-framework/setup.sh claude-code
