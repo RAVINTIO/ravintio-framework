@@ -213,3 +213,21 @@ Gate summary (P2): nine ADRs written. ADR-001 stack unchanged, ADR-002 pack sour
 Skill Map (P2): unchanged. No ADR moves a requirement to another skill.
 Progress: P2 done at 2026-11-07T16:19:25Z: nine ADRs, design critic approved at iteration 3, P3 next
 Gate passed: P2
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T16:20:02Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary for orchestration, cheaper for TDD subagents |
+| Skills loaded | ravintio-codegen-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | pending |
+| Notes | Autonomous run. Build order from execution-plan.md. |
+
+Skills inbox (P3): ravintio-framework/skills-inbox/ is absent, so nothing to process. The stack is Bash and Node.js with no capability skill installed.
+Decision (P3): steps 1 to 5 run in sequence in the build order, and steps 6 and 7 run as one parallel batch / reason: each of steps 1 to 5 reads files the step before it writes, and the execution plan says steps 6 and 7 share no file
