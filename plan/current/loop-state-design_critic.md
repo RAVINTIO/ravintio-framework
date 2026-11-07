@@ -13,11 +13,11 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P1` |
 | Toggle level | `on` |
-| Iteration | `1` of cap `3` (approach 2) |
+| Iteration | `2` of cap `3` (approach 2) |
 | Approach | `2 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
 | Last decision | `continue` |
-| Last updated | `2026-11-07T15:48:55Z` |
+| Last updated | `2026-11-07T15:52:00Z` |
 
 ---
 
@@ -48,6 +48,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** fresh-context critic pass after the approach 2 sweep (critic-verdict-4.md).
 - **Observation:** REJECT with 0 critical, 0 major, and 2 minor findings. Both iteration 3 findings resolved. Item 8 fails on req-008 AC2 timing and on req-004's component source wording.
 - **Decision:** continue: both findings have direct fixes. The sweep also found the scope's P1 clarification still implied a `CLAUDE.md` edit, and a sub-bullet now corrects it.
+
+### Iteration 2 of approach 2 (2026-11-07T15:52:00Z)
+- **Approach:** 2
+- **Action:** fresh-context critic pass after the iteration 4 fixes (critic-verdict-5.md).
+- **Observation:** REJECT with 0 critical, 0 major, and 1 minor finding. Both iteration 4 findings resolved. Item 8 fails because `product.yml` changed at step 4, after the step 3 suites read the source-repo signal.
+- **Decision:** continue: one finding with a direct fix. The `product.yml` edit moves to step 1, and step 3 names the scan case that stays red until step 7.
 
 ---
 

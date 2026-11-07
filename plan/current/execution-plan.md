@@ -107,10 +107,10 @@ The root `ravintio-framework/` copy has no P3 owner. Only the git pass writes it
 
 P3 runs the requirements in this order. Each step names what it waits for.
 
-1. req-001 git pass and its AC1 checks. Every other step waits for it.
+1. req-001 git pass and its AC1 checks. Every other step waits for it. Next, req-001's `product.yml` edit lands in its own commit, so the source-repo signal reads `framework source` from step 2 on.
 2. req-005 `project-kind.mjs`, under TDD with its AC1 cases. The resolver and the release script import it. Its suite finds the pack from its own folder until the resolver exists, as req-008 states.
-3. req-008 resolver, static scan, and suite path edits. The resolver closes req-008 AC1. Every new suite sources the resolver. req-008 AC3 needs `build-release.mjs` and `release-check.mjs`, so it closes at step 5. req-008 AC2 needs a clean scan and a green `run-tests.sh`, so it closes at step 7.
-4. req-001 follow-up path fixes and its suite.
+3. req-008 resolver, static scan, and suite path edits. The resolver closes req-008 AC1. Every new suite sources the resolver. req-008 AC3 needs `build-release.mjs` and `release-check.mjs`, so it closes at step 5. req-008 AC2 needs a clean scan and a green `run-tests.sh`, so it closes at step 7. The static-scan case in `test-0000041-req-008-tests-and-ci-from-src.sh` stays red from step 3 to step 7, because it flags the version suite that req-007 owns. P3 logs that red case as expected, and the P3 gate checks the full suite after step 8.
+4. req-001's other follow-up path fixes and its suite.
 5. req-002, then req-003's script, orchestrator, and update policy edits. req-008 AC3 then closes, because the CI integrity job runs `release-check.mjs` on a copy that `build-release.mjs` builds.
 6. req-004, the req-005 migrator rule, req-003's migrator edits, then req-006. req-003's migrator edits land after the req-005 rule, as the file ownership table states, and req-003 closes here. The req-005 suite moves onto the resolver here.
 7. req-007. It moves `test-0000039-req-010-version-bump.sh` onto the resolver, so the static scan comes up clean and req-008 AC2 closes here.
