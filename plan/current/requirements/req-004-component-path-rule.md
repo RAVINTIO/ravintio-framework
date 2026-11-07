@@ -15,6 +15,8 @@ version: "0.1.0"
 
 As a consumer repo owner, I install a pack that has `release.yml` and no `component.yml`, so that my runs never count the pack as my source and still detect each pack update.
 
+This requirement serves the first half of US-002. Today the codegen close-out bumps a copied `ravintio-framework/component.yml`, and the ship fallback tags from it. Both count the pack as the consumer's source. One manifest rule that reads component paths removes both. The brief's sixth acceptance criterion names this outcome.
+
 ## Functional Requirements
 
 All paths below use the post-move layout. P3 edits the pack under `src/ravintio-framework/`.

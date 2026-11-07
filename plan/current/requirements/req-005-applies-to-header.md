@@ -9,7 +9,7 @@ version: "0.1.0"
 **Skill:** [spec-agent](../skills/ravintio-spec-agent/SKILL.md)
 **Feature:** 0000041-pack-source-under-src
 **Source:** US-003, backlog 0000378 and 0000136
-**Priority:** should-have
+**Priority:** must-have. US-003 is should-have, but must-have req-002 and req-008 import `project-kind.mjs` from this requirement.
 
 ## User Story
 

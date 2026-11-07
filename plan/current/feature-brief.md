@@ -95,3 +95,5 @@ Empty. The Scope Lock Challenge drafts the four paths at P0.
 - [ ] Step 1a, the migrator, and the update policy read `release.yml`, and step 1a flags any changed pack file.
 - [ ] A migration declares `**Applies to:**`, and the migrator records `not applicable` when the project kind differs.
 - [ ] The version equality suite skips its equality checks with a reason from P3 to P7, and runs them in full on a released tree.
+- [ ] The codegen close-out and the ship fallback read component paths, and neither names `ravintio-framework/component.yml`. One manifest-location rule appears in the spec agent, the docs agent, and `component-guide.md`.
+- [ ] A consumer migration offers one confirmed removal of a leftover `ravintio-framework/component.yml`, and records `skipped` with the file named when the human on the loop declines.

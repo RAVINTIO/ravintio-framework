@@ -11,7 +11,7 @@
   - US-001: As a framework maintainer, I change the pack under `src/ravintio-framework/` while this repo runs on the last release at the root, so that a broken change can't break the run that builds it.
   - US-002: As a consumer repo owner, I install a pack that has `release.yml` and no `component.yml`, so that my runs never count the pack as my source and still detect each pack update.
   - US-003: As a framework maintainer, I see migrations declare which kind of project they apply to, so that the source repo skips consumer-only migrations and consumers skip source-only ones.
-- Acceptance criteria confirmed: 5 (from `feature-brief.md`). P1 expands them to about 3 per story.
+- Acceptance criteria confirmed: 5 (from `feature-brief.md`). P1 added two more for req-004 and req-006, so the brief holds 7 (P1 deviation). P1 expands them to about 3 per story.
 - Constraints:
   - Released migration files never change.
   - `ravintio-framework/` stays the consumer runtime path in every pack file.

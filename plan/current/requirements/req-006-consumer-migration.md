@@ -15,6 +15,8 @@ version: "0.1.0"
 
 As a consumer repo owner, I install a pack that has `release.yml` and no `component.yml`, so that my runs never count the pack as my source and still detect each pack update.
 
+This requirement serves US-002 for a consumer who copies the new pack over an old one. The copy leaves the old `component.yml` beside `release.yml`, so the runs would still count the pack as source. The migration offers to remove that file. The brief's seventh acceptance criterion names this outcome.
+
 ## Functional Requirements
 
 ### The migration file

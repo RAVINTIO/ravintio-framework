@@ -139,3 +139,7 @@ Decision (P1): wrote other features' ADR references as ADR NNN without the hyphe
 Backlog filed (P1): 0000382 gate root resolves to src/ in the source repo, 0000383 migrations run before step 1a confirms the pack, 0000384 pack docs would ship in the release copy, 0000387 src/README.md links a missing file
 Loop armed (P1): design_critic, toggle on, cap 3, approach 1 of 3. consistency-check clean, with one warning for req-002's four criteria, which has a recorded keep answer.
 Critic verdict (P1, iteration 1): REJECT. 0 major and 4 minor findings, on traceability and internal consistency. See critic-verdict-1.md.
+Decision (P1): req-007 and req-008 quote US-001 word for word and add a line on how each serves it / reason: critic finding 1, their story text matched no story
+Decision (P1): req-005 priority rises to must-have / reason: critic finding 2, must-have req-002 and req-008 import project-kind.mjs
+Deviation (P1, unclassified): the feature brief gains two acceptance criteria, one for req-004 and one for req-006, and req-004 and req-006 state how each serves US-002 / reason: critic finding 3, no brief criterion named either. design.md updated to 7 criteria.
+Decision (P1): R-005 states 1,184 tracked files / reason: critic finding 4, git ls-files count

@@ -13,7 +13,9 @@ version: "0.1.0"
 
 ## User Story
 
-As a framework maintainer, I see the suites and CI test the pack source under `src/ravintio-framework/`, and I see CI check the root copy against its release record, so that a broken change can't pass against the old release.
+As a framework maintainer, I change the pack under `src/ravintio-framework/` while this repo runs on the last release at the root, so that a broken change can't break the run that builds it.
+
+This requirement serves US-001 through the suites and CI. They test the change under `src/ravintio-framework/`, not the release at the root. CI also checks the root copy against its `release.yml`, so a broken change can't pass against the old release.
 
 ## Functional Requirements
 

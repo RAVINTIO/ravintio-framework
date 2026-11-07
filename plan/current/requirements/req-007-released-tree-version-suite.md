@@ -13,7 +13,9 @@ version: "0.1.0"
 
 ## User Story
 
-As a framework maintainer, I see the version suite pass from P3 to P7 and hold in full on a released tree, so that a pack change never leaves the full suite red during the run that builds it.
+As a framework maintainer, I change the pack under `src/ravintio-framework/` while this repo runs on the last release at the root, so that a broken change can't break the run that builds it.
+
+This requirement serves US-001 through the version suite. From P3 to P7 the run changes the pack version, so the suite must not fail the run that builds the change. It still holds in full on a released tree.
 
 ## Functional Requirements
 
