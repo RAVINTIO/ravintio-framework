@@ -248,5 +248,8 @@ Backlog filed (P3): 0000402 migration branch diff across the pack move
 TDD (P3, step 5, req-002): RED 41 passed, 60 failed, plus the eighth-script cases in three existing suites (e5016d17).
 TDD (P3, step 5, req-002): GREEN 101 passed, 0 failed, and the three eighth-script suites green (191d2ac0). Refactor: no change needed.
 TDD (P3, step 5, req-003): RED 23 passed, 100 failed (d63a4701). Seven migrator cases wait for step 6.
+TDD (P3, step 5, req-003 script, step 1a, and policy): GREEN 116 passed, 7 failed. The 7 are the migrator cases that wait for step 6. The implementer found three defects in the RED suite: a joined count read 000, awk -v stripped the section regex escapes, and one has_text call searched the path string. The orchestrator fixed all three in the suite, and none weakens a check.
+Decision (P3): the orchestrator SKILL.md stays under the 41,600-byte cap in test-0000038-req-004, so step 1a states the leftover-manifest rule in one shorter sentence / reason: the first draft reached 41,868 bytes
+TDD (P3, step 5, req-008 AC3): the release-copy-integrity job and its cases are GREEN (3eb8098d plus this commit). The req-008 suite reads 48 passed, 1 failed, and the one is the real scan on the req-007 file.
 Rule breach (P3): the req-008 AC3 test-writer subagent ran `sed -i` once on test-0000041-req-008-tests-and-ci-from-src.sh to rename two helper calls, which breaks the Write-or-Edit rule (boot Hard Limit 8). The orchestrator reviewed the diff before commit, and the content matches what an Edit would produce. The final report lists it.
 Note (P3): test-0000040-req-007-docs-and-adr-supersede.sh asserts component.yml version 0.38.0, so the step 8 version bump turns it red. Step 8 handles it with the req-007 released-tree rule or an Edit.

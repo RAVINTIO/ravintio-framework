@@ -175,7 +175,7 @@ assert_equals "yes" "$(has_line 'update: release')" "req-003 AC1: a new source-c
 assert_equals "yes" "$(has_line "$REC_LINE")" "req-003 AC1: a new source-commit prints the exact record: line"
 assert_equals "yes" "$(has_line "release: version \"$REL_VERSION\" source-commit \"$REL_SHA\"")" "req-003 AC1: the release: line names the version and source commit"
 assert_equals "yes" "$(has_line "recorded: version \"$REL_VERSION\" source-commit \"$OTHER_SHA\"")" "req-003 AC1: the recorded: line names the recorded version and source commit"
-assert_equals "0" "$(count_prefix 'changed: ')$(count_prefix 'missing: ')$(count_prefix 'unlisted: ')" "req-003 AC1: a new source-commit alone prints no file line"
+assert_equals "0" "$(( $(count_prefix 'changed: ') + $(count_prefix 'missing: ') + $(count_prefix 'unlisted: ') ))" "req-003 AC1: a new source-commit alone prints no file line"
 
 # --- A recorded value that matches -----------------------------------------
 C="$(consumer c-match)"
@@ -232,7 +232,7 @@ printf 'junk\n' > "$C/$COPY_DIR/.DS_Store"
 printf 'id: "ravintio-framework"\nversion: "%s"\n' "$REL_VERSION" > "$C/$COPY_DIR/component.yml"
 run_check "$C"
 assert_equals "0" "$CODE" "req-003 AC1: a CRLF copy, a .DS_Store and a component.yml exit 0"
-assert_equals "0" "$(count_prefix 'changed: ')$(count_prefix 'missing: ')$(count_prefix 'unlisted: ')" "req-003 AC1: a CRLF copy, a .DS_Store and a component.yml print no file line"
+assert_equals "0" "$(( $(count_prefix 'changed: ') + $(count_prefix 'missing: ') + $(count_prefix 'unlisted: ') ))" "req-003 AC1: a CRLF copy, a .DS_Store and a component.yml print no file line"
 
 # --- A leftover component.yml prints the warn: line at exit 0 ---------------
 assert_equals "yes" "$(has_line 'warn: ravintio-framework/component.yml sits beside release.yml')" "req-003 AC1: a leftover component.yml prints the exact warn: line"
@@ -428,7 +428,8 @@ echo "=== req-003 AC3: the skill and policy texts ==="
 # ===========================================================================
 
 # --- Orchestrator step 1a ---------------------------------------------------
-S1A="$(section "$ORCH" '^1a\. \*\*Detect a' '^1b\. ')"
+# Bracket classes, not backslashes: awk -v strips the escapes.
+S1A="$(section "$ORCH" '^1a[.] [*][*]Detect a' '^1b[.] ')"
 assert_equals "yes" "$([ -n "$S1A" ] && echo yes || echo no)" "req-003 AC3: the orchestrator keeps the 1a. **Detect a opening"
 assert_equals "yes" "$(has_text 'framework-update-policy.md' "$S1A")" "req-003 AC3: step 1a keeps its link to framework-update-policy.md"
 assert_equals "yes" "$(has_text 'node ravintio-framework/scripts/release-check.mjs' "$S1A")" "req-003 AC3: step 1a runs node ravintio-framework/scripts/release-check.mjs"
@@ -449,7 +450,7 @@ assert_equals "yes" "$(has_text 'provenance' "$S1A")" "req-003 AC3: step 1a keep
 assert_equals "yes" "$(has_text 'predates 0.39.0' "$S1A")" "req-003 AC3: step 1a covers a pack that predates 0.39.0 with no release-check.mjs"
 
 # --- Orchestrator step 1b ---------------------------------------------------
-S1B="$(section "$ORCH" '^1b\. ' '^[0-9]+[a-z]?\. ')"
+S1B="$(section "$ORCH" '^1b[.] ' '^[0-9]+[a-z]?[.] ')"
 assert_equals "yes" "$([ -n "$S1B" ] && echo yes || echo no)" "req-003 AC3: the orchestrator keeps step 1b"
 assert_equals "yes" "$(has_text 'release-check.mjs' "$S1B")" "req-003 AC3: step 1b names release-check.mjs"
 S1B_LINE="$(grep -iF 'release-check.mjs' <<< "$S1B" 2>/dev/null | head -1)"
@@ -471,7 +472,7 @@ assert_equals "yes" "$(has_text 'CRLF' "$DETECT")" "req-003 AC3: the policy stat
 assert_equals "yes" "$(has_text 'release-check.mjs' "$DETECT")" "req-003 AC3: the policy names the script that runs the check"
 assert_equals "yes" "$(has_text 'beside' "$DETECT")" "req-003 AC3: the policy states the leftover manifest warning"
 assert_equals "yes" "$(has_text 'own build' "$GATE")" "req-003 AC3: the policy gate states the own-build exception"
-assert_equals "yes" "$(has_text 'provenance' "$POLICY")" "req-003 AC3: the policy keeps the word provenance"
+assert_equals "yes" "$(has_text 'provenance' "$(cat "$POLICY")")" "req-003 AC3: the policy keeps the word provenance"
 
 # --- Migrator ---------------------------------------------------------------
 # STEP 6: these cases stay RED until build order step 6 edits
