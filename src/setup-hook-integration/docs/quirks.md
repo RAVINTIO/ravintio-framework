@@ -20,7 +20,7 @@ Before any external skills are added, `external-skills.json` does not exist. `cm
 
 `mktemp -d` on Windows/Git Bash creates directories under a path that git treats as having "dubious ownership". `git init` in these directories succeeds but subsequent `git config` calls fail with exit 128. This affects the integration tests that create a temporary repo.
 
-**Updated in 0000037.** The Git Bash leg of the CI `test-suite` job (0000037-ADR-013) found a second effect. Under Git Bash, `mktemp -d` returns a `/tmp/...` path, and Node reads it as `C:\tmp\...`, outside the fixture root. The ratchet and write-gate suites then saw `expected 2, actual 0`. The fixtures now resolve the folder with `pwd -W`. The Windows run passes in seven shards. A suite that can't run on Windows prints `SKIP (windows): {reason}` and has a row in the skip table in `ravintio-framework/tests/README.md`.
+**Updated in 0000037.** The Git Bash leg of the CI `test-suite` job (0000037-ADR-013) found a second effect. Under Git Bash, `mktemp -d` returns a `/tmp/...` path, and Node reads it as `C:\tmp\...`, outside the fixture root. The ratchet and write-gate suites then saw `expected 2, actual 0`. The fixtures now resolve the folder with `pwd -W`. The Windows run passes in seven shards. A suite that can't run on Windows prints `SKIP (windows): {reason}` and has a row in the skip table in `src/ravintio-framework/tests/README.md`.
 
 ## Q-006: `Write-SetupFlagsMarker` (0000020) verified statically only, no pwsh in this dev environment
 

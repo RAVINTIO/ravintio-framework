@@ -113,9 +113,6 @@ ALLOWLIST=(
   '^ravintio-framework/skills/ravintio-refresh-setup/SKILL\.md$|\.planifest-setup-flags. exists, stop|Old marker stop note.'
   # The test reads a migration shipped before 0.37.0, whose body is history.
   '^ravintio-framework/tests/test-0000032-req-011-rerun-setup-migration\.sh$|planifest-refresh-setup|Asserts text of a past migration.'
-
-  # The refresh script keeps the old local checkout path.
-  '^refresh-ravintio-framework-dir\.ps1$|C:.d.planifest.framework|Local checkout path on the maintainer machine keeps the old text.'
 )
 
 # Anchor each pack path regex on the pack's real location, so entries match

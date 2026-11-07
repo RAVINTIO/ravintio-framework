@@ -91,7 +91,8 @@ done <<< "$MIG_LIST"
 # Sibling names stay.
 assert_equals "yes" "$(has "$ROOT/README.md" "github.com/${OLD}/${OLD}-docs")" "req-005: README keeps the ${OLD}-docs links"
 REFRESH="$(ls "$ROOT"/refresh-*-framework-dir.ps1 2>/dev/null | head -1)"
-assert_equals "yes" "$(has "$REFRESH" "C:\\d\\${OLD}\\framework\\")" "req-005: the refresh script keeps its C:\\d\\${OLD}\\framework\\ path"
+# 0000041 req-001 replaced the hard-coded checkout path with $PSScriptRoot.
+assert_equals "no" "$(has "$REFRESH" "C:\\d\\${OLD}\\framework\\")" "req-005: the refresh script holds no old checkout path (0000041 req-001)"
 
 echo "=== criterion 3: history-reading suites are in place ==="
 
@@ -301,7 +302,8 @@ echo "=== criterion 2: history-reading suites rename the fixtures and not the re
 
 BD="$T/test-0000037-req-008-migration-branch-diff.sh"
 assert_equals "no" "$(has "$BD" "${OLDFW}")" "req-005: the branch-diff suite holds no old folder name"
-assert_equals "yes" "$(has "$BD" "^ravintio-framework/")" "req-005: the branch-diff suite greps ^ravintio-framework/"
+# 0000041 req-008 moved the branch-diff grep onto a pack path that defaults to ravintio-framework.
+assert_equals "yes" "$(has "$BD" 'pack_rel="${2:-ravintio-framework}"')" "req-005: the branch-diff suite defaults its pack path to ravintio-framework"
 assert_equals "yes" "$(has "$T/test-0000035-req-007-migration-run-state.sh" 'migrationPath: "ravintio-framework/migrations/"')" "req-005: the run-state suite renames migrationPath"
 assert_equals "yes" "$(has "$T/test-0000035-req-007-migration-run-state.sh" 'plan/_migrations/')" "req-005: the run-state suite keeps plan/_migrations/"
 assert_equals "yes" "$(has "$T/test-0000005-framework-governance.sh" 'plan/_migrations/')" "req-005: the governance suite keeps plan/_migrations/"

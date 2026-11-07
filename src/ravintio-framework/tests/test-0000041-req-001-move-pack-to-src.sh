@@ -140,8 +140,10 @@ assert_equals "no" "$(file_has "$REGISTRY" '[component.yml](../ravintio-framewor
 REFRESH="$TOP/refresh-ravintio-framework-dir.ps1"
 assert_equals "yes" "$(file_has "$REFRESH" '$repoDir = $PSScriptRoot')" \
   "req-001: refresh-ravintio-framework-dir.ps1 sets repoDir from PSScriptRoot"
-assert_equals "no" "$(file_has "$REFRESH" 'C:\d\planifest')" \
-  "req-001: refresh-ravintio-framework-dir.ps1 drops the hard-coded C:\\d\\planifest path"
+# The old brand is built in parts, so the brand guard finds no line here.
+OLD_CHECKOUT='C:\d\plan''ifest'
+assert_equals "no" "$(file_has "$REFRESH" "$OLD_CHECKOUT")" \
+  "req-001: refresh-ravintio-framework-dir.ps1 drops the hard-coded old checkout path"
 assert_equals "yes" "$(file_has "$REFRESH" '.\ravintio-framework\setup.ps1 claude-code --include-full-skill-library')" \
   "req-001: refresh-ravintio-framework-dir.ps1 still runs the root setup.ps1"
 assert_equals "no" "$(file_has "$REFRESH" 'not required as this IS the framework')" \

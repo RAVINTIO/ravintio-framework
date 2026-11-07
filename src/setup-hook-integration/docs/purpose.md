@@ -2,7 +2,7 @@
 
 ## What this component exists to do
 
-`setup-hook-integration` is the installation layer of the RAVINTIO framework. It bridges the framework source (in `ravintio-framework/`) and the tool-specific configuration directories that AI coding agents read at startup.
+`setup-hook-integration` is the installation layer of the RAVINTIO framework. It bridges the framework source (in `src/ravintio-framework/`, run from the `ravintio-framework/` release copy) and the tool-specific configuration directories that AI coding agents read at startup.
 
 When a developer runs `setup.sh <tool>`, this component:
 

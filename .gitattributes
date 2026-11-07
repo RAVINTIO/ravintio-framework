@@ -5,3 +5,5 @@
 
 ravintio-framework/hooks/pre-commit  text eol=lf
 ravintio-framework/hooks/pre-push    text eol=lf
+src/ravintio-framework/hooks/pre-commit  text eol=lf
+src/ravintio-framework/hooks/pre-push    text eol=lf

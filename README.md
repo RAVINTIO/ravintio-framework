@@ -38,7 +38,9 @@ Every artifact the agent produces follows a template, so output is consistent ac
 
 ```
 repo/
-├── ravintio-framework/   ← The framework (drop in, don't modify per-project)
+├── ravintio-framework/   ← The framework release copy, built from
+│                            src/ravintio-framework/ at P7. Nobody edits it by hand.
+│                            (drop in, don't modify per-project)
 │   ├── skills/            ← Agent instructions — orchestrator + phase skills
 │   ├── templates/         ← File format templates for every artifact
 │   ├── schemas/           ← JSON Schema validation definitions
@@ -57,6 +59,7 @@ repo/
 │
 ├── src/                   ← Code (organised by component). Implementation, tests,
 │                            config, manifests. Each component has a component.yml.
+│   └── ravintio-framework/ ← Pack source (this repo only)
 │
 └── docs/                  ← Living documentation — component registry, architecture
                              overview, decisions index, dependency graph. Generated

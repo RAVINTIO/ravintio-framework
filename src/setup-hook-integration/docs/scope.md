@@ -2,12 +2,12 @@
 
 ## In Scope
 
-- `setup.sh` and `setup.ps1` — all flag processing and tool dispatch
-- `setup/<tool>.sh` and `setup/<tool>.ps1` — per-tool configuration stubs
-- `ravintio-framework/hooks/` — all hook scripts installed by setup
-- `ravintio-framework/scripts/skill-sync.sh` and `skill-sync.ps1` — external skill lifecycle management
-- `ravintio-framework/standards/commit-standards.md` — normative commit message rules
-- `ravintio-framework/templates/standard-boot.md` — source template for generated boot files
+- `src/ravintio-framework/setup.sh` and `setup.ps1` — all flag processing and tool dispatch
+- `src/ravintio-framework/setup/<tool>.sh` and `setup/<tool>.ps1` — per-tool configuration stubs
+- `src/ravintio-framework/hooks/` — all hook scripts installed by setup
+- `src/ravintio-framework/scripts/skill-sync.sh` and `skill-sync.ps1` — external skill lifecycle management
+- `src/ravintio-framework/standards/commit-standards.md` — normative commit message rules
+- `src/ravintio-framework/templates/standard-boot.md` — source template for generated boot files
 - `external-skills.json` manifest — records installed external skills
 - Claude Code, Cursor, Windsurf, Cline, Codex, OpenCode, Copilot, Antigravity, Roo Code tool targets
 - Acceptance of the three retired integration flags as no-ops (0000030-ADR-003)
