@@ -26,8 +26,9 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FW="$SCRIPT_DIR/.."
-ROOT="$FW/.."
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/ravintio_0000039_req005_XXXXXX")"
 trap 'rm -rf "$WORK"' EXIT
 
@@ -79,7 +80,7 @@ while IFS= read -r path; do
   name="$(basename "$path")"
   # Compare git blob ids, not working files: a Windows checkout writes CRLF line
   # endings, so the bytes on disk differ even when the stored file doesn't.
-  NOWPATH="ravintio-framework/migrations/$name" # portable-ok: repo-relative git path, not a file-system path
+  NOWPATH="$RAVINTIO_PACK_REL/migrations/$name" # portable-ok: repo-relative git path, not a file-system path
   BASE_ID="$(git -C "$ROOT" rev-parse "$BASE:$path" 2>/dev/null)"
   NOW_ID="$(git -C "$ROOT" rev-parse "HEAD:$NOWPATH" 2>/dev/null)"
   R=differs

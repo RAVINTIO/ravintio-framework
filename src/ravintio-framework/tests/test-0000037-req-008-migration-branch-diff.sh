@@ -17,7 +17,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if [ "$(basename "$SCRIPT_DIR")" = "regression" ]; then SCRIPT_DIR="$(dirname "$SCRIPT_DIR")"; fi
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 
 yes_no() { if "$@"; then echo "yes"; else echo "no"; fi; }
 

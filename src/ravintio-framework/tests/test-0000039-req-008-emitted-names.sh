@@ -19,8 +19,9 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(cd "$FRAMEWORK/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO="$RAVINTIO_REPO_ROOT"
 GUARD="$FRAMEWORK/hooks/enforcement/em-dash-guard.mjs"
 
 # Git Bash gives /d/a/x, which node reads as C:\d\a\x inside an -e program or
@@ -176,7 +177,7 @@ assert_equals "" "$BAD" "req-008 AC3: no generated boot file holds a planifest-f
 CLAUDE_MD="$(cat "$B/CLAUDE.md" 2>/dev/null)"
 for s in scripts/archive-current.mjs scripts/set-product-release.mjs scripts/promote-to-regression.sh \
          scripts/refresh-delete-boot-files.sh scripts/refresh-delete-boot-files.ps1 setup.sh setup.ps1; do
-  assert_equals "yes" "$(yes_no test -f "$REPO/ravintio-framework/$s")" "req-008 AC3: ravintio-framework/$s exists"
+  assert_equals "yes" "$(yes_no test -f "$RAVINTIO_PACK_DIR/$s")" "req-008 AC3: ravintio-framework/$s exists"
   assert_equals "yes" "$(yes_no grep -qF "ravintio-framework/$s" <<< "$CLAUDE_MD")" "req-008 AC3: generated CLAUDE.md lists ravintio-framework/$s"
 done
 

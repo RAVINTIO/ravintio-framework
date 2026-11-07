@@ -19,8 +19,9 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(cd "$FRAMEWORK/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO="$RAVINTIO_REPO_ROOT"
 MIGRATOR="$FRAMEWORK/skills/ravintio-migrator/SKILL.md"
 ORCH="$FRAMEWORK/skills/ravintio-orchestrator/SKILL.md"
 RENAME_STEM="migrate-0.37.0-ravintio-rename"

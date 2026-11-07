@@ -19,9 +19,15 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FW="$SCRIPT_DIR/.."
-ROOT="$FW/.."
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
+PACK="$RAVINTIO_PACK_REL"
 cd "$ROOT" || exit 2
+
+# In the source repo, scans skip the frozen release copy at the root.
+SKIP_COPY=()
+if [ "$RAVINTIO_SOURCE_REPO" = "yes" ]; then SKIP_COPY=(':!ravintio-framework'); fi
 
 OLD="planif""est"
 
@@ -29,8 +35,8 @@ SKILLS="adr-agent build-assessment-agent codegen-agent design-critic docs-agent 
 
 # Tracked paths, minus paths deleted in the working tree but not yet staged. The
 # held-back vendored files under the old pack folder are in that state until P4.
-DELETED_NOW="$(git ls-files --deleted)"
-TRACKED="$(git ls-files)"
+DELETED_NOW="$(git ls-files --deleted -- . ${SKIP_COPY[@]+"${SKIP_COPY[@]}"})"
+TRACKED="$(git ls-files -- . ${SKIP_COPY[@]+"${SKIP_COPY[@]}"})"
 if [ -n "$DELETED_NOW" ]; then
   TRACKED="$(grep -vxF -f <(printf '%s\n' "$DELETED_NOW") <<< "$TRACKED" || true)"
 fi
@@ -64,7 +70,7 @@ if [ "$count" != "0" ]; then
   printf '%s' "$leftover" | head -5 | while IFS= read -r l; do echo "    leftover: $l"; done
 fi
 
-for d in ravintio-framework/ ravintio-overrides/ ravintio-framework/hooks/adapters/opencode/; do
+for d in "$PACK/" ravintio-overrides/ "$PACK/hooks/adapters/opencode/"; do
   if has_tracked "$d"; then
     assert_equals "yes" "yes" "req-001 AC1: $d exists"
   else
@@ -72,7 +78,7 @@ for d in ravintio-framework/ ravintio-overrides/ ravintio-framework/hooks/adapte
   fi
 done
 
-for f in .github/workflows/ravintio.yml ravintio-framework/hooks/ravintio.yml refresh-ravintio-framework-dir.ps1; do
+for f in .github/workflows/ravintio.yml "$PACK/hooks/ravintio.yml" refresh-ravintio-framework-dir.ps1; do
   if grep -qxF "$f" <<< "$TRACKED"; then
     assert_equals "yes" "yes" "req-001 AC1: $f exists"
   else
@@ -82,10 +88,10 @@ done
 
 skill_count=0
 for s in $SKILLS; do
-  if grep -qxF "ravintio-framework/skills/ravintio-$s/SKILL.md" <<< "$TRACKED"; then
+  if grep -qxF "$PACK/skills/ravintio-$s/SKILL.md" <<< "$TRACKED"; then
     skill_count=$((skill_count + 1))
   else
-    assert_equals "yes" "no" "req-001 AC1: ravintio-framework/skills/ravintio-$s/SKILL.md exists"
+    assert_equals "yes" "no" "req-001 AC1: $PACK/skills/ravintio-$s/SKILL.md exists"
   fi
 done
 assert_equals "20" "$skill_count" "req-001 AC1: 20 ravintio-* skill folders exist"
@@ -122,7 +128,7 @@ assert_contains "RAVINTIO" "$(yaml_top "$CY" name 2>/dev/null)" "req-001 AC2: co
 pj_name="$(grep -E '"name"' "$PJ" 2>/dev/null | head -1 | sed -E 's/.*"name"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/')"
 assert_equals "@ravintio/opencode-hooks" "$pj_name" "req-001 AC2: OpenCode package.json name"
 
-assert_contains 'path: "ravintio-framework/component.yml"' "$(cat "$PY" 2>/dev/null)" "req-001 AC2: product.yml components[] points at ravintio-framework/component.yml"
+assert_contains "path: \"$PACK/component.yml\"" "$(cat "$PY" 2>/dev/null)" "req-001 AC2: product.yml components[] points at $PACK/component.yml"
 assert_contains '  - id: "ravintio-framework"' "$(cat "$PY" 2>/dev/null)" "req-001 AC2: product.yml components[] id"
 
 # The brandless component keeps its id (req-001 functional requirement).
