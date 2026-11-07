@@ -271,6 +271,29 @@ printf 'this is not a manifest\n' > "$C/$COPY_DIR/component.yml"
 run_check "$C"
 assert_equals "2" "$CODE" "req-003 AC1: an unreadable component.yml with no release.yml exits 2"
 
+# --- P5 F-02: a recorded value turns a missing release.yml into an update ---
+# A recorded plan/framework-release.yml proves a release.yml was trusted once.
+# Deleting it must not downgrade the check to a version-only pass.
+C="$(consumer c-p5-f02-recorded)"
+rm -f "$C/$COPY_DIR/release.yml"
+printf 'id: "ravintio-framework"\nversion: "0.38.0"\n' > "$C/$COPY_DIR/component.yml"
+write_record "$C" "0.38.0" "$OTHER_SHA"
+run_check "$C"
+assert_equals "1" "$CODE" "req-003 P5 F-02: a recorded value and a missing release.yml exit 1"
+assert_equals "yes" "$(has_line 'update: release')" "req-003 P5 F-02: a recorded value and a missing release.yml print update: release"
+assert_equals "yes" "$(if grep -E '^missing: .*release[.]yml' <<< "$OUT" >/dev/null 2>&1; then echo yes; else echo no; fi)" "req-003 P5 F-02: a missing release.yml with a recorded value prints a missing: line that names release.yml"
+assert_equals "0" "$(count_prefix 'update: none')" "req-003 P5 F-02: a missing release.yml with a recorded value never prints update: none"
+
+# With no recorded value, the fallback stays as it is (docs/about.md rule).
+C="$(consumer c-p5-f02-norecord)"
+rm -f "$C/$COPY_DIR/release.yml"
+printf 'id: "ravintio-framework"\nversion: "0.38.0"\n' > "$C/$COPY_DIR/component.yml"
+mkdir -p "$C/docs"
+printf -- '---\nversion: "0.38.0"\nfeature: "x"\n---\n# About\n' > "$C/docs/about.md"
+run_check "$C"
+assert_equals "0" "$CODE" "req-003 P5 F-02: with no recorded value the component.yml fallback still exits 0"
+assert_equals "yes" "$(has_line 'release: none, fallback component.yml version "0.38.0"')" "req-003 P5 F-02: with no recorded value the fallback release: line stays"
+
 # --- A malformed release.yml, a format 2 and a linked release.yml -----------
 C="$(consumer c-malformed)"
 printf 'id: "ravintio-framework"\nversion: "%s"\n' "$REL_VERSION" > "$C/$COPY_DIR/component.yml"
@@ -423,6 +446,29 @@ C="$(consumer c-notsource)"
 run_check "$C"
 assert_equals "0" "$(count_prefix 'update: own-build')" "req-003 AC2: a downstream repo never prints update: own-build"
 
+# --- P5 F-08: core.fsmonitor in .git/config never runs ----------------------
+# ownBuild() runs git ls-files. A hostile .git/config can set core.fsmonitor to
+# a command. The marker sits outside the repo, so only a run of that command
+# creates it.
+S="$(owndir own-p5-fsmonitor)"
+FSM_MARKER="$WORK/p5-fsmonitor-marker"
+FSM_HOOK="$WORK/p5-fsmonitor-hook.sh"
+printf '#!/bin/sh\ntouch "%s"\nexit 0\n' "$FSM_MARKER" > "$FSM_HOOK"
+chmod +x "$FSM_HOOK"
+git -C "$S" config core.fsmonitor "$FSM_HOOK"
+# Control: a plain git ls-files in this repo runs the hook, so the case is valid.
+rm -f "$FSM_MARKER"
+git -C "$S" ls-files -z -- "$PACK_IN_SRC" >/dev/null 2>&1
+CONTROL="$([ -f "$FSM_MARKER" ] && echo ran || echo not-run)"
+if [ "$CONTROL" = "ran" ]; then
+  rm -f "$FSM_MARKER"
+  run_check "$S"
+  assert_equals "no" "$([ -f "$FSM_MARKER" ] && echo yes || echo no)" "req-003 P5 F-08: release-check.mjs never runs a core.fsmonitor command from .git/config"
+  assert_equals "yes" "$(has_line 'update: own-build')" "req-003 P5 F-08: the own-build check still passes with core.fsmonitor set"
+else
+  echo "  SKIP: req-003 P5 F-08: this git does not run core.fsmonitor on ls-files"
+fi
+
 # ===========================================================================
 echo "=== req-003 AC3: the skill and policy texts ==="
 # ===========================================================================
@@ -471,6 +517,8 @@ assert_equals "yes" "$(has_text 'SHA-256' "$DETECT")" "req-003 AC3: the policy s
 assert_equals "yes" "$(has_text 'CRLF' "$DETECT")" "req-003 AC3: the policy states that CRLF reads as LF in the hash rule"
 assert_equals "yes" "$(has_text 'release-check.mjs' "$DETECT")" "req-003 AC3: the policy names the script that runs the check"
 assert_equals "yes" "$(has_text 'beside' "$DETECT")" "req-003 AC3: the policy states the leftover manifest warning"
+FALLBACK_PARA="$(grep -iF 'Fallback for a pack before' "$POLICY" 2>/dev/null | head -1)"
+assert_equals "yes" "$(has_text 'only when no trusted release record exists' "$FALLBACK_PARA")" "req-003 P5 F-02: the policy states the component.yml fallback applies only when no trusted release record exists"
 assert_equals "yes" "$(has_text 'own build' "$GATE")" "req-003 AC3: the policy gate states the own-build exception"
 assert_equals "yes" "$(has_text 'provenance' "$(cat "$POLICY")")" "req-003 AC3: the policy keeps the word provenance"
 
