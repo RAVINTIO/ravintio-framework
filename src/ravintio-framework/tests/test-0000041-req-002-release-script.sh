@@ -364,6 +364,111 @@ assert_equals "0" "$CODE" "req-002 AC2: a run with both root and previous folder
 assert_equals "absent" "$([ -e "$R/.ravintio-framework-previous" ] && echo present || echo absent)" "req-002 AC2: the finished swap leaves no previous folder"
 assert_equals "absent" "$([[ "$OUT" == *"restored:"* ]] && echo present || echo absent)" "req-002 AC2: no restored line prints when the root copy exists"
 
+# ===========================================================================
+echo "=== req-002 P5: security fixes (F-01, F-06, F-07, F-08, work folder mode) ==="
+# ===========================================================================
+
+# F-01: the working folder, the resolved root and the git top level must be one path.
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): the P5 F-01 reproduction relies on POSIX paths"
+else
+  R="$(fresh p5root)"
+  mkdir -p "$R/src/src/ravintio-framework"
+  cp "$R/product.yml" "$R/src/product.yml"
+  printf 'id: "x"\nversion: "9.9.9"\n' > "$R/src/src/ravintio-framework/component.yml"
+  printf 'pwned\n' > "$R/src/src/ravintio-framework/evil.md"
+  sg "$R" add -A >/dev/null 2>&1
+  sg "$R" commit -q -m "plant" >/dev/null 2>&1
+  printf 'local untracked\n' > "$R/$PACK_IN_SRC/MYNOTES.txt"
+  P5_BEFORE="$(snap "$R/$PACK_IN_SRC")"
+  P5_SRC_BEFORE="$(snap "$R/src")"
+  run_build "$R/src"
+  assert_equals "2" "$CODE" "req-002 P5 F-01: a run from src/ beside a tracked src/product.yml exits 2"
+  assert_equals "$P5_BEFORE" "$(snap "$R/$PACK_IN_SRC")" "req-002 P5 F-01: src/ravintio-framework/ stays byte-identical after the src/ run"
+  assert_equals "$P5_SRC_BEFORE" "$(snap "$R/src")" "req-002 P5 F-01: the src/ run writes nothing under src/"
+  assert_equals "present" "$([ -f "$R/$PACK_IN_SRC/MYNOTES.txt" ] && echo present || echo absent)" "req-002 P5 F-01: an untracked file in the pack source survives the src/ run"
+
+  R="$(fresh p5subfolder)"
+  P5_ALL_BEFORE="$(snap "$R")"
+  run_build "$R/$COPY_DIR"
+  assert_equals "2" "$CODE" "req-002 P5 F-01: a plain run from a subfolder exits 2"
+  assert_equals "yes" "$([ -n "$ERR" ] && echo yes || echo no)" "req-002 P5 F-01: the subfolder refusal names the reason on stderr"
+  assert_equals "$P5_ALL_BEFORE" "$(snap "$R")" "req-002 P5 F-01: the subfolder run writes nothing"
+fi
+
+# F-06: git config from the environment never runs a command.
+R="$(fresh p5fsmonitor)"
+P5_MARK="$WORK/p5-fsmonitor-marker"
+rm -f "$P5_MARK"
+(
+  export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.fsmonitor "GIT_CONFIG_VALUE_0=touch '$P5_MARK'; false"
+  run_build "$R"
+)
+assert_equals "absent" "$([ -e "$P5_MARK" ] && echo present || echo absent)" "req-002 P5 F-06: a core.fsmonitor command from GIT_CONFIG_* never runs"
+
+# F-07: two bad source entries exit 2, not 1.
+R="$(fresh p5releaseyml)"
+printf 'tracked\n' > "$R/$PACK_IN_SRC/release.yml"
+sg "$R" add -A >/dev/null 2>&1
+sg "$R" commit -q -m "tracked release.yml" >/dev/null 2>&1
+refuses "req-002 P5 F-07: a tracked src/ravintio-framework/release.yml" "$R"
+
+P5_CASE="$WORK/p5-case-probe"
+mkdir -p "$P5_CASE"
+: > "$P5_CASE/a"; : > "$P5_CASE/A"
+if [ "$(ls "$P5_CASE" | wc -l | tr -d ' ')" != "2" ]; then
+  echo "  SKIP (case-insensitive file system): the P5 F-07 case-only collision cannot be built"
+else
+  R="$(fresh p5collision)"
+  mkdir -p "$R/$PACK_IN_SRC/zcase"
+  printf 'one\n' > "$R/$PACK_IN_SRC/zcase/Readme.md"
+  printf 'two\n' > "$R/$PACK_IN_SRC/zcase/readme.md"
+  sg "$R" add -A >/dev/null 2>&1
+  sg "$R" commit -q -m "case collision" >/dev/null 2>&1
+  refuses "req-002 P5 F-07: two tracked paths that differ only in case" "$R"
+fi
+
+# F-08: the restored line prints even when the build then fails.
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): chmod sets no NTFS mode, so the P5 F-08 unreadable-file case cannot be built"
+elif [ "$(id -u)" = "0" ]; then
+  echo "  SKIP (root): root reads a mode 000 file, so the P5 F-08 unreadable-file case cannot be built"
+else
+  R="$(fresh p5restorefail)"
+  mv "$R/$COPY_DIR" "$R/.ravintio-framework-previous"
+  # git must not see the mode 000 file as dirty, or the dirty check fails first and the build step never runs.
+  sg "$R" config core.trustctime false
+  sg "$R" update-index --refresh >/dev/null 2>&1
+  chmod 000 "$R/$PACK_IN_SRC/$SAME_P"
+  run_build "$R"
+  assert_equals "yes" "$([ "$CODE" -ne 0 ] && echo yes || echo no)" "req-002 P5 F-08: a restore followed by an unreadable source file fails the build"
+  assert_contains "restored: ravintio-framework/ from an interrupted build" "$OUT$ERR" "req-002 P5 F-08: the restored line prints although the build then fails"
+  assert_equals "present" "$([ -f "$R/$COPY_DIR/old-only.txt" ] && echo present || echo absent)" "req-002 P5 F-08: the restored copy is back in place after the failed build"
+  chmod 644 "$R/$PACK_IN_SRC/$SAME_P"
+fi
+
+# Work folder mode: poll while a build runs and read the build folder mode.
+if [ "$IS_WIN" = "yes" ]; then
+  echo "  SKIP (windows): NTFS has no POSIX mode, so the P5 work folder mode cannot be read"
+else
+  R="$(fresh p5mode)"
+  P5_MODE=""
+  (cd "$R" && node "$BUILD" >/dev/null 2>&1) &
+  P5_PID=$!
+  while kill -0 "$P5_PID" 2>/dev/null; do
+    if [ -d "$R/.ravintio-framework-build" ]; then
+      P5_MODE="$(stat -c %a "$R/.ravintio-framework-build" 2>/dev/null || stat -f %Lp "$R/.ravintio-framework-build" 2>/dev/null)"
+      break
+    fi
+  done
+  wait "$P5_PID" 2>/dev/null
+  if [ -z "$P5_MODE" ]; then
+    echo "  SKIP (too fast): the build folder was never seen while the build ran"
+  else
+    assert_equals "700" "$P5_MODE" "req-002 P5 F-02: the build folder is created with mode 0700"
+  fi
+fi
+
 # .gitignore lists both work folders.
 GI="$RAVINTIO_REPO_ROOT/.gitignore"
 assert_equals "yes" "$(grep -qxF '.ravintio-framework-build/' "$GI" && echo yes || echo no)" "req-002 AC2: .gitignore holds the .ravintio-framework-build/ line"
