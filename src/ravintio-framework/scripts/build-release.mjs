@@ -42,7 +42,7 @@
  */
 
 import {
-  closeSync, constants, fchmodSync, fstatSync, lstatSync, mkdirSync, openSync, readdirSync,
+  chmodSync, closeSync, constants, fchmodSync, fstatSync, lstatSync, mkdirSync, openSync, readdirSync,
   readFileSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeSync,
 } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -175,8 +175,9 @@ function sourceFiles(root) {
     }
     // F-07: the build writes release.yml itself, and a case-only collision
     // would clash on a case-insensitive file system.
-    if (rel.toLowerCase() === "release.yml") throw new Refusal(`${clean(path)} clashes with the built release.yml`);
+    // NF-02: a folder of that name at the pack root clashes the same way.
     const segs = rel.split("/");
+    if (segs[0].toLowerCase() === "release.yml") throw new Refusal(`${clean(path)} clashes with the built release.yml`);
     for (let i = 1; i <= segs.length; i++) {
       const prefix = segs.slice(0, i).join("/");
       const key = prefix.toLowerCase();
@@ -404,6 +405,10 @@ function main() {
     "files:\n";
   const newMap = build(root, files, header);
 
+  // NF-03: the build folder is 0700 while it fills. The root copy ends at 0755.
+  try { chmodSync(join(root, BUILD), 0o755); } catch (e) {
+    throw new Failure(`chmod ${BUILD}: ${e.code ?? "error"}`);
+  }
   if (lstatOrNull(join(root, COPY))) rename(root, COPY, PREVIOUS);
   rename(root, BUILD, COPY);
   removeTree(root, join(root, PREVIOUS));

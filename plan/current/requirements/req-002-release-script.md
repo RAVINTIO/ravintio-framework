@@ -51,6 +51,8 @@ All paths below use the post-move layout from req-001. The script lives at `src/
 - `.gitignore` lists `.ravintio-framework-build/` and `.ravintio-framework-previous/`, so an interrupted build never reaches a commit (P2 decision, ADR-003).
 - The script creates `.ravintio-framework-build/` with mode `0700`. (P5 security fix)
 - The script prints the `restored:` line as soon as the restore happens, before the build. The line then shows even when the build fails. (P5 security fix)
+- A tracked path whose first segment under the pack, compared in lower case, is `release.yml` also exits 2 and writes nothing. This covers a folder of that name. (P5 security fix)
+- The build folder keeps mode `0700` while it fills. The script sets the top folder to mode `0755` just before the swap renames it into place, so the root `ravintio-framework/` ends at `0755`. (P5 security fix)
 
 ### Build and swap
 
