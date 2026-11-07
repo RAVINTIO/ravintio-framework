@@ -1,8 +1,8 @@
 # RAVINTIO Component Manifest
 id: "setup-hook-integration"
 name: "Setup Hook Integration"
-feature: "0000037-green-ci-before-ship"
-version: "0.7.0"
+feature: "0000041-pack-source-under-src"
+version: "0.8.0"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
@@ -123,7 +123,9 @@ pipeline:
 
 metadata:
   createdAt: "2026-04-12"
-  updatedAt: "2026-10-24"
+  updatedAt: "2026-11-07"
+  # Updated by 0000041 (codegen-agent) P3: the setup code now lives at
+  # src/ravintio-framework/, and consumers run it from the release copy.
   # Updated by 0000037 (docs-agent) P6: recorded Windows PowerShell 5.1
   # support, the git config exit check, and the live req-011 clean-up checks.
   # Updated by 0000027 (codegen-agent) P3: cline.sh/.ps1 boot file

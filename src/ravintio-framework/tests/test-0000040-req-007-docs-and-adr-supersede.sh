@@ -211,10 +211,17 @@ check_entry 0000035 ADR-004 "partly superseded by 0000040 ADR-004" "0000040 ADR-
 echo ""
 echo "=== req-007: component.yml version and archive ==="
 
-COMP_V="$(sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' "$COMP" | head -n 1)"
-COMP_F="$(sed -n 's/^feature: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' "$COMP" | head -n 1)"
-assert_equals "0.38.0" "$COMP_V" "req-007: ravintio-framework/component.yml version reads 0.38.0"
-assert_equals "0000040-retire-fast-path" "$COMP_F" "req-007: ravintio-framework/component.yml feature reads 0000040-retire-fast-path"
+# 0000041 req-007: later releases bump the live manifest, so the check reads
+# the manifest that the v0.38.0 tag shipped. History stores it at the old path.
+if git -C "$ROOT" rev-parse --verify --quiet "v0.38.0^{commit}" > /dev/null; then
+  REL_COMP="$(git -C "$ROOT" show "v0.38.0:ravintio-framework/component.yml" 2>/dev/null)" # root-copy-ok: history stores the 0.38.0 manifest at the old path
+  COMP_V="$(printf '%s\n' "$REL_COMP" | sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' | head -n 1)"
+  COMP_F="$(printf '%s\n' "$REL_COMP" | sed -n 's/^feature: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' | head -n 1)"
+  assert_equals "0.38.0" "$COMP_V" "req-007: the v0.38.0 component.yml version reads 0.38.0"
+  assert_equals "0000040-retire-fast-path" "$COMP_F" "req-007: the v0.38.0 component.yml feature reads 0000040-retire-fast-path"
+else
+  echo "  SKIP: req-007: no v0.38.0 tag, so the released manifest check skips"
+fi
 
 if git -C "$ROOT" rev-parse --verify --quiet main^{commit} > /dev/null; then
   ARCHIVE_DIFF="$(git -C "$ROOT" diff --name-only main -- plan/_archive/ 2>&1)"
