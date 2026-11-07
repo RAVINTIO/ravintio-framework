@@ -1,7 +1,7 @@
 ---
 title: "Feature Brief - Pack source under src"
 summary: "The business case, scope, and product requirements for the feature."
-status: "draft"
+status: "approved"
 version: "0.1.0"
 ---
 # Feature Brief - Pack source under src

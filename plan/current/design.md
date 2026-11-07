@@ -127,4 +127,4 @@ Five files in `ravintio-overrides/instructions/`, read at P0.
 - `custom-005-p9-push-and-raise-pr.md`: at P9, push and raise the PR without asking. Never merge.
 
 ## Confirmation
-Human confirmed this design before proceeding: no // Date and Time confirmed: pending
+Human confirmed this design before proceeding: yes // Date and Time confirmed: 07 Nov 2026 @ 03:18 PM GMT
