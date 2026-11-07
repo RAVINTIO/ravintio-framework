@@ -101,7 +101,10 @@ if (tableSection === null) {
     [...tableSection.matchAll(/\[([\w-]+)\/\]\(ravintio-framework\/([\w-]+)\/\)/g)].map((m) => m[2]),
   );
 
-  const frameworkDir = join(repoRoot, "ravintio-framework");
+  // In the source repo the pack lives under src/. The root copy is a frozen release.
+  const frameworkDir = existsSync(join(repoRoot, "src", "ravintio-framework", "component.yml"))
+    ? join(repoRoot, "src", "ravintio-framework")
+    : join(repoRoot, "ravintio-framework");
   const actualDirs = existsSync(frameworkDir)
     ? readdirSync(frameworkDir, { withFileTypes: true })
         .filter((e) => e.isDirectory())

@@ -21,8 +21,10 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 PRE_PUSH="$FRAMEWORK/hooks/pre-push"
 CONSUMER_WORKFLOW="$FRAMEWORK/hooks/ravintio.yml"
 REPO_WORKFLOW="$REPO_ROOT/.github/workflows/ravintio.yml"

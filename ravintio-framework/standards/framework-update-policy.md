@@ -20,12 +20,24 @@ At the orchestrator's Resume Detection step (`ravintio-orchestrator/SKILL.md`), 
 
 ## Detection signal
 
-A candidate `ravintio-framework/` dependency update is detected when either of the following is true:
+The read-only script `ravintio-framework/scripts/release-check.mjs` runs the check. Step 1a runs it at every session start. It reads `ravintio-framework/release.yml`, which the release script writes. A candidate `ravintio-framework/` dependency update has two signals.
 
-1. **Version mismatch**: the version declared in the installed `ravintio-framework/component.yml` differs from the previously recorded value (the version last read from `docs/about.md`, or from the most recent archived feature's `design.md`/`about.md`).
-2. **Newer framework files present**: files under `ravintio-framework/` declare a version newer than the version this repo last ran a pipeline against.
+1. **Release update.** The script compares the `version` and `source-commit` in `release.yml` with the recorded value.
+   - The recorded value lives in `plan/framework-release.yml`. It holds one `version` line and one `source-commit` line. Only step 1a writes it, with **Write**.
+   - With a recorded value, a different `version` or `source-commit` is a release update.
+   - With no `plan/framework-release.yml`, the repo is on its first upgrade. A first upgrade compares the version only, against the `version` in `docs/about.md`. With no `docs/about.md`, any release counts as a release update.
+2. **Changed file.** The script compares each pack file with its hash in `release.yml`, whatever the version says. Each of these counts as an update, even at an unchanged version:
+   - a changed file, whose hash differs or which is a link
+   - a missing file, which `release.yml` lists and the pack lacks
+   - an unlisted file, which the pack holds and `release.yml` doesn't list
 
-Detection keys on new or changed files under `ravintio-framework/` since the last recorded pipeline run, not solely the version string in isolation: a repo that manually edited `component.yml`'s version field without an actual framework update is a known false-positive risk (ADR-002, Risks), and file-level change detection avoids it.
+   The unlisted check skips `release.yml`, `component.yml`, `.DS_Store`, `Thumbs.db`, and `desktop.ini`. A changed file stays flagged at each session start until it matches its hash or a new release lists it.
+
+**Hash rule.** Each hash is the SHA-256 of the file content after each CRLF pair reads as LF, in lowercase hex. A checkout with `core.autocrlf` then never reads as a changed file.
+
+**Fallback for a pack before 0.39.0.** A pack before 0.39.0 has no `release.yml`. The fallback applies only when no trusted release record exists. A `plan/framework-release.yml` proves that a `release.yml` was trusted once. If that record exists and `release.yml` is missing, the script prints a `missing:` line for `ravintio-framework/release.yml` and `update: release`, and exits 1. With no record, the script reads the `version` in `ravintio-framework/component.yml`. It compares that version with the recorded version, as on a first upgrade. It checks no file and prints no record. When `release.yml` exists but breaks its format, the check exits 2 and never falls back to `component.yml`. If the pack has no `release-check.mjs`, compare the `component.yml` version with `docs/about.md` by hand.
+
+**Leftover manifest.** When `ravintio-framework/component.yml` sits beside `release.yml`, the script prints a `warn:` line. Step 1a reports the warning at every session start while the file remains.
 
 ## Human confirmation gate
 
@@ -33,6 +45,8 @@ Detecting a candidate update is not sufficient to treat it as trusted. Every pat
 
 - **Explicit confirmation**, or
 - **Explicit rejection.**
+
+One exception applies. In the framework source repo, an own build needs no confirmation. The release script rebuilds the root copy from `src/ravintio-framework/`. The check proves an own build by content, not commit ancestry. Each `release.yml` hash must match the same path under `src/ravintio-framework/`, and no file line may appear. Step 1a records an own build and goes on. Every other path still ends in explicit confirmation or rejection.
 
 Confirmation requires the human to affirm both of the following, as two separate facts; a blanket "yes, update it" satisfies neither:
 

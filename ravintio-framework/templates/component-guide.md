@@ -20,6 +20,16 @@ From that point forward, the `codegen-agent` reads it before it changes the comp
 
 ## File location
 
+One rule finds every component manifest:
+
+1. A manifest lives at the path that the root `product.yml` lists for that component in `components[]`.
+2. If `product.yml` doesn't exist, or doesn't list the component, the manifest lives at the default path below.
+3. The component's folder is the folder that holds its manifest.
+
+If `product.yml` lists a path and no file exists there, stop and report the path. Never fall back to the default and never create a manifest.
+
+Default path:
+
 ```
 src/{{component-id}}/component.yml
 ```

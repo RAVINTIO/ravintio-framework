@@ -435,7 +435,7 @@ ADR files: [plan/_archive/0000040-retire-fast-path-2026-11-07/adr/](../plan/_arc
 
 ### Feature 0000041-pack-source-under-src
 
-ADR files: [plan/current/adr/](../plan/current/adr/)
+ADR files: [plan/_archive/0000041-pack-source-under-src-2026-11-07/adr/](../plan/_archive/0000041-pack-source-under-src-2026-11-07/adr/)
 
 | ADR | Title | Status | Summary |
 |-----|-------|--------|---------|

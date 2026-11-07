@@ -24,8 +24,10 @@ unset RAVINTIO_SHARD_INDEX RAVINTIO_SHARD_COUNT
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 WORKFLOW="$REPO_ROOT/.github/workflows/ravintio.yml"
 CONSUMER_WORKFLOW="$FRAMEWORK/hooks/ravintio.yml"
 TESTS_README="$SCRIPT_DIR/README.md"
@@ -54,7 +56,7 @@ assert_equals "yes" "$(yes_no 'os:.*windows-latest' "$SUITE")" "req-010: matrix 
 assert_equals "yes" "$(yes_no 'os:.*ubuntu-latest' "$SUITE")" "req-010: matrix os still holds ubuntu-latest"
 assert_equals "yes" "$(yes_no 'os:.*macos-latest' "$SUITE")" "req-010: matrix os still holds macos-latest"
 assert_equals "yes" "$(yes_no 'shell:[[:space:]]*bash' "$SUITE")" "req-010: the run step sets shell bash"
-assert_equals "yes" "$(yes_no 'run:[[:space:]]*bash ravintio-framework/tests/run-tests\.sh' "$SUITE")" "req-010: the step runs bash ravintio-framework/tests/run-tests.sh"
+assert_equals "yes" "$(yes_no "run:[[:space:]]*bash ${RAVINTIO_PACK_REL}/tests/run-tests\.sh" "$SUITE")" "req-010: the step runs bash ${RAVINTIO_PACK_REL}/tests/run-tests.sh"
 
 echo "== req-010: job posture =="
 assert_equals "yes" "$(yes_no 'fail-fast:[[:space:]]*false' "$SUITE")" "req-010: strategy keeps fail-fast false"

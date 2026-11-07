@@ -12,8 +12,9 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../helpers/assert.sh"
+source "$SCRIPT_DIR/../helpers/pack-root.sh"
 
-FW="$SCRIPT_DIR/../.."
+FW="$RAVINTIO_PACK_DIR"
 STD="$FW/standards/autonomous-run-standards.md"
 RUNNER="$FW/skills/ravintio-loop-runner/SKILL.md"
 TOG="$FW/templates/loop-toggles.template.yml"
@@ -110,7 +111,7 @@ assert_contains "build-log block" "$CRITIC_PARA" \
   "0000036 req-006: orchestrator writes the critic verdict line to the build-log block"
 assert_contains "\`report-only\` outside \`autonomous\`" "$(grep '^- \*\*Toggle defaults' "$STD")" \
   "0000036 req-006: standards toggle-defaults bullet names report-only outside autonomous"
-ARCH_OVERVIEW="$(cat "$FW/../docs/architecture-overview.md" 2>/dev/null || true)"
+ARCH_OVERVIEW="$(cat "$RAVINTIO_REPO_ROOT/docs/architecture-overview.md" 2>/dev/null || true)"
 assert_contains "Outside \`autonomous\`, an absent \`design_critic\` key or an absent file reads as \`report-only\`" "$ARCH_OVERVIEW" \
   "0000036 req-006: architecture overview states the design_critic report-only default"
 

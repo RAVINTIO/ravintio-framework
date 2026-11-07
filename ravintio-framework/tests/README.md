@@ -12,15 +12,17 @@ To run the tests, execute the scripts from the root of the repository or from wi
 
 ```powershell
 # From the repository root
-& .\ravintio-framework\tests\test_setup.ps1
+& .\src\ravintio-framework\tests\test_setup.ps1
 ```
 
 ### Bash (macOS / Linux / WSL)
 
 ```bash
 # From the repository root
-./ravintio-framework/tests/test_setup.sh
+./src/ravintio-framework/tests/test_setup.sh
 ```
+
+In the source repo, run every suite from `src/ravintio-framework/tests/`. The root `ravintio-framework/` is a frozen release copy.
 
 ## How It Works
 
@@ -62,6 +64,7 @@ A suite that cannot run every check under Git Bash on `windows-latest` skips the
 | `test-0000036-req-002-skill-drift-check.sh` | The newline-in-a-name check only: NTFS rejects a newline in a folder name. The other checks run. Backlog 0000211. | 2026-10-24 |
 | `test-0000025-req-004-setup-config-relocation.sh` | Check (e) only: `chmod 555` does not block writes on NTFS, so the unwritable-folder case cannot be built. The other checks in the suite run. | 2026-10-24 |
 | `test-0000039-req-006-consumer-migration.sh` | Two cases only. Case (n) skips in the `.ps1` pass, because pwsh on Windows doesn't run the extensionless bash `git` shim. Case P5 N-004 skips in both passes, because a UNC entry would make a helper without the fix contact the host. The other cases run. | 2026-10-25 |
+| `test-0000041-req-002-release-script.sh` | The symlink cases (`ln -s` makes a copy under Git Bash) and the unreadable-file case only (`chmod` sets no NTFS mode). The other checks run. | 2026-11-07 |
 | `test-0000039-req-002-runtime-names.sh` | Two cases only: the D-1 linked-project-path case and the X-004 dangling-link case. `ln -s` makes a copy under Git Bash, so neither link can be built. The other checks run. Backlog 0000210. | 2026-10-25 |
 | `test-0000037-req-003-credential-scan.sh` | The gitleaks stand-in checks only: the stand-in is a shell script, and node starts only a `gitleaks.exe` without a shell. The other checks run on the runner `PATH`. Backlog 0000212. | 2026-10-24 |
 | `test-0000037-req-003-archive-held-back.sh` | The `a*.js` glob fixture only: a Windows file name cannot hold an asterisk. The `pages[id].js` fixture and the other checks run. | 2026-10-24 |

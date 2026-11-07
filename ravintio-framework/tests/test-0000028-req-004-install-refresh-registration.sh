@@ -10,10 +10,11 @@
 
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-FRAMEWORK_DIR="$REPO_ROOT/ravintio-framework"
 
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
+FRAMEWORK_DIR="$RAVINTIO_PACK_DIR"
 
 SETUP_SH="$FRAMEWORK_DIR/setup.sh"
 setup_content=$(cat "$SETUP_SH")

@@ -18,9 +18,10 @@ unset CLAUDE_PROJECT_DIR
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FW="$(cd "$SCRIPT_DIR/.." && pwd)"
-ROOT="$(cd "$FW/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 DISPATCH="$FW/standards/agent-dispatch-standards.md"
 
 WORK="$(mktemp -d -t ravintio_0000036_req005_XXXXXX)"

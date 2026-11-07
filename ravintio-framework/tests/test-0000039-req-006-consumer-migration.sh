@@ -62,8 +62,9 @@
 
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-FW_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+FW_DIR="$RAVINTIO_PACK_DIR"
 
 MIG_DIR="$FW_DIR/migrations"
 SH_HELPER="$MIG_DIR/migrate-0.37.0-ravintio-rename.sh"
@@ -75,7 +76,7 @@ OLDPACK="$OLD-framework"
 OLDOVR="$OLD-overrides"
 PS_BIN="${RAVINTIO_TEST_PWSH:-pwsh}"
 ONLY="${RAVINTIO_TEST_REQ006_ONLY:-}"
-WORKFLOW="$FW_DIR/../.github/workflows/ravintio.yml"
+WORKFLOW="$RAVINTIO_REPO_ROOT/.github/workflows/ravintio.yml"
 
 # WS is the only fixture root. Every repo, shim, link target, and victim
 # folder lives under it, and GIT_CEILING_DIRECTORIES stops git at it. mktemp
@@ -1113,7 +1114,7 @@ assert_equals "yes" "$(in_text 'Parser\]::ParseFile' "$J51")" "req-006 AC4: the 
 assert_equals "yes" "$(in_text 'migrations[\\/]+migrate-0\.37\.0-ravintio-rename\.ps1' "$J51")" "req-006 AC4: the 5.1 job names the .ps1 helper"
 assert_equals "yes" "$(in_text 'RAVINTIO_TEST_PWSH:[[:space:]]*powershell\.exe$' "$J51")" "req-006 AC4: the 5.1 job sets RAVINTIO_TEST_PWSH to powershell.exe"
 assert_equals "yes" "$(in_text 'RAVINTIO_TEST_REQ006_ONLY:[[:space:]]*ps1$' "$J51")" "req-006 AC4: the 5.1 job runs the .ps1 subset"
-assert_equals "yes" "$(in_text 'bash ravintio-framework/tests/test-0000039-req-006-consumer-migration\.sh$' "$J51")" "req-006 AC4: the 5.1 job runs the req-006 suite"
+assert_equals "yes" "$(in_text "bash $RAVINTIO_PACK_REL/tests/test-0000039-req-006-consumer-migration\\.sh\$" "$J51")" "req-006 AC4: the 5.1 job runs the req-006 suite"
 assert_equals "yes" "$(in_text 'shell:[[:space:]]*bash$' "$J51")" "req-006 AC4: the 5.1 job runs the suite through Git Bash"
 assert_equals "no" "$(in_text 'secrets\.' "$J51")" "req-006 AC4: the 5.1 job references no secrets"
 

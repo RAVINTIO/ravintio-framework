@@ -15,8 +15,9 @@ version: "0.1.0"
 ## Release summary
 
 **Feature:** pack source under src
-**Pipeline run:** P0 to P6 in `autonomous` mode so far. No phases skipped.
+**Pipeline run:** P0 to P9 in `autonomous` mode. No phases skipped.
 **Version:** 0.39.0
+**PR:** pending, updated after the PR is raised at P9
 
 ### What was built
 

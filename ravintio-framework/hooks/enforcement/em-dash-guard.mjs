@@ -13,8 +13,10 @@
  * scanned, matching the commit-msg precedent of inspecting only what is being
  * committed right now.
  *
- * Scope: plan/current/, docs/, ravintio-framework/skills/,
- * ravintio-framework/templates/, ravintio-framework/standards/. Everything
+ * Scope: plan/current/, docs/, and two sets of pack prose prefixes. The
+ * ravintio-framework/ set (skills/, templates/, standards/) covers a consumer
+ * repo and the release copy. The src/ravintio-framework/ set (same three
+ * folders) covers the pack source in this repo. Everything
  * else, including plan/_archive/, plan/changelog/, source code, and this
  * hook's own source and test fixtures under ravintio-framework/hooks/ and
  * ravintio-framework/tests/, passes without inspection: those paths simply
@@ -55,6 +57,9 @@ const SCOPED_PREFIXES = [
   "ravintio-framework/skills/",
   "ravintio-framework/templates/",
   "ravintio-framework/standards/",
+  "src/ravintio-framework/skills/",
+  "src/ravintio-framework/templates/",
+  "src/ravintio-framework/standards/",
 ];
 
 function norm(p) {

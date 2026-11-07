@@ -372,3 +372,29 @@ Backlog filed (P6): 0000419 to 0000424
 Gate summary (P6): living docs, pack component docs, recommendations, and the changelog written. Revalidation passes, and the cross-model review approved at iteration 2. The deviation review classed 10 of 19 lines altering, and they wait as exception items for the human on the loop. P7 repoints the decisions-index ADR link to the archive.
 Progress: P6 done at 2026-11-07T19:59:45Z: docs written, cross-model review approved, 10 exception items waiting, P7 next
 Gate passed: P6
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T20:00:25Z` |
+| End | pending |
+| Wall-clock | pending |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent |
+| Agents spawned | pending |
+| MCP calls | 0 |
+| Parallel task batches | 1 |
+| Notes | Autonomous run. The ship skill in use is the 0.38.0 copy, which has no Step 5c. |
+
+Cross-reference check (P7): one link pointed at this run's files, the decisions-index ADR link. It now points at plan/_archive/0000041-pack-source-under-src-2026-11-07/adr/. The other plan/current/ mentions in docs/ name the folder as a concept.
+Regression candidates (P7): no `# REGRESSION-CANDIDATE:` tag in the 0000041 suites, so no candidates.
+Skips (P7): no plan/current/.skips file, so no phase was skipped.
+Changelog (P7): plan/changelog/0000041-pack-source-under-src-2026-11-07.md already holds the P6 iteration log. Step 1 adds the ship changelog fields to it and doesn't write a second file.
+Decision (P7): promote no suite to the regression pack / reason: no 0000041 suite carries a tag, the sanctioned promote script accepts only the release copy's tests folder, and the req-008 scan already runs in every full suite
+Test report (P7): plan/changelog/0000041-pack-source-under-src-test-report-2026-11-07.md
+Step 5b (P7): product.yml: version "0.39.0", feature "0000041-pack-source-under-src"
+Decision (P7): run build-release.mjs from src/ and stage the root copy / reason: the 0.38.0 ship agent lacks Step 5c
+Step 5c (P7, from src/): summary: version 0.39.0, source-commit dabed7cd6b8907e9a75290f74dc5662d081339b0, added 23, changed 59, removed 1, unchanged 1124. The root copy now holds release.yml and no component.yml, at mode 0755, with no work folder left.
+Integrity (P7): release-check.mjs --files-only exits 0 on the new root copy. The full check prints update: own-build and exits 0.

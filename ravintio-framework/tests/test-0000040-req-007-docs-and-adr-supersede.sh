@@ -23,9 +23,10 @@ if [ "$(basename "$SCRIPT_DIR")" = "regression" ]; then
   TESTS_DIR="$(dirname "$SCRIPT_DIR")"
 fi
 source "$TESTS_DIR/helpers/assert.sh"
+source "$TESTS_DIR/helpers/pack-root.sh"
 
-FW="$(cd "$TESTS_DIR/.." && pwd)"
-ROOT="$(cd "$FW/.." && pwd)"
+FW="$RAVINTIO_PACK_DIR"
+ROOT="$RAVINTIO_REPO_ROOT"
 PIPEREF="$FW/pipeline-reference.md"
 ARCH="$ROOT/docs/architecture-overview.md"
 INDEX="$ROOT/docs/decisions-index.md"
@@ -85,10 +86,10 @@ echo "=== req-007: the rewrite list offers no retired track ==="
 
 for rel in \
   README.md \
-  ravintio-framework/getting-started.md \
-  ravintio-framework/pipeline-reference.md \
-  ravintio-framework/project-operations.md \
-  ravintio-framework/tool-setup-reference.md \
+  "$RAVINTIO_PACK_REL/getting-started.md" \
+  "$RAVINTIO_PACK_REL/pipeline-reference.md" \
+  "$RAVINTIO_PACK_REL/project-operations.md" \
+  "$RAVINTIO_PACK_REL/tool-setup-reference.md" \
   docs/component-registry.md \
   docs/dependency-graph.md \
   src/setup-hook-integration/docs/interface-contract.md \
@@ -101,7 +102,7 @@ do
 done
 no_residue decisions docs/decisions-index.md
 no_residue decisions docs/architecture-overview.md
-no_residue history ravintio-framework/component.yml
+no_residue history "$RAVINTIO_PACK_REL/component.yml"
 
 echo ""
 echo "=== req-007: the history-line rule still fails an uncovered line ==="
@@ -210,10 +211,17 @@ check_entry 0000035 ADR-004 "partly superseded by 0000040 ADR-004" "0000040 ADR-
 echo ""
 echo "=== req-007: component.yml version and archive ==="
 
-COMP_V="$(sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' "$COMP" | head -n 1)"
-COMP_F="$(sed -n 's/^feature: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' "$COMP" | head -n 1)"
-assert_equals "0.38.0" "$COMP_V" "req-007: ravintio-framework/component.yml version reads 0.38.0"
-assert_equals "0000040-retire-fast-path" "$COMP_F" "req-007: ravintio-framework/component.yml feature reads 0000040-retire-fast-path"
+# 0000041 req-007: later releases bump the live manifest, so the check reads
+# the manifest that the v0.38.0 tag shipped. History stores it at the old path.
+if git -C "$ROOT" rev-parse --verify --quiet "v0.38.0^{commit}" > /dev/null; then
+  REL_COMP="$(git -C "$ROOT" show "v0.38.0:ravintio-framework/component.yml" 2>/dev/null)" # root-copy-ok: history stores the 0.38.0 manifest at the old path
+  COMP_V="$(printf '%s\n' "$REL_COMP" | sed -n 's/^version: *"\{0,1\}\([0-9.]*\)"\{0,1\} *$/\1/p' | head -n 1)"
+  COMP_F="$(printf '%s\n' "$REL_COMP" | sed -n 's/^feature: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' | head -n 1)"
+  assert_equals "0.38.0" "$COMP_V" "req-007: the v0.38.0 component.yml version reads 0.38.0"
+  assert_equals "0000040-retire-fast-path" "$COMP_F" "req-007: the v0.38.0 component.yml feature reads 0000040-retire-fast-path"
+else
+  echo "  SKIP: req-007: no v0.38.0 tag, so the released manifest check skips"
+fi
 
 if git -C "$ROOT" rev-parse --verify --quiet main^{commit} > /dev/null; then
   ARCHIVE_DIFF="$(git -C "$ROOT" diff --name-only main -- plan/_archive/ 2>&1)"
