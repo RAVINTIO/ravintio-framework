@@ -46,7 +46,7 @@ The rules that follow from the table:
 
 ### How the gates and Hard Limit 8 relate to the root copy
 
-- **This run.** `## Component Paths` lists `ravintio-framework/` so that P3 can commit the git pass and P7 can stage the rebuilt copy. The gates then permit a **Write** to it. Hard Limit 8, the scope file's Out of Scope list, and Step 5c item 4 forbid one. The rule text guards the root copy, not the gates.
+- **This run.** `## Component Paths` lists `ravintio-framework/`. Git commands and `node` don't need that listing, so its only effect is that the gates permit a **Write** to the root copy. Hard Limit 8, the scope file's Out of Scope list, and Step 5c item 4 forbid one. The rule text guards the root copy, not the gates.
 - **Later runs.** A design lists `src/ravintio-framework/` and leaves out the root copy. `gate-write` then blocks a **Write** or **Edit** there, and `shell-write-guard` blocks the shell writers it can parse. The release script writes through Node.js, which no gate sees, and Hard Limit 8 sanctions it (req-002).
 - **After the first release.** The `release-copy-integrity` CI job fails when a root copy file differs from its `release.yml` hash (req-008). That check catches a hand edit that slips past the rule text in any run.
 - **Gate root.** Backlog 0000382 records that `markedRoot()` takes `src/` as the root when the walk starts under `src/` and `CLAUDE_PROJECT_DIR` is unset. The gates then block every write outside the always-permitted paths. The fault fails closed and widens no write, so this ADR accepts it as risk R-006.

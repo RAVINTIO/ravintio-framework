@@ -172,14 +172,14 @@ Resume detection (session 3cb17e30): no pending migrations. Step 1a found no fra
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T15:57:08Z` |
-| End | pending |
-| Wall-clock | pending |
+| End | `2026-11-07T16:19:25Z` |
+| Wall-clock | 22m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-adr-agent |
-| Agents spawned | pending |
+| Agents spawned | 11: 8 ADR subagents and 3 design critics |
 | MCP calls | 0 |
-| Parallel task batches | pending |
+| Parallel task batches | 1 |
 | Notes | Autonomous run. |
 
 Decision (P2): nine ADRs. ADR-001 stack unchanged, ADR-002 pack source under src/, ADR-003 release script, ADR-004 release.yml contract and readers, ADR-005 data ownership of the pack copies, ADR-006 manifest location from product.yml, ADR-007 Applies to header and source-repo signal, ADR-008 consumer migration, ADR-009 tests and CI from src/ / reason: each meets an adr-agent criterion, and the numbers are fixed first so parallel ADRs can cite each other
@@ -206,3 +206,10 @@ Deviation (P2, unclassified): the accepted Scope Lock cross-session path said an
 Decision (P2): feature-brief.md Scenario Paths records the four accepted Scope Lock paths, with the cross-session change marked / reason: critic finding 3, the section still read Empty
 Decision (P2): req-002 Step 5c logs the printed project kind and warns when src/ravintio-framework/ exists, and ADR-003 records the skip as a negative / reason: critic finding 2, a malformed product.yml reads as downstream at exit 0
 Decision (P2): req-002 AC3 and req-003 AC3 gain sub-bullets for the Step 7 gate and the malformed release.yml stop, and ADR-008 step 1 names the malformed case / reason: critic findings 4 and 5
+Critic verdict (P2, iteration 3): APPROVE. 0 major and 5 minor findings. All 5 iteration 2 findings resolved. See critic-verdict-p2-3.md.
+Decision (P2): fixed the 5 minor findings by addition before the gate: commit-then-check in the req-001 and ADR-002 recovery rule, a this-run P3 close-out note in req-004, the ADR-005 listing reason, the six-suite subset in ADR-002 and R-007, and a feat/ branch rule for the plan/framework-release.yml commit in req-003 / reason: each is a wording gap, and none changes a decision
+Loop closed (P2): design_critic-p2, status done after iteration 3. ratchet-check disarms.
+Gate summary (P2): nine ADRs written. ADR-001 stack unchanged, ADR-002 pack source under src/, ADR-003 release script, ADR-004 release.yml contract and readers, ADR-005 data ownership of the pack copies, ADR-006 manifest location from product.yml, ADR-007 Applies to header and source-repo signal, ADR-008 consumer migration, ADR-009 tests and CI from src/. Three P2 deviations wait for the pre-P7 deviation review. One backlog entry filed: 0000391.
+Skill Map (P2): unchanged. No ADR moves a requirement to another skill.
+Progress: P2 done at 2026-11-07T16:19:25Z: nine ADRs, design critic approved at iteration 3, P3 next
+Gate passed: P2

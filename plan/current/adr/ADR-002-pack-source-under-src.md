@@ -43,7 +43,7 @@ The root copy refreshes only at P7. The release script rebuilds it from `src/rav
 
 `ravintio-framework/` stays the consumer runtime path in every pack file. Consumers copy the root folder and run setup from it, as today.
 
-If the pass stops after `git mv` and before the checkout, P3 runs only the checkout, which is the second named command. If both commands ran with no commit, P3 runs the req-001 AC1 checks and commits. In any other partial state, P3 runs no further git command. It stops and reports the tree state to the human on the loop under the boot Escalation rule. The exception never covers a reset (P2 critic finding 4).
+If the pass stops after `git mv` and before the checkout, P3 runs only the checkout, which is the second named command. If both commands ran with no commit, P3 commits, then runs the req-001 AC1 checks on the pass commit. In any other partial state, P3 runs no further git command. It stops and reports the tree state to the human on the loop under the boot Escalation rule. The exception never covers a reset (P2 critic finding 4).
 
 ## Alternatives Considered
 
@@ -71,7 +71,7 @@ If the pass stops after `git mv` and before the checkout, P3 runs only the check
 
 **Negative:**
 - Every repo path that names the pack source needs an **Edit** after the pass. That covers `product.yml`, `.gitattributes`, `em-dash-guard.mjs`, and the setup-hook-integration docs (req-001, R-008, R-011).
-- Suites and CI must read the pack from `src/` through one resolver. Six suites that set `REPO_ROOT` to the pack's parent need a fix (req-008, R-007, A-002).
+- Suites and CI must read the pack from `src/` through one resolver. Six suites that set `REPO_ROOT` to the pack's parent need a fix (req-008, R-007, A-002). They are a subset of the 37 suites and six regression copies that req-008 edits.
 - From P3 to P6, this run can't exercise its own hook and skill changes in live sessions. Only suites test them (R-010, R-012).
 - This run's P7 uses the 0.38.0 ship agent, which lacks the release step. P7 runs the release script from `src/` as a recorded decision (R-003, ADR-003).
 

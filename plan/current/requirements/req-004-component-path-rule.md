@@ -44,6 +44,7 @@ All paths below use the post-move layout. P3 edits the pack under `src/ravintio-
 - For each changed component, the close-out increments the minor version in its manifest and sets `feature` to the current feature ID. It stages that manifest in the P3 commit.
 - A changed file under a `## Component Paths` entry that holds no listed manifest bumps nothing. In the source repo, the root `ravintio-framework/` release copy is such a path.
 - The close-out applies to every kind of change: docs-only, skill text, template, migration, and code.
+- This run's P3 runs the installed 0.38.0 close-out, which names the root manifest. This run therefore bumps `src/ravintio-framework/component.yml` to 0.39.0 and `src/setup-hook-integration/component.yml` by one minor version, by **Edit**, as the P1 Decision line records. It never bumps the root `ravintio-framework/component.yml`.
 - ADR-006 adds four rules, and the close-out states each one:
   - If two component folders hold a changed file, the deeper folder's component owns it.
   - If `product.yml` lists a manifest path with no file, the close-out stops and reports it. It never falls back or creates a manifest.

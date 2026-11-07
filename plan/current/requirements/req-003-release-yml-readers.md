@@ -106,6 +106,7 @@ Rewrite step 1a in `src/ravintio-framework/skills/ravintio-orchestrator/SKILL.md
    - On confirmation with provenance, write `plan/framework-release.yml` from the `record:` line, if there is one. On rejection, write nothing, and treat the pack as untrusted.
    - A changed file stays flagged at each session start until it matches its hash or a new release lists it.
 5. On exit 2, report that detection couldn't run, with the reason. Step 1b then loads no source copy.
+6. Step 1a commits `plan/framework-release.yml` only on a `feat/` branch. On any other branch, it leaves the file uncommitted and says so, and the next feature branch commits it. Only the human on the loop commits to `main`.
 6. If `ravintio-framework/scripts/release-check.mjs` doesn't exist, the pack predates 0.39.0. Compare the `component.yml` version with `docs/about.md` by hand, as the policy states.
 
 - Step 1b's list of states names `release-check.mjs` exit 2 as a detection that couldn't run, in place of "an unreadable `component.yml`". Step 1b's other sentences stay exactly as they are, because `test-0000036-req-002-skill-drift-check.sh` matches them.
