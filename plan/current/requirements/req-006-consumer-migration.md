@@ -34,7 +34,7 @@ This requirement serves US-002 for a consumer who copies the new pack over an ol
 
 The instructions run these steps in order. Every step is safe to repeat. A second full run changes no file.
 
-1. Read `ravintio-framework/release.yml`. If it doesn't exist, or its `version` is older than `0.39.0`, stop. Ask the human on the loop to refresh `ravintio-framework/` first. Record nothing, so the migration stays pending.
+1. Read `ravintio-framework/release.yml`. If it doesn't exist, or its `version` is older than `0.39.0`, stop. Ask the human on the loop to refresh `ravintio-framework/` first. Record nothing, so the migration stays pending. If `release.yml` exists but breaks the format, stop, report the file, and record nothing (ADR-004).
 2. If `ravintio-framework/component.yml` doesn't exist as a file or a link, record `applied` with both counts at `0`.
 3. If `ravintio-framework` itself is a link, don't show a delete command. Name `ravintio-framework/component.yml` for the human on the loop to check by hand. Count it in `corrections-skipped` and record `skipped` with the reason `refused`.
 3a. If the project's `product.yml` lists `ravintio-framework/component.yml` as a component `path:`, don't offer the removal. `product-version.mjs` would then exit 2 with `component.yml not found` (risk R-013). Name the `product.yml` entry, and tell the human on the loop to remove it before the next run. `product.yml` sits outside the migrator scope rule (migrator Hard Limit 1), so the migrator never edits it. Count it in `corrections-skipped` and record `skipped` with the reason `listed in product.yml`.

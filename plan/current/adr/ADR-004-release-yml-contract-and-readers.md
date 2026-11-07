@@ -100,6 +100,8 @@ A consumer may copy the new pack over the old one and keep `component.yml`. Whil
 - Readers carry two paths until no consumer runs a pack before 0.39.0. Step 1a, the policy, and the migrator each state the fallback.
 - A repo gains a new tracked file, `plan/framework-release.yml`, for step 1a to write and commit.
 - A local edit to any pack file flags at every session start until it matches its hash. A consumer who patches the pack sees the flag each time.
+- On a first upgrade, a consumer's `docs/about.md` holds its own product version. Step 1a then shows a version mismatch that means nothing. The human on the loop still confirms with provenance, so the cost is one extra prompt.
+- If that product version matches the framework version by chance, and every file matches its hash, step 1a writes the trusted record without a prompt. The files match the release, so the record is still correct. The first upgrade accepts both effects, because no better comparator exists before `plan/framework-release.yml`.
 - The line-based reader accepts only the form the release script writes. A hand-edited `release.yml` in another layout exits 2 (ADR-001).
 - The leftover manifest warning repeats every session for a consumer who declines removal (R-004, R-013).
 

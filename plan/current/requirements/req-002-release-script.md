@@ -111,7 +111,7 @@ files:
   3. On exit 0, log the `summary:` line in the P7 build-log block.
   4. On exit 2, stop and report the reason. Never copy the pack by hand, and never write the root copy through **Write** or **Edit**.
   5. On any other exit, fix the cause stderr names and rerun. A rerun recovers a leftover state on its own.
-- Step 7 stages the root copy in the source repo. Add one line after the `git add` line: `if [ -f src/ravintio-framework/component.yml ]; then git add -A -- ravintio-framework/; fi`. The existing `git add plan/current/ plan/_archive/ plan/changelog/ docs/about.md` line stays exactly as it is, because `test-0000032-req-001-marker-clear-before-tag.sh` and its regression copy match it.
+- Step 7 stages the root copy in the source repo. Add one line after the `git add` line: `if [ "$(node ravintio-framework/scripts/project-kind.mjs)" = "framework source" ]; then git add -A -- ravintio-framework/; fi`. It reuses the Step 5c signal, so `project-kind.mjs` stays its one owner (ADR-007, P2 critic finding 3). The existing `git add plan/current/ plan/_archive/ plan/changelog/ docs/about.md` line stays exactly as it is, because `test-0000032-req-001-marker-clear-before-tag.sh` and its regression copy match it.
 - The ship skill's `## Prefix` line names Step 5c beside Step 5b.
 
 ### This run's P7
@@ -144,6 +144,7 @@ files:
   - A link inside the old copy goes as a link, and its target outside the root stays byte-identical.
   - A source file that can't be read fails the build with a non-zero exit. The old root copy stays byte-identical, and no build folder remains.
   - With a leftover `.ravintio-framework-previous/` and no root copy, the next run restores the old copy, prints `restored:`, and then builds.
+  - `.gitignore` holds a `.ravintio-framework-build/` line and a `.ravintio-framework-previous/` line.
 - [ ] Both boot templates carry one identical `Sanctioned scripts:` sentence. It names eight scripts, `ravintio-framework/scripts/build-release.mjs` among them. The ship skill holds Step 5c between Step 5b and Step 6. Step 5c holds the `project-kind.mjs` check, the `build-release.mjs` call, and the exit handling. Step 7 holds the source-repo `git add -A -- ravintio-framework/` line and keeps its existing `git add` line. Verified by: integration
   - Verified by: integration - the new suite and the updated 0000035 req-008 and 0000039 req-008 suites
 - [ ] The P7 build-log block holds the Decision line for the run from `src/`. The final report recommends a setup refresh, so that this repo's `CLAUDE.md` gains the eight-script sentence. Verified by: manual - git ignores `CLAUDE.md`, and no P7 log exists before P7

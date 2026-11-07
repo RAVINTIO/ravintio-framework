@@ -55,7 +55,7 @@ No database. The feature adds three file contracts.
 
 | Entity | Owner Component | Key Fields | Relationships |
 |--------|----------------|------------|--------------|
-| `ravintio-framework/release.yml` | `ravintio-framework` (written only by `build-release.mjs`) | `format`, `version`, `source-commit`, `built`, `files` | read by `release-check.mjs`, the migrator, and the 0.39.0 migration |
+| `ravintio-framework/release.yml` | the release script `build-release.mjs`, which owns the root copy (ADR-005) | `format`, `version`, `source-commit`, `built`, `files` | read by `release-check.mjs`, the migrator, and the 0.39.0 migration |
 | `plan/framework-release.yml` | the consuming project (written only by orchestrator step 1a) | `version`, `source-commit` | the recorded value that step 1a compares with `release.yml` |
 | `plan/_migrations/{stem}.md` | the consuming project (written only by the migrator) | `migration`, `outcome`, `date`, counts | gains `not applicable` outcomes from the `**Applies to:**` rule |
 
@@ -83,6 +83,7 @@ Each file has one owner. Where a second requirement changes another section of t
 | `src/setup-hook-integration/component.yml` and `src/setup-hook-integration/docs/` | req-001 | none |
 | `src/ravintio-framework/hooks/enforcement/em-dash-guard.mjs` | req-001 | none |
 | `src/ravintio-framework/scripts/build-release.mjs` | req-002 | none |
+| `.gitignore` (the two work folder lines) | req-002 | none |
 | `src/ravintio-framework/templates/standard-boot.md`, `cursor-boot.md` | req-002 | none |
 | `src/ravintio-framework/skills/ravintio-ship-agent/SKILL.md` | req-002 (Step 5c, Step 7 if-line, Prefix) | req-004 (Step 9 case 2 fallback), after req-002 |
 | `src/ravintio-framework/scripts/release-check.mjs` | req-003 | none |

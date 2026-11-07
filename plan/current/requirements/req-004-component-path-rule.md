@@ -44,6 +44,11 @@ All paths below use the post-move layout. P3 edits the pack under `src/ravintio-
 - For each changed component, the close-out increments the minor version in its manifest and sets `feature` to the current feature ID. It stages that manifest in the P3 commit.
 - A changed file under a `## Component Paths` entry that holds no listed manifest bumps nothing. In the source repo, the root `ravintio-framework/` release copy is such a path.
 - The close-out applies to every kind of change: docs-only, skill text, template, migration, and code.
+- ADR-006 adds four rules, and the close-out states each one:
+  - If two component folders hold a changed file, the deeper folder's component owns it.
+  - If `product.yml` lists a manifest path with no file, the close-out stops and reports it. It never falls back or creates a manifest.
+  - A changed file is one that differs from the `HEAD` at P3 start, so the TDD commits count.
+  - If a manifest's `feature` already holds the current feature ID, the close-out doesn't bump it again.
 
 ### The ship fallback
 
@@ -65,7 +70,9 @@ Split step: keep, at three criteria. The one concern is that each skill finds a 
 
 - [ ] `component-guide.md` `## File location` states the rule: the path `product.yml` lists, else `src/{component-id}/component.yml`. spec-agent and docs-agent each link to that section. Neither skill states a manifest location that contradicts it, and neither names `src/{component-id}/component.yml` without labelling it the default. The docs-agent drift row reads the manifest paths from `product.yml`. Verified by: integration
 - [ ] The codegen close-out reads components from the design's Components list and their manifests under the rule. It bumps each changed component's manifest and stages it. It states that a changed path with no listed manifest bumps nothing. No line of the codegen `SKILL.md` names `ravintio-framework/component.yml`. Verified by: integration
+  - The close-out text states the four ADR-006 rules: the deeper folder wins, a missing listed path stops, the P3-start `HEAD` baseline, and one bump per feature.
 - [ ] Ship Step 9 case 2 reads the single component from the archived design and its manifest under the rule. It stops and reports when the design lists zero or two or more components. No line of the ship `SKILL.md` names `ravintio-framework/component.yml`. Verified by: integration
+  - A path that ends in `ravintio-framework/component.yml`, such as one under `src/`, counts as a match.
 
 ## Dependencies
 

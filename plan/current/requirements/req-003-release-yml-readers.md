@@ -128,7 +128,7 @@ The policy drops the paragraph that names a file-level check the step 1a summary
 
 In `src/ravintio-framework/skills/ravintio-migrator/SKILL.md`:
 
-- The `framework-version` row in `## Run records` and the Step 5 record template read the `version` in `ravintio-framework/release.yml`. They fall back to `ravintio-framework/component.yml` when `release.yml` is absent.
+- The `framework-version` row in `## Run records` and the Step 5 record template read the `version` in `ravintio-framework/release.yml`. They fall back to `ravintio-framework/component.yml` when `release.yml` is absent. If `release.yml` exists but breaks the format, the migrator stops, reports the file, and records nothing (ADR-004).
 - `### Order and old paths` gains one rule. When a migration's instructions read the framework version from `ravintio-framework/component.yml`, read it through the same rule. Released migrations stay byte-identical, as the old-path mapping already works. This covers `migrate-0.38.0-retire-fast-path-and-change-pipeline.md` step 1 and the older re-run-setup migrations, which name `planifest-framework/component.yml`.
 
 ### Suites that change

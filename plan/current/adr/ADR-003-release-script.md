@@ -115,7 +115,7 @@ The decision adds a sanctioned script that deletes a whole folder tree. That wid
 
 **Risks:**
 - A link check misses a case on one platform, and a delete lands outside the three folders. The link cases skip under Git Bash on Windows, so Windows coverage is thinner. P5 reviews the script, and the req-002 suite tests each link case on Linux and macOS.
-- The two work folders are not in `.gitignore`. After an interrupted run, a broad `git add -A` could stage `.ravintio-framework-build/`. Step 7 scopes its `git add -A` to `ravintio-framework/`, which limits this.
+- After an interrupted run, a broad `git add -A` could stage `.ravintio-framework-build/`. req-002 therefore adds both work folders to `.gitignore`, and Step 7 scopes its `git add -A` to `ravintio-framework/`.
 - A maintainer runs the script by hand on a dirty tree. The dirty-tree refusal covers `src/ravintio-framework/` only, so an uncommitted root copy edit is lost on rebuild. Scope already bans **Write** or **Edit** to the root copy.
 
 ## Related ADRs

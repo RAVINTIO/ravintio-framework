@@ -57,7 +57,7 @@ The feature adds no dependency, package, or tool.
 - A line-based `release.yml` reader accepts only the form the release script writes. A hand-edited file in another layout reads as unreadable.
 
 **Risks:**
-- A reader that misreads `release.yml` falls back to `component.yml` silently. ADR-004 states when the fallback applies.
+- A reader can drift from the format the release script writes, and then reject a valid `release.yml` with exit 2. ADR-004 states the format, and the req-002 suite checks it byte for byte.
 
 ## Related ADRs
 
