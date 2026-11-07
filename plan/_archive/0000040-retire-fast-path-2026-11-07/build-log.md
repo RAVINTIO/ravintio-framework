@@ -346,8 +346,8 @@ Gate passed: P6
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-07T05:22:39Z` |
-| End | `2026-11-07T05:41:00Z` |
-| Wall-clock | 18m |
+| End | `2026-11-07T05:33:19Z` |
+| Wall-clock | 11m |
 | Streams | n/a |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent |
@@ -367,4 +367,40 @@ Test report (P7): `plan/changelog/0000040-retire-fast-path-test-report-2026-11-0
 Release (P7): product.yml: version "0.38.0", feature "0000040-retire-fast-path"
 Archive (P7): archive-current.mjs moved 31 items and removed plan/current/.feature-id. archive-dir: plan/_archive/0000040-retire-fast-path-2026-11-07
 About (P7): `docs/about.md` reads 0.38.0 and feature 0000040-retire-fast-path, updated 07 Nov 2026. The version suite now passes 9 of 9, and product-version.mjs prints 0.38.0.
-Progress: P7 done at 2026-11-07T05:41:00Z: archive committed, P8 next
+Progress: P7 done at 2026-11-07T05:33:19Z: archive committed in 41b53fe1, P8 next. The archive commit carries an estimated End of 05:41:00Z, corrected here from the commit time.
+Decision (P7): the archive commit wrote its candidate and safe lists in the session scratchpad, not a `mktemp -d` folder / reason: a Claude Code safety check refused the combined command with `rm -rf "$T"`. The scratchpad sits outside the repository, so the lists can't reach a commit.
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T05:33:30Z` |
+| End | `2026-11-07T05:37:35Z` |
+| Wall-clock | 4m |
+| Streams | n/a |
+| Model tier | haiku for the build-assessment agent |
+| Skills loaded | ravintio-build-assessment-agent (in subagent) |
+| Agents spawned | 1 |
+| MCP calls | 0 |
+| Parallel task batches | 0 |
+| Notes | Autonomous run. |
+
+Build report (P8): `build-report.md` filed. Main findings: low cheaper-tier routing (5 of 45 agent calls), the P6 `git stash` breach and the P3 `git rm`, and the long P5 wait on exception 001. The report says the product.yml route is not recorded. The P7 `Release (P7)` line records it through `set-product-release.mjs`.
+Clean-tree check (P8): two leftovers outside the archive, `plan/backlog/.next-id` and `plan/backlog/0000362-subagent-task-classifier/entry.md`. Another session wrote both on 2026-11-07, and this run didn't. Neither is staged or committed.
+Decision (P8): hold back both leftovers / reason: they are another session's uncommitted work, and committing them would ship it in this PR without its author. The final report lists them for the human on the loop.
+Progress: P8 done at 2026-11-07T05:37:35Z: build report filed, P9 next
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T05:38:00Z` |
+| End | |
+| Wall-clock | |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent |
+| Agents spawned | 0 |
+| MCP calls | 0 |
+| Parallel task batches | 0 |
+| Notes | Autonomous run. |
