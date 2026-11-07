@@ -55,3 +55,26 @@ The build folder becomes the copy through a rename, so `ravintio-framework/` end
 ## Observation
 
 The `--files-only` mode still prints `skipped: no ravintio-framework/release.yml` and exits 0 when a record exists and `release.yml` is gone. The `release-copy-integrity` CI job reads that as a pass. That mode follows req-003 as written, and R-015 covers the writer who can do it. The RC-F02 fix covers step 1a only. Backlog 0000418 records the CI side.
+
+## Re-review 2
+
+Scope: commit 8ce4d7c8. Every run used a `mktemp -d` scratch repo built from `git archive HEAD`. No run touched this repo.
+
+| Finding | Verdict | Evidence |
+|---|---|---|
+| NF-02 tracked folder `release.yml/` | Fixed | `release.yml/x.md` exited 2 with `clashes with the built release.yml`, and no `ravintio-framework/` was created. `Release.YML/x.md` exited 2 the same way. The check now tests `segs[0]`, so a folder at the pack root is covered. |
+| NF-02 bypass: nested `docs/release.yml/y.md` | Holds, no impact | The build exited 0 and wrote the folder. A nested folder cannot clash with the root `release.yml`, so refusing it is not needed. |
+| NF-02 bypass: look-alike `releaſe.yml/` and `release.yml ` (trailing space) | Holds, no impact | Both exited 2 with `path segment outside [A-Za-z0-9._-]+`. The segment allowlist stops them before the clash check. |
+| NF-02 bypass: `release.yml./y.md` | Holds, no impact | The build exited 0. The name differs from `release.yml` on APFS and on case-folding file systems, so no clash exists. |
+| NF-03 root copy mode | Fixed | After a build, `stat` showed `755` on `ravintio-framework/`. A preload hook printed the build folder mode at the `chmod` call. The code shows `mkdirSync(out, { mode: 0o700 })`, so the folder stays 0700 while it fills. |
+| NF-03 failed `chmod` leaves the old copy whole | Fixed | A preload made `chmodSync` throw `EPERM` on a second build. The build exited 1 with `chmod .ravintio-framework-build: EPERM`. A checksum of the old copy was unchanged and its mode stayed 755. The next normal build removed the stale build folder and exited 0. |
+| RS-F01 root escape | Holds | A build from `src/` with a planted `src/src/ravintio-framework` exited 2 with `the project root is not the git top level`. Symlink, worktree, and letter-case variants behaved as before. |
+| RS-F06 `GIT_CONFIG_COUNT`, `GIT_CONFIG_PARAMETERS`, `.git/config` fsmonitor | Holds | Each run printed `fsmonitor ran: no`. |
+| RS-F07 tracked `release.yml`, `RELEASE.YML`, case collision | Fixed | The file cases and `zcase/Readme.md` against `zcase/readme.md` all exited 2 with the earlier messages. |
+| RC-F02 fallback downgrade | Holds | With `release.yml` deleted and a valid record, `release-check.mjs` printed `missing: ravintio-framework/release.yml` and `update: release`, and exited 1. An empty, BOM-only, folder, or link record exited 2. |
+
+### New findings
+
+- NF-01 stays open. `GIT_CONFIG_GLOBAL` with a clean filter still ran the filter (`filter ran: yes`). Severity stays Low.
+- No new finding from this commit.
+- Minor: a failed `chmod` leaves `.ravintio-framework-build/` on disk. The next run removes it, so no action is needed.
