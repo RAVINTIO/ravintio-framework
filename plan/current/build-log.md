@@ -340,3 +340,25 @@ Migration (P6): migrate-0.38.0 recorded `applied` with both counts at 0. The pac
 Progress: P6 work done at 2026-11-07T04:27Z. The P6 gate and P7 wait on exception 1 (deviation row 2).
 Exception resolved (P6, 1): the human on the loop confirmed deviation row 2 at 2026-11-07T05:22:15Z ("yes"). The human runs the scope record delete, and the migrator checks the result.
 Gate passed: P6
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-07T05:22:39Z` |
+| End | |
+| Wall-clock | |
+| Streams | n/a |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent |
+| Agents spawned | 0 |
+| MCP calls | 0 |
+| Parallel task batches | 1 |
+| Notes | Autonomous run. |
+
+Cross-reference check (P7): no live doc links into `plan/current/` for this feature. The decisions index already links `plan/_archive/0000040-retire-fast-path-2026-11-07/adr/`.
+Changelog (P7): `plan/changelog/0000040-retire-fast-path-2026-11-07.md` holds the release summary and the iteration log, as in 0000039. P7 updated the run line, the P3 deviation count, the P6 row, and the artifact list.
+Skips (P7): no `plan/current/.skips` file.
+Backlog (P7): 0000355 section 5 routes F4, F9, F10, and F23 to the Feature Pipeline. 0000308 narrows to the advisory pre-commit and the presence-only record checks.
+Decision (P7): promote `test-0000040-req-006-residue-guard.sh` to the regression pack / reason: the P1 decision, and it guards a standing rule
+Decision (P7): keep `test-0000040-req-001-one-track-routing.sh` out of the regression pack / reason: it reads this feature's doc wording, the residue guard already keeps one track, and the pack has no retire step (backlog 0000365)
