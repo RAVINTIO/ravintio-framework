@@ -38,8 +38,11 @@ if [ "$(basename "$SCRIPT_DIR")" = "regression" ]; then
   TESTS_DIR="$(dirname "$SCRIPT_DIR")"
 fi
 source "$TESTS_DIR/helpers/assert.sh"
+source "$TESTS_DIR/helpers/pack-root.sh"
 
-ROOT="$(cd "$TESTS_DIR/../.." && pwd)"
+ROOT="$RAVINTIO_REPO_ROOT"
+# The pack path as it appears in git ls-files: src/ravintio-framework in the source repo.
+PACK_RE="$RAVINTIO_PACK_REL"
 
 SCRATCH="$(mktemp -d)"
 trap 'rm -rf "$SCRATCH"' EXIT
@@ -119,6 +122,14 @@ ALLOWLIST=(
   '^ravintio-framework/external-skills/plan-eng-review/SKILL\.md$|^\*\*Fast path:\*\* All paths covered|Vendored text, where the words carry another meaning.'
 )
 
+# Anchor each pack path regex on the pack's real location. The source repo
+# anchors on ^src/ravintio-framework/ and a consumer on ^ravintio-framework/.
+for _i in "${!ALLOWLIST[@]}"; do
+  case "${ALLOWLIST[$_i]}" in
+    '^ravintio-framework/'*) ALLOWLIST[$_i]="^${PACK_RE}/${ALLOWLIST[$_i]#^ravintio-framework/}" ;;
+  esac
+done
+
 # Parse each entry once into three parallel arrays.
 P_RE=()
 L_RE=()
@@ -183,7 +194,7 @@ history_line() {
     docs/about.md)
       [[ "$text" =~ $FEATURE_ID_RE ]] && return 0
       ;;
-    ravintio-framework/component.yml)
+    "$RAVINTIO_PACK_REL/component.yml")
       [ "$in_block" -eq 1 ] && return 0
       ;;
   esac
@@ -215,7 +226,7 @@ HISTORY_HITS=0
 check_file() {
   local root="$1" path="$2" hit num text blocks="" in_block
   [ -f "$root/$path" ] || return 0
-  [ "$path" = "ravintio-framework/component.yml" ] && blocks=" $(history_blocks "$root/$path" | tr '\n' ' ')"
+  [ "$path" = "$RAVINTIO_PACK_REL/component.yml" ] && blocks=" $(history_blocks "$root/$path" | tr '\n' ' ')"
   while IFS= read -r hit; do
     [ -n "$hit" ] || continue
     num="${hit%%:*}"
@@ -253,7 +264,7 @@ SCOPE=""
 while IFS= read -r path; do
   [ -n "$path" ] || continue
   in_scope "$path" && SCOPE="${SCOPE}${path}"$'\n'
-done <<< "$(git -C "$ROOT" ls-files)"
+done <<< "$(if [ "$RAVINTIO_SOURCE_REPO" = "yes" ]; then git -C "$ROOT" ls-files -- . ':!ravintio-framework'; else git -C "$ROOT" ls-files; fi)"
 
 # The guard always scans itself, even before its first commit.
 SELF="${SCRIPT_DIR#"$ROOT"/}/$(basename "$0")"
@@ -401,17 +412,17 @@ expect pass "docs/architecture-overview.md" '- **ADR 009 (0000033):** Fast Path 
 expect fail "docs/architecture-overview.md" '### Fast Path for changes with no src target'
 expect pass "docs/about.md" '| 0.38.0 | 0000040-retire-fast-path | Retired Fast Path and the Change Pipeline |'
 expect fail "docs/about.md" 'Use Fast Path for small fixes.'
-expect pass "ravintio-framework/component.yml" '# budget, Fast Path for no-src changes' '  # Updated by 0000099 (fixture): a history block starts here.'
-expect fail "ravintio-framework/component.yml" '# budget, Fast Path for no-src changes'
+expect pass "$RAVINTIO_PACK_REL/component.yml" '# budget, Fast Path for no-src changes' '  # Updated by 0000099 (fixture): a history block starts here.'
+expect fail "$RAVINTIO_PACK_REL/component.yml" '# budget, Fast Path for no-src changes'
 expect pass "README.md" 'Feature 0000040-retire-fast-path removed both tracks.'
 expect fail "README.md" 'Run the Change Pipeline for small changes.'
 expect pass "product.yml" 'feature: "0000040-retire-fast-path"'
 
 echo ""
 echo "=== req-006 fixtures: the setup retired list ==="
-expect pass "ravintio-framework/setup.sh" '  "fast-path.md"'
-expect pass "ravintio-framework/setup.ps1" "    'ravintio-change-agent',"
-expect fail "ravintio-framework/setup.sh" 'echo "Use Fast Path for small fixes"'
+expect pass "$RAVINTIO_PACK_REL/setup.sh" '  "fast-path.md"'
+expect pass "$RAVINTIO_PACK_REL/setup.ps1" "    'ravintio-change-agent',"
+expect fail "$RAVINTIO_PACK_REL/setup.sh" 'echo "Use Fast Path for small fixes"'
 
 echo ""
 echo "=== req-006 AC2: each planted line in a scratch README.md fails with its file and line number ==="

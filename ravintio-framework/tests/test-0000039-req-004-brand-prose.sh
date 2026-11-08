@@ -21,7 +21,12 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+ROOT="$RAVINTIO_REPO_ROOT"
+PACK="$RAVINTIO_PACK_REL"
+# In the source repo, scans skip the frozen release copy at the root.
+SKIP_COPY=()
+if [ "$RAVINTIO_SOURCE_REPO" = "yes" ]; then SKIP_COPY=(':!ravintio-framework'); fi
 BASE="${RAVINTIO_BASE_COMMIT:-81287992^}"
 
 SCRATCH="$(mktemp -d)"
@@ -33,7 +38,7 @@ ok() { echo "PASS: $1"; PASS=$((PASS + 1)); }
 bad() { echo "FAIL: $1"; FAIL=$((FAIL + 1)); }
 
 # Paths that are history, reference, vendored, or the 0000039 suites.
-EXCLUDE_RE='^(plan/(_archive|changelog|_migrations|current)/|plan/backlog/[^/]+/_reference/|ravintio-framework/external-skills/|ravintio-framework/migrations/|ravintio-framework/tests/(regression/)?test-0000039-|ravintio-framework/tests/(regression/)?test-0000036-req-001)'
+EXCLUDE_RE="^(plan/(_archive|changelog|_migrations|current)/|plan/backlog/[^/]+/_reference/|$PACK/external-skills/|$PACK/migrations/|$PACK/tests/(regression/)?test-0000039-|$PACK/tests/(regression/)?test-0000036-req-001)"
 
 live_files() {
   local f
@@ -42,7 +47,7 @@ live_files() {
     [ -f "$ROOT/$f" ] || continue
     [[ "$f" =~ $EXCLUDE_RE ]] && continue
     printf '%s\n' "$f"
-  done <<< "$(git -C "$ROOT" ls-files)"
+  done <<< "$(git -C "$ROOT" ls-files -- . ${SKIP_COPY[@]+"${SKIP_COPY[@]}"})"
 }
 
 LIVE="$(live_files)"
@@ -54,7 +59,7 @@ while IFS= read -r f; do
   h="$(grep -nI 'Planifest' "$ROOT/$f" || true)"
   # Old-name reads the brand guard allowlists (ADR-004): the setup scripts strip the old ignore headers.
   case "$f" in
-    ravintio-framework/setup.sh|ravintio-framework/setup.ps1)
+    "$PACK/setup.sh"|"$PACK/setup.ps1")
       h="$(grep -vE 'Planifest - (Token Reduction|Indexing Exclusions)' <<< "$h" || true)" ;;
   esac
   [ -n "$h" ] && AC1_HITS="${AC1_HITS}${f}: ${h}"$'\n'
@@ -74,7 +79,7 @@ while IFS= read -r hit; do
   [[ "$path" =~ $EXCLUDE_RE ]] && continue
   [[ "$hit" == *"github.com/planifest/planifest-docs"* ]] && continue
   AC2_BAD="${AC2_BAD}${hit}"$'\n'
-done <<< "$(git -C "$ROOT" grep -nI 'github.com/planifest' || true)"
+done <<< "$(git -C "$ROOT" grep -nI 'github.com/planifest' -- . ${SKIP_COPY[@]+"${SKIP_COPY[@]}"} || true)"
 if [ -z "$AC2_BAD" ]; then
   ok "req-004 AC2: only planifest-docs links and history use github.com/planifest"
 else
@@ -104,7 +109,7 @@ if git -C "$ROOT" show "${BASE}:planifest-framework/setup.sh" > "$OLD" 2>/dev/nu
       -e 's/PLANIFEST/@@/g' -e 's/Planifest/@@/g' -e 's/planifest/@@/g' \
       -e 's/RAVINTIO/@@/g' -e 's/Ravintio/@@/g' -e 's/ravintio/@@/g'
   }
-  NEW="$ROOT/ravintio-framework/setup.sh"
+  NEW="$RAVINTIO_PACK_DIR/setup.sh"
   # Locate the heredoc start and the banner line by content, since line numbers shift
   # when setup.sh gains code. The base file holds them at 811 and 1322.
   anchor_heredoc() { grep -nF "cat << 'EOF' > \"\$plan_dir/feature-structure.md\"" "$1" | head -1 | cut -d: -f1; }

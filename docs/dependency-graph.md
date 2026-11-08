@@ -1,6 +1,6 @@
 # Dependency Graph
 
-**Last updated:** 0000040-retire-fast-path (7 Nov 2026). Feature 0000040 moved `ravintio-framework` to 0.38.0 and changed no component dependency. Pre-push and CI now read `product.yml` through `git`, and the migrator may edit a consumer CI file it names. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). Feature 0000039 renamed the pack to `ravintio-framework` (0.37.0) and changed no dependency. The new migration helpers sit inside the pack. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026). Feature 0000038 changed no component dependency. `run-tests.sh` gains a `--quiet` flag, and `ravintio-orchestrator` loads two files from its own `references/` folder. Earlier: 0000037 left `ravintio-framework` at 0.35.0. The new `credential-scan.mjs` depends on `git` and an optional `gitleaks`. `run-tests.sh` reads the shard variables. No component dependency changed.
+**Last updated:** 0000043-macos-test-job-timeout (8 Nov 2026). Feature 0000043 moved `ravintio-framework` to 0.39.2 and changed no component dependency. The CI elapsed step needs only Bash and `date`. Feature 0000042 (0.39.1) changed no dependency either. Earlier: 0000041-pack-source-under-src (7 Nov 2026). Feature 0000041 moved the `ravintio-framework` source to `src/ravintio-framework/` (0.39.0) and changed no component dependency. Three new scripts, `build-release.mjs`, `release-check.mjs`, and `project-kind.mjs`, sit inside the pack. `setup-hook-integration` is 0.8.0, with its code under `src/ravintio-framework/`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Feature 0000040 moved `ravintio-framework` to 0.38.0 and changed no component dependency. Pre-push and CI now read `product.yml` through `git`, and the migrator may edit a consumer CI file it names. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). Feature 0000039 renamed the pack to `ravintio-framework` (0.37.0) and changed no dependency. The new migration helpers sit inside the pack. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026). Feature 0000038 changed no component dependency. `run-tests.sh` gains a `--quiet` flag, and `ravintio-orchestrator` loads two files from its own `references/` folder. Earlier: 0000037 left `ravintio-framework` at 0.35.0. The new `credential-scan.mjs` depends on `git` and an optional `gitleaks`. `run-tests.sh` reads the shard variables. No component dependency changed.
 **Maintained by:** ravintio-docs-agent
 
 ---
@@ -9,7 +9,7 @@
 
 ```mermaid
 graph TD
-    subgraph "ravintio-framework (component-pack, 0.38.0)"
+    subgraph "ravintio-framework (component-pack, 0.39.0, source at src/ravintio-framework/)"
         SKILLS["skills/ (orchestrator + phase agents)"]
         STANDARDS["standards/, templates/"]
         ENFORCE["hooks/enforcement/\n(gate-write, check-design,\nem-dash-guard)"]
@@ -23,6 +23,10 @@ graph TD
         EDG["hooks/enforcement/em-dash-guard.mjs\n(Write/Edit)"]
         RATCHET["hooks/enforcement/ratchet-check.mjs\n(Write/Edit, armed while a loop is active)"]
         PATHRULES["hooks/enforcement/path-rules.mjs\n(gated-path rules, repository root,\nlink resolution, ENFORCEMENT_PATHS,\nshared module, always installed, 0000032/0000035/0000040)"]
+        BUILDREL["scripts/build-release.mjs\n(rebuilds the root release copy, 0000041)"]
+        RELCHECK["scripts/release-check.mjs\n(root copy against release.yml, 0000041)"]
+        PROJKIND["scripts/project-kind.mjs\n(framework source or downstream, 0000041)"]
+        RELYML["ravintio-framework/release.yml\n(version, source commit, SHA-256 per file)"]
     end
 
     subgraph "Claude Code Runtime"
@@ -86,6 +90,16 @@ graph TD
     HookRunner -->|"PreToolUse Write/Edit"| RATCHET
     RATCHET -.->|"imports resolveRoot, resolveTargetBoth, shown"| PATHRULES
     RATCHET -.->|"imports"| ENFSHARED
+    SKILLS -->|"ship Step 5c calls at P7"| BUILDREL
+    BUILDREL -.->|"imports resolveRoot"| PATHRULES
+    BUILDREL -.->|"imports projectKind"| PROJKIND
+    BUILDREL -->|"writes"| RELYML
+    RELCHECK -.->|"imports projectKind"| PROJKIND
+    RELCHECK -->|"reads hashes from"| RELYML
+    SKILLS -->|"step 1a, update policy, and migrator read"| RELYML
+    BUILDREL --- NODE
+    RELCHECK --- NODE
+    PROJKIND --- NODE
 
     SH -->|"writes on successful install"| MARKER
     RS -->|"reads (reconstruction) and writes (pre-deletion cache)"| MARKER
@@ -112,6 +126,12 @@ graph TD
 - `setup.sh` and `setup.ps1` → their own retired list (0000040 ADR-005): setup removes the retired workflow copies and skill folders by name, so the clean-up doesn't depend on the skill manifest. No component dependency changed.
 - `ravintio-migrator` → a consumer's `.github/workflows/ravintio.yml` (0000040 ADR-006): the 0.38.0 migration names this one path on its `**May edit:**` line. The edit passes through `gate-write`, so a hooked consumer with no design blocks it, and the migration records `skipped` with the reason `blocked`.
 - `run-tests.sh` → shard variables (0000037-ADR-014): it reads `RAVINTIO_SHARD_INDEX` and `RAVINTIO_SHARD_COUNT` from the CI environment and clears both after reading. With neither set, it runs every suite.
+- `build-release.mjs` and `release-check.mjs` → `project-kind.mjs` (0000041 ADR-003, ADR-007): both import `projectKind`, so the release script refuses a run outside the framework source repo. `build-release.mjs` also imports `resolveRoot` from `path-rules.mjs`. All three scripts sit inside `ravintio-framework` and use Node built-ins only, so no component dependency changed.
+- Orchestrator step 1a, `standards/framework-update-policy.md`, and `ravintio-migrator` → `ravintio-framework/release.yml` (0000041 ADR-004): each reads `release.yml` first and falls back to `component.yml` for a pack before 0.39.0. The release script writes the file. No agent writes the root copy with **Write** or **Edit** (0000041 ADR-005).
+- `ravintio-migrator` → `project-kind.mjs` (0000041 ADR-007): Step 1b runs the script and compares the result with a migration's `**Applies to:**` header or its table row. If the script fails to run, the migration stays pending.
+- `.github/workflows/ravintio.yml` → `src/ravintio-framework/` (0000041 ADR-009): CI runs `src/ravintio-framework/tests/run-tests.sh`. A `release-copy-integrity` job runs `release-check.mjs --files-only` against the root copy. The job is repo-only and is not part of the consumer `hooks/ravintio.yml`.
+- Test suites → `tests/helpers/pack-root.sh` (0000041 ADR-009): the resolver gives each suite the pack root, `src/ravintio-framework/` in the source repo. It fails a suite that reads the root copy there.
+- `setup-hook-integration` → `ravintio-framework` (0000041): the manifest and docs stay at `src/setup-hook-integration/`, and the code it distributes now sits under `src/ravintio-framework/`. The dependency direction is unchanged. A consumer still receives the pack at `ravintio-framework/`.
 - `ravintio-refresh-setup` (0000020) -> `setup-hook-integration`: two-way relationship via the `.ravintio-setup-flags` marker file. `setup.sh`/`setup.ps1` write it on every successful install (producer); the refresh skill reads it for reconstruction and writes to it again before deletion (consumer and secondary writer of the same file, ADR-002). The refresh skill also re-invokes `setup.sh`/`setup.ps1` directly once flags are confirmed, and calls `refresh-delete-boot-files.sh`/`.ps1` (its own hardcoded deletion script, not a dependency on `setup-hook-integration`).
 
 ---

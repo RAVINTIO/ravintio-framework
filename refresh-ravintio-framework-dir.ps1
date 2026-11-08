@@ -1,6 +1,7 @@
-$repoDir = "C:\d\planifest\framework\"
+$repoDir = $PSScriptRoot
 
-# Refresh Framework - not required as this IS the framework
+# The root ravintio-framework\ folder is the release copy. P7 rebuilds it from
+# src\ravintio-framework\, so .claude\ installs from the release.
 
 # Remove Claude
 Remove-Item -Path "$repoDir\.claude\" -Recurse -EA SilentlyContinue

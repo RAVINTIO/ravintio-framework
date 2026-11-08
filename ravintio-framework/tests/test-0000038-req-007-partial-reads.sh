@@ -20,8 +20,11 @@ STANDARD="$FRAMEWORK/templates/standard-boot.md"
 # Feature 0000039 (RAVINTIO rebrand) renamed the brand words in the template.
 # Feature 0000040 req-001 then dropped the scope record from the gate-write
 # and shell-write-guard bullets. This hash is of the template after both
-# passes, minus the 20 KB line.
-BASELINE_MD5="c5fe062e1f4b4c7b051e07d8afc70977"
+# passes, minus the 20 KB line and the `Sanctioned scripts:` line. Feature
+# 0000041 req-002 intentionally changed the `Sanctioned scripts:` sentence
+# (eighth script, build-release.mjs argument sentence). The req-002 suites
+# own that line, so this hash leaves it out.
+BASELINE_MD5="644ef90bb8aa917bcb783bcf398e4dcc"
 
 WORK="$(mktemp -d -t ravintio_0000038_req007_XXXXXX)"
 trap 'rm -rf "$WORK"' EXIT
@@ -48,7 +51,7 @@ assert_contains "search" "$LINES" "req-007: the directive names searching"
 echo ""
 echo "=== req-007: no other line changes (AC-007.3) ==="
 
-REST_MD5="$(grep -vF -- "20 KB" "$STANDARD" | md5_of)"
+REST_MD5="$(grep -vF -- "20 KB" "$STANDARD" | grep -vF -- "Sanctioned scripts:" | md5_of)"
 assert_equals "$BASELINE_MD5" "$REST_MD5" "req-007: every other line matches the pre-change template"
 
 echo ""

@@ -6,8 +6,9 @@
 set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-ROOT="$(cd "$FRAMEWORK/.." && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+ROOT="$RAVINTIO_REPO_ROOT"
 
 SKILL="$FRAMEWORK/skills/ravintio-refresh-setup/SKILL.md"
 MIGRATION="$FRAMEWORK/migrations/migrate-remove-context-mode-and-telemetry.md"

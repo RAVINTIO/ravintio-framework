@@ -14,9 +14,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK="$SCRIPT_DIR/.."
-REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 
 file_exists() { [ -f "$1" ] && echo "yes" || echo "no"; }
 grep_has() { grep -q "$1" "$2" 2>/dev/null && echo "yes" || echo "no"; }

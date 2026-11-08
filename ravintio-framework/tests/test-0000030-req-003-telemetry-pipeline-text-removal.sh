@@ -6,9 +6,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+ROOT="$RAVINTIO_REPO_ROOT"
 
 PATTERN='telemetry|context-mode|context_mode|structured-telemetry|emit_event|telemetry-standards|PLANIFEST_TELEMETRY'
 

@@ -12,7 +12,8 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+ROOT="$RAVINTIO_REPO_ROOT"
 OVR="$ROOT/ravintio-overrides/instructions/custom-003-git-up-to-date-shorthand.md"
 
 WORK="$(mktemp -d)"

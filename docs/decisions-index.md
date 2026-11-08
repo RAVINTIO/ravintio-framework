@@ -3,7 +3,7 @@
 > Living document. Index of all ADRs across all features. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000040-retire-fast-path (7 Nov 2026). Adds 7 ADRs. They cover one-track routing, the source folder rule, `ENFORCEMENT_PATHS`, the setup retired list, migrator named paths, and the residue guard. ADR-002 supersedes 0000033 ADR-009 and 0000035 ADR-002 and ADR-003, and partly supersedes 0000014 ADR-004. ADR-004 partly supersedes 0000035 ADR-004. Earlier: 0000039-ravintio-rebrand (25 Oct 2026) added 10 ADRs. They cover the rename map, the 0.37.0 release, the old-name reads, the consumer migration, the brand guard, and the history rule. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026) added 7 ADRs. They cover the orchestrator reference files, the model aliases, quiet test output, the timing warm-up, the decomposition size floor, and the 0.36.0 migration. Earlier: 0000037 added 14 ADRs. They cover the P9 CI check, the credential scan, the GUTD CI step, and post-P6 revalidation. They also cover the `Verified by` field, the wired-command test, the migration diff, the portability lint, and the Windows CI legs. ADR-012 and ADR-013 amend 0000031 ADR-001, and ADR-014 amends 0000031 ADR-003 for the Windows shards. Earlier: 0000036 added 12 ADRs. They cover the drift check, the 0.34.0 re-run-setup migration, the `design.md` read rules, `shown()`, and the run-mode anchor. They also cover the report-only critic default, hard-limit citations, the split step, and commit subjects. ADR-002 narrows 0000003 ADR-005. ADR-009 amends 0000016 ADR-003 and 0000033 ADR-004. Earlier: 0000035 added 16 ADRs, and ADR-015 partly supersedes 0000005 ADR-005. Feature 0000034 recorded no ADRs.
+Last updated: 0000043-macos-test-job-timeout (8 Nov 2026). Adds 4 ADRs. They cover the unchanged stack, a per-entry cap with sharded macOS runs, the always-run elapsed step, and reading the PR checks before the P7 archive. ADR-002 amends 0000037 ADR 014. Earlier: 0000042-fix-windows-shards-pr-77 (8 Nov 2026). Adds 4 ADRs. They cover the unchanged stack with the shared `native()` path helper, one Windows guard per suite for link cases, the blob id compare for a released migration, and reading the PR checks before the P7 archive. Earlier: 0000041-pack-source-under-src (7 Nov 2026). Adds 9 ADRs. They cover the unchanged stack, the pack source under `src/`, the release script, the `release.yml` contract, pack copy ownership, the manifest location rule, the `Applies to` header, the 0.39.0 consumer migration, and tests and CI from `src/`. ADR-007 narrows 0000035 ADR-019 for migrations that carry the `Applies to` header or a table row. Earlier: 0000040-retire-fast-path (7 Nov 2026) added 7 ADRs. They cover one-track routing, the source folder rule, `ENFORCEMENT_PATHS`, the setup retired list, migrator named paths, and the residue guard. ADR-002 supersedes 0000033 ADR-009 and 0000035 ADR-002 and ADR-003, and partly supersedes 0000014 ADR-004. ADR-004 partly supersedes 0000035 ADR-004. Earlier: 0000039-ravintio-rebrand (25 Oct 2026) added 10 ADRs. They cover the rename map, the 0.37.0 release, the old-name reads, the consumer migration, the brand guard, and the history rule. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026) added 7 ADRs. They cover the orchestrator reference files, the model aliases, quiet test output, the timing warm-up, the decomposition size floor, and the 0.36.0 migration. Earlier: 0000037 added 14 ADRs. They cover the P9 CI check, the credential scan, the GUTD CI step, and post-P6 revalidation. They also cover the `Verified by` field, the wired-command test, the migration diff, the portability lint, and the Windows CI legs. ADR-012 and ADR-013 amend 0000031 ADR-001, and ADR-014 amends 0000031 ADR-003 for the Windows shards. Earlier: 0000036 added 12 ADRs. They cover the drift check, the 0.34.0 re-run-setup migration, the `design.md` read rules, `shown()`, and the run-mode anchor. They also cover the report-only critic default, hard-limit citations, the split step, and commit subjects. ADR-002 narrows 0000003 ADR-005. ADR-009 amends 0000016 ADR-003 and 0000033 ADR-004. Earlier: 0000035 added 16 ADRs, and ADR-015 partly supersedes 0000005 ADR-005. Feature 0000034 recorded no ADRs.
 
 > **Note:** ADR titles for features 0000001–0000010 were inferred from filenames at bootstrap time. Human review recommended for accuracy.
 
@@ -346,7 +346,7 @@ ADR files: [plan/_archive/0000035-write-gate-scope-and-path-hardening-2026-10-22
 | ADR-016 | Per-project migration run records | accepted | Each project records each run at `plan/_migrations/{stem}.md`. The frontmatter holds six fields and one outcome: `applied`, `not applicable`, or `skipped`. |
 | ADR-017 | Migration records owned by the migrator | accepted | `ravintio-migrator` is the only writer of `plan/_migrations/`. Orchestrator resume detection reads the records and never writes them. |
 | ADR-018 | Pending means no readable record | accepted | A migration is pending when its record is missing or can't be read. Resume detection reads only top-level migration files and ignores orphan records. |
-| ADR-019 | Records come from scans, never seeded | accepted | No record is seeded from the old completed-migrations folder. Each record comes from a scan. A scan with findings writes no record until the human on the loop answers every batch. |
+| ADR-019 | Records come from scans, never seeded | narrowed by 0000041 ADR-007 | No record is seeded from the old completed-migrations folder. Each record comes from a scan. A scan with findings writes no record until the human on the loop answers every batch. **Narrowed:** 0000041 ADR-007 lets the migrator record `not applicable` with no scan when the project kind differs from a migration's `**Applies to:**` header or its table row. A migration with neither still needs a scan. |
 
 ### Feature 0000036: pipeline-friction-and-gate-fixes
 
@@ -432,6 +432,44 @@ ADR files: [plan/_archive/0000040-retire-fast-path-2026-11-07/adr/](../plan/_arc
 | ADR-005 | Setup removes retired track files through a named list | accepted | `setup.sh` and `setup.ps1` carry two named lists of retired workflow and skill names. Every run removes them from the tool it sets up, with or without a skill manifest. |
 | ADR-006 | Migrations may name extra paths, each edit confirmed | accepted | The scope rule (migrator Hard Limit 1) widens to the paths on a migration's `**May edit:**` line, and each edit needs its own confirmation. `src/` stays closed. **P5 change:** a hook-blocked edit records `skipped` with the reason `blocked` (risk R-014). |
 | ADR-007 | Residue guard with a closed allowlist and a history-line rule | accepted | `test-0000040-req-006-residue-guard.sh` fails on a live reference to a retired track outside history prefixes, a closed allowlist, and a history-line rule. A stale entry fails the suite. |
+
+### Feature 0000041-pack-source-under-src
+
+ADR files: [plan/_archive/0000041-pack-source-under-src-2026-11-07/adr/](../plan/_archive/0000041-pack-source-under-src-2026-11-07/adr/)
+
+| ADR | Title | Status | Summary |
+|-----|-------|--------|---------|
+| ADR-001 | Stack unchanged | accepted | No new language, runtime, or package. The release script, the resolver, and the new checks use Node.js `.mjs` and Bash. |
+| ADR-002 | Pack source under src | accepted | The pack source and its `component.yml` move to `src/ravintio-framework/` in one approved git pass. The root `ravintio-framework/` becomes a workflow-only copy of the last release, which P7 alone refreshes. Consumers keep the `ravintio-framework/` runtime path. |
+| ADR-003 | Release script | accepted | `scripts/build-release.mjs` rebuilds the root copy from `src/ravintio-framework/` without `component.yml`. It builds in a work folder, swaps, writes only inside three folders, and runs only in the source repo. The Write-or-Edit rule (boot Hard Limit 8) sanctions it, and ship Step 5c runs it at P7. |
+| ADR-004 | release.yml contract and readers | accepted | The released pack carries `release.yml` with a version, a source commit, a build date, and a SHA-256 per file. Step 1a, the update policy, and the migrator read it first and fall back to `component.yml` before 0.39.0. Closes backlog 0000181. |
+| ADR-005 | Pack copy data ownership | accepted | `ravintio-framework` owns every file under `src/ravintio-framework/`. The release script owns the root copy and its two work folders. Consumers own their copy of `component.yml`. `setup-hook-integration` owns no pack file. |
+| ADR-006 | Manifest location read from product.yml | accepted | A component manifest lives at the path `product.yml` lists, with `src/{component-id}/component.yml` as the default. The codegen close-out and the ship fallback never name `ravintio-framework/component.yml`. |
+| ADR-007 | Applies to header and source-repo signal | accepted | A repo is the framework source when `product.yml` lists `ravintio-framework` at `src/ravintio-framework/component.yml` and that file exists. `project-kind.mjs` owns the signal. A migration may carry `**Applies to:**`, and a migrator table maps `retroactive-release-tags.md`. Narrows 0000035 ADR-019. |
+| ADR-008 | Consumer migration removes the leftover manifest | accepted | The 0.39.0 downstream migration offers to remove a leftover `ravintio-framework/component.yml` beside `release.yml`. The human on the loop confirms and runs the delete, and the migrator checks the result. |
+| ADR-009 | Tests and CI from src | accepted | Suites read the pack from `src/ravintio-framework/` through one resolver that fails a suite reading the root copy. CI runs the `src/` suites, and a new job checks the root copy against its `release.yml` hashes. Version equality checks run only on a released tree. |
+
+### Feature 0000042-fix-windows-shards-pr-77
+
+ADR files: [plan/_archive/0000042-fix-windows-shards-pr-77-2026-11-08/adr/](../plan/_archive/0000042-fix-windows-shards-pr-77-2026-11-08/adr/)
+
+| ADR | Title | Status | Summary |
+|-----|-------|--------|---------|
+| ADR-001 | Stack unchanged | accepted | No new tool or library. The suites convert paths for Node with `pwd -W` and the 0000035 `native()` helper, which runs `cygpath -m` when it exists. |
+| ADR-002 | Skip link cases on Windows | accepted | Each 0000041 suite puts its link cases behind one `IS_WIN` guard and prints one `SKIP (windows)` line per case. Git Bash `ln -s` makes a copy. Linux and macOS keep the link coverage. |
+| ADR-003 | Blob id compare for the released migration | accepted | The req-005 suite checks `retroactive-release-tags.md` by git blob id at `HEAD` and in the working tree against `v0.38.0`, so a CRLF checkout can't fail it. |
+| ADR-004 | Read the Windows CI before the archive | accepted | The run reads every PR check after the P4 CI pass and runs `release-check.mjs --files-only` before the P7 archive, so a fix can still pass `gate-write`. |
+
+### Feature 0000043-macos-test-job-timeout
+
+ADR files: [plan/_archive/0000043-macos-test-job-timeout-2026-11-08/adr/](../plan/_archive/0000043-macos-test-job-timeout-2026-11-08/adr/)
+
+| ADR | Title | Status | Summary |
+|-----|-------|--------|---------|
+| ADR-001 | Stack unchanged | accepted | No new tool or Action. The elapsed step uses Bash and `date +%s`. The repository CI owns `.github/workflows/ravintio.yml`. |
+| ADR-002 | Per-entry cap and two macOS shards | accepted | Every `test-suite` entry carries `cap`, and sharded entries carry `shard` and `shards`. macOS ran in two shards, and P4 raised it to three under the ADR's own 10-minute rule. The test step times out at `matrix.cap` under a fixed 25-minute job backstop. Amends 0000037 ADR 014. |
+| ADR-003 | Always-run elapsed step | accepted | A step writes the start time to `GITHUB_ENV`, and an `if: always()` step prints the time against the cap with a warning past two-thirds. The step accepts 1 to 10 digits with no leading zero. A suite runs the step's real `run:` block. |
+| ADR-004 | Read the PR #77 CI before the archive | accepted | The run reads every PR check after P4 and moves on only when both macOS shards take under 10 minutes, so a fix can still pass `gate-write`. |
 
 ---
 

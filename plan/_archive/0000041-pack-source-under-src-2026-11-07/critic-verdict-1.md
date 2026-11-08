@@ -1,0 +1,26 @@
+# Design-Critic Verdict (iteration 1)
+**Mode:** on
+**Mechanical check:** clean. `node ravintio-framework/scripts/consistency-check.mjs plan/current` printed one warning, `req-002-release-script.md: 4 acceptance criteria (aim for 3, consider splitting the story)`, then `consistency-check: clean`, exit 0. The recorded keep answer covers the warning (see item 9).
+**Overall:** REJECT
+
+Phase is P1. No ADRs exist, so items 3 and 4 are not applicable and do not count against the verdict. The REJECT rests on items 2 and 8, both minor and quick to fix.
+
+| Rubric item | Verdict | Evidence / finding |
+|-------------|---------|--------------------|
+| 1 Testability | pass | Every AC names an observable outcome and a `Verified by:` mode. Examples: req-002 AC1 (exit 0, byte-identical rerun, `summary:` counts, under 30 seconds), req-003 AC1 (named output lines and exit codes), req-006 AC2 (record outcome per fixture), req-007 AC1 and AC2 (three `SKIP (open run):` lines, FAIL lines). req-002 AC4 is manual but checks a named Decision line and a named recommendation. |
+| 2 Traceability | fail | Source fields resolve to US-001, US-002, or US-003, and the execution plan maps every story to a requirement. The brief has no orphan stories. But req-007 and req-008 carry user-story sentences that appear in neither the brief nor `design.md`. See findings 1 and 3. |
+| 3 ADRs record real decisions | not applicable | No ADRs exist at P1. |
+| 4 Consequences are honest | not applicable | No ADRs exist at P1. |
+| 5 Scope boundaries | pass | `scope.md` Out of Scope excludes plausible work: rewriting `plan/_archive/` and released migrations (the 0.38.0 migration names `ravintio-framework/component.yml`), renaming the 134-file consumer runtime path, hand edits to the root copy, and backlog 0000364. Each has a stated reason. |
+| 6 Risks specific and mitigated | pass | `risk-register.md` R-001 to R-014 name files and mechanisms. Examples: `markedRoot` in `path-rules.mjs` (R-006), `eol=lf` in `.gitattributes` (R-008), CRLF hashing (R-009), `em-dash-guard.mjs` scope (R-011). Each mitigation is an action tied to a requirement, a probe, or a backlog ID. I confirmed `.gitattributes` lines 6 and 7 and `.gitignore` line 10 (`CLAUDE.md`) against the repo. |
+| 7 NFRs measurable | pass | `execution-plan.md` NFR-001 to NFR-004 each carry a number or deterministic check: under 30 seconds, 100% hash match, 0 bytes outside three folders, 0 files changed on rerun. Each names its measuring test. |
+| 8 Internal consistency | fail | Paths, step names, exit codes, and the `release.yml` format agree across the design, scope, execution plan, and req-001 to req-008. I checked 33 files at mode `100755`, tag `v0.38.0`, 139 and 39 test entries, and the `git add plan/current/ ...` line that `test-0000032-req-001-marker-clear-before-tag.sh` matches. One conflict remains: finding 2. |
+| 9 Split step | pass | Only req-002 exceeds three criteria (four). Its file holds `Split step: keep, at four criteria` with the one concern named. `build-log.md` line 112 holds `Decision (P1): split step for req-002: keep / reason: one concern, a release copy a consumer can trust`. req-001, 003, 004, 005, 006, 007, and 008 each hold a keep note and a matching Decision line (lines 97, 113, 121, 124, 128, 105, 107), and each has three criteria. |
+
+## Findings (severity-ordered)
+- [minor] requirements/req-007-released-tree-version-suite.md and requirements/req-008-tests-and-ci-from-src.md: each `## User Story` is a new sentence ("I see the version suite pass from P3 to P7 and hold in full on a released tree..." and "I see the suites and CI test the pack source...") and does not match US-001 in `design.md` and `feature-brief.md`. Both claim `Source: US-001`. Replace each with the US-001 text verbatim, or add the new stories to the brief and the design and record that deviation.
+- [minor] requirements/req-005-applies-to-header.md versus req-002 and req-008: req-005 is `Priority: should-have` (US-003). req-002 imports `projectKind(root)` from `project-kind.mjs` and refuses to run without it. req-008's resolver also runs that script, and `execution-plan.md` Build order puts req-005 at step 2. A cut should-have breaks two must-have requirements. Raise req-005 to must-have, or split `project-kind.mjs` out as a must-have part and keep the header rule as should-have.
+- [minor] requirements/req-004-component-path-rule.md and req-006-consumer-migration.md: both trace to US-002 ("install a pack that has `release.yml` and no `component.yml`"). req-004 changes manifest-location text in spec-agent, docs-agent, codegen, and ship. That text does not serve a consumer who installs a pack. The design covers it through backlog 0000061 and 0000361, so name that source in the execution plan's story mapping, or tie it to a brief acceptance criterion. No brief acceptance criterion names req-004 or req-006.
+- [minor] risk-register.md R-005: it says the git pass moves "about 1,186 files". `git ls-files ravintio-framework` lists 1,184. Correct the count or use "about 1,200" throughout.
+
+No critical or major findings. The existing backlog entries (0000382, 0000383, 0000384, 0000387) cover the out-of-scope problems I met, so I filed no new entry.

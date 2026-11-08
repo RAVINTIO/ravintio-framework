@@ -14,9 +14,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(cd "$FRAMEWORK/.." && pwd)"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO="$RAVINTIO_REPO_ROOT"
 MIGRATIONS="$FRAMEWORK/migrations"
 RECORDS="$REPO/plan/_migrations"
 
@@ -123,7 +124,7 @@ for path in "$MIGRATIONS"/*.md; do
       "req-010: the build log holds exactly one Exception waiting line for $name"
   fi
 done
-assert_equals "13" "$COUNT" "req-010: the repo has thirteen migrations to account for"
+assert_equals "14" "$COUNT" "req-010: the repo has fourteen migrations to account for"
 
 # =============================================================================
 echo ""

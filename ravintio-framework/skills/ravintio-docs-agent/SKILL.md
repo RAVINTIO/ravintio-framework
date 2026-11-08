@@ -80,7 +80,7 @@ Wait for the human to confirm before proceeding. Record the confirmed decision i
 ## Input
 
 - All artifacts produced by prior phases at `plan/`
-- The implementation at `src/{component-id}/` (all components in the feature)
+- The implementation at each component's folder under the [manifest-location rule](../../templates/component-guide.md#file-location) (all components in the feature)
 - The design at `plan/current/design.md`
 
 ## What You Produce
@@ -147,7 +147,7 @@ Perform these specific drift checks:
 |-------|----------------|---------------|----------------------|
 | API endpoints (if applicable) | OpenAPI spec | Implemented routes | Flag: missing or extra endpoints |
 | Domain terms | Domain glossary | Code variable/function names | Flag: non-glossary terms in code |
-| Component boundaries | RAVINTIO component list | `src/` directories with `component.yml` | Flag: missing or extra components |
+| Component boundaries | RAVINTIO component list | The manifest paths that `product.yml` lists (the default for an unlisted component) | Flag: missing or extra components |
 | Data ownership | Component manifests (`data.ownsData`) | Database connection/query patterns | Flag: cross-component data writes |
 | ADR compliance | ADR decisions | Implementation patterns | Flag: code that contradicts an accepted ADR |
 | Dependency direction | Dependency graph | Import/require statements | Flag: undeclared dependencies |

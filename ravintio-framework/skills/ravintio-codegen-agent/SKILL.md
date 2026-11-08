@@ -176,12 +176,20 @@ Recommended action: {what the human should do}
 - Update `metadata.updatedAt` and `metadata.lastModifiedBy`.
 - Increment `version` to `0.1.0` on first build.
 
-**Framework component.yml close-out:**
-- If any file under `ravintio-framework/` was modified during this P3 run, update `ravintio-framework/component.yml` before committing:
-  - Increment the minor version (e.g. `0.12.0` → `0.13.0`)
-  - Set the `feature` field to the current feature ID (e.g. `0000013-codegen-component-version-bump`)
-- Include `ravintio-framework/component.yml` in the P3 commit so the ship-agent reads the correct version when creating the git tag.
-- This applies to all framework-modifying features: docs-only, SKILL.md, template, migration, and code changes alike.
+**Component manifest close-out:**
+- Run this close-out before the P3 commit, so the ship-agent reads the correct version when it creates the git tag.
+- Read the run's components from the Components list under the design's `## Engineering Layer`.
+- Find each component's manifest under the rule in [component-guide.md](../../templates/component-guide.md). It reads the path that `product.yml` lists, else the default.
+- A component changed when any file under its folder changed in this P3 run. A changed file differs from the `HEAD` at P3 start, so the TDD commits count.
+- If two component folders hold a changed file, the deeper folder's component owns it.
+- For each changed component, take these steps:
+  - Increment the minor version in its manifest (e.g. `0.12.0` → `0.13.0`).
+  - Set the `feature` field to the current feature ID (e.g. `0000013-codegen-component-version-bump`).
+  - Stage the manifest in the P3 commit.
+- If a manifest's `feature` already holds the current feature ID, a repeat P3 run already bumped it. Leave its version alone.
+- If `product.yml` lists a manifest path with no file, stop and report the path. Never fall back to the default and never create a manifest.
+- A changed file under a `## Component Paths` entry with no listed manifest bumps nothing.
+- This applies to every kind of change: docs-only, SKILL.md, template, migration, and code.
 
 **Quirks and tech debt:**
 - If something doesn't fit cleanly, write it to `src/{component-id}/docs/quirks.md` and add it to the `quality.quirks` array in `component.yml`. Do not silently work around it.

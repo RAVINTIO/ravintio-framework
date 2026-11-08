@@ -5,7 +5,7 @@
 | Type | Coverage | Notes |
 |---|---|---|
 | Unit | 0% | No unit tests for individual bash functions |
-| Integration | Partial | Setup tests under `ravintio-framework/tests/` cover flag handling and hook wiring |
+| Integration | Partial | Setup tests under `src/ravintio-framework/tests/` cover flag handling and hook wiring |
 | E2E | Partial | `test_setup.sh` / `test_setup.ps1` validate basic setup paths for tool targets |
 
 ## What is tested
@@ -15,7 +15,8 @@
 - Install clean-up and retired flags (0000030 REQ-004, NFR-002), 220 live-invocation assertions, `test-0000030-req-004-install-clean-up-and-retired-flags.sh`. It covers the retired-flag notice and exit 0, the marker without retired flags, every clean-up step and its output, the malformed-file byte-identical skip, the Node-missing skip, the parent-path containment check (F3), failed delete and rename (F4), the exclusive temporary file and mode (F5), the opencode `opencode.json` skip (F1), and static checks of the PowerShell source (F2)
 - Windows PowerShell 5.1 and the stale clean-up (0000037 req-011), `test-0000037-req-011-windows-powershell-coverage.sh` (29 assertions) and the req-011 section of `test_setup.ps1`, which runs live under PowerShell 7 and 5.1. It covers the retired-flag notice, the stale folder and entry removal, the surviving hand-added hook, and the marker.
 - Installed hook commands (0000037 req-007), `test-0000037-req-007-wired-command.sh` (22 assertions). It runs the generated `settings.json` commands for `gate-write`, `shell-write-guard`, and `auto-trigger-orchestrator` verbatim through `bash -c`.
-- Rename to RAVINTIO (0000039), `test-0000039-req-001` to `req-010` under `ravintio-framework/tests/`. Hook wiring and setup suites now point at `ravintio-framework/`. `test-0000039-req-002-runtime-names.sh` and `test-0000039-req-008-emitted-names.sh` cover setup output and the stop while the old folders exist. `test-0000039-req-006-consumer-migration.sh` and `req-009` cover the helpers. `test-0000039-req-007-brand-guard.sh` fails on any live old-name hit outside its allowlist.
+- Rename to RAVINTIO (0000039), `test-0000039-req-001` to `req-010` under `src/ravintio-framework/tests/`. Hook wiring and setup suites now point at `ravintio-framework/`. `test-0000039-req-002-runtime-names.sh` and `test-0000039-req-008-emitted-names.sh` cover setup output and the stop while the old folders exist. `test-0000039-req-006-consumer-migration.sh` and `req-009` cover the helpers. `test-0000039-req-007-brand-guard.sh` fails on any live old-name hit outside its allowlist.
+- Pack move to `src/ravintio-framework/` (0000041, version 0.8.0). Setup and hook suites read the pack through `tests/helpers/pack-root.sh`. `test-0000041-req-001-move-pack-to-src.sh` and `req-008-tests-and-ci-from-src.sh` check the paths. The full run covers 176 suites.
 - Suite run on 2026-10-25 with `run-tests.sh --quiet`: 122 feature suites passed and 5 failed, and 35 regression suites passed. Failing: `test-0000036-req-005-hard-limits-cited-by-name.sh`, `test-0000039-req-003-environment-variables.sh`, `req-004-brand-prose.sh`, `req-007-brand-guard.sh`, and `req-010-version-bump.sh`. Most trace to docs written in P6 and are open at the time of writing.
 - Removed files and residue (0000030 REQ-001, REQ-002, NFR-001), `test-0000030-req-001-002-removed-files-and-residue.sh`
 <!-- BEGIN retired-integrations (0000030) -->

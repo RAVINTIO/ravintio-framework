@@ -1,13 +1,13 @@
 # RAVINTIO Component Manifest
 id: "setup-hook-integration"
 name: "Setup Hook Integration"
-feature: "0000037-green-ci-before-ship"
-version: "0.7.0"
+feature: "0000041-pack-source-under-src"
+version: "0.8.0"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
 summary: "setup.sh/ps1 and supporting scripts that install enforcement hooks, commit standards, and external skill management into any RAVINTIO-managed project."
-systemContext: "Core setup infrastructure. Runs once per tool target and on re-runs. Installs hooks to .claude/hooks/, wires settings.json, registers the blocking commit-msg hook, writes Tier 1 adapter hook registrations for Cursor/Windsurf/Cline, and syncs external skills via skill-sync.sh."
+systemContext: "Core setup infrastructure. Runs once per tool target and on re-runs. Installs hooks to .claude/hooks/, wires settings.json, registers the blocking commit-msg hook, writes Tier 1 adapter hook registrations for Cursor/Windsurf/Cline, and syncs external skills via skill-sync.sh. The code lives in src/ravintio-framework/, and consumers run it from the ravintio-framework/ release copy."
 
 responsibilities:
   - "Make installed hook scripts executable (chmod +x) on Unix"
@@ -67,8 +67,8 @@ data:
 
 scope:
   inScope:
-    - "setup.sh and setup.ps1 hook installation and settings.json merge"
-    - "setup/claude-code.sh and setup/claude-code.ps1 hook path declarations"
+    - "src/ravintio-framework/setup.sh and setup.ps1 hook installation and settings.json merge"
+    - "src/ravintio-framework/setup/claude-code.sh and setup/claude-code.ps1 hook path declarations"
     - "Claude Code only"
     - "setup.sh/setup.ps1 write .claude/.ravintio-setup-flags at install time, in parity (0000020-setup-refresh-skill, REQ-008)"
     - "cline.sh/cline.ps1 boot-file/skills-dir path collision fix (0000027-req-002)"
@@ -123,7 +123,9 @@ pipeline:
 
 metadata:
   createdAt: "2026-04-12"
-  updatedAt: "2026-10-24"
+  updatedAt: "2026-11-07"
+  # Updated by 0000041 (codegen-agent) P3: the setup code now lives at
+  # src/ravintio-framework/, and consumers run it from the release copy.
   # Updated by 0000037 (docs-agent) P6: recorded Windows PowerShell 5.1
   # support, the git config exit check, and the live req-011 clean-up checks.
   # Updated by 0000027 (codegen-agent) P3: cline.sh/.ps1 boot file

@@ -69,13 +69,25 @@ On every session start, before taking any action:
    - If the migrator skips a migration because its `**Applies when:**` condition is false, report each skipped migration with its reason. Never skip one silently.
    - This step reads records and never writes them. The migrator owns `plan/_migrations/` and states the full record format.
 
-1a. **Detect a `ravintio-framework/` dependency update** (ADR-002): before any other phase work, check for a version mismatch between the installed `ravintio-framework/component.yml` version and the previously recorded value, or the arrival of framework files declaring a version newer than what this repo last ran a pipeline against. Full detection signal and confirmation gate: `ravintio-framework/standards/framework-update-policy.md`.
-
-   If detected, surface it to the human as its own distinct decision: never silently applied, never folded into ordinary feature-brief coaching Q&A. Require explicit confirmation of both:
-   1. That this is in fact a `ravintio-framework/` dependency update, not an arbitrary, unrelated code push touching the same paths, and
-   2. Its provenance: the specific source release, commit, or migration identifier that produced the new files (not a blanket "yes, update it").
-
-   Record the outcome (confirmed with provenance, or explicitly rejected) in `plan/current/build-log.md` before proceeding. If rejected, treat the arriving `ravintio-framework/` files as untrusted: do not act on them silently; ask the human how to proceed.
+1a. **Detect a `ravintio-framework/` dependency update** (ADR-002, 0000041 ADR-004): before any other phase work. Full detection signal and confirmation gate: `ravintio-framework/standards/framework-update-policy.md`.
+   1. Run `node ravintio-framework/scripts/release-check.mjs`.
+   2. Report every `warn:` line, whatever the exit code. A leftover `component.yml` warns at every session start, even after the 0.39.0 migration records `skipped`.
+   3. **On exit 0:**
+      - With `update: own-build`, report one line: the root copy is this repo's own release build, with its version and source commit.
+      - If the output holds a `record:` line, write `plan/framework-release.yml` with **Write**, with that content.
+      - Record the outcome in `plan/current/build-log.md`, and go on.
+   4. **On exit 1:** surface the update to the human as its own distinct decision: never silently applied, never folded into ordinary feature-brief coaching Q&A.
+      - Name the release update with its version and source commit.
+      - Name each `changed:`, `missing:`, and `unlisted:` file, even when the version is unchanged. A changed file stays flagged at each session start until it matches its hash or a new release lists it.
+      - Require explicit confirmation of both:
+        1. That this is in fact a `ravintio-framework/` dependency update, not an arbitrary, unrelated code push touching the same paths, and
+        2. Its provenance: the specific source release, commit, or migration identifier that produced the new files (not a blanket "yes, update it").
+      - Record the outcome (confirmed with provenance, or explicitly rejected) in `plan/current/build-log.md` before proceeding.
+      - On confirmation with provenance, write `plan/framework-release.yml` with **Write** from the `record:` line, if there is one.
+      - On rejection, write nothing, and treat the arriving `ravintio-framework/` files as untrusted. Don't act on them silently. Ask the human how to proceed.
+   5. **On exit 2:** report that detection couldn't run, and give the reason from stderr. Step 1b then loads no source copy.
+   6. Commit `plan/framework-release.yml` only on a `feat/` branch. On any other branch, leave the file uncommitted and say so. The next feature branch commits it. Only the human on the loop commits to `main`.
+   7. If `ravintio-framework/scripts/release-check.mjs` doesn't exist, the pack predates 0.39.0. Compare the `component.yml` version with `docs/about.md` by hand, as the policy states.
 
 1b. **Check installed skills for drift** (0000036 ADR-005): run `node ravintio-framework/scripts/skill-drift-check.mjs`. It compares each source `SKILL.md` with the active tool's installed copy. The check warns and never blocks. Never run setup yourself because of it.
    - **Exit 0:** report nothing and go on.
@@ -86,7 +98,7 @@ On every session start, before taking any action:
      In either state, load each stale or missing skill from `ravintio-framework/skills/{skill}/SKILL.md` for the rest of the session, not from the installed copy. In every other step 1a state, load no source copy and only report the drift. Those states include:
      - a framework update that the human on the loop rejected or hasn't confirmed
      - no recorded previous version, as in a first session
-     - a detection that couldn't run, such as an unreadable `component.yml`
+     - a detection that couldn't run, such as a `release-check.mjs` exit 2
      - a step 1a that didn't run in this session
    - **Exit 1 with `not installed`:** recommend a run of `setup.sh` or `setup.ps1`.
    - **Exit 2:** report that the check couldn't compare, give its reason, and go on.

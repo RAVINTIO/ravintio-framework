@@ -16,8 +16,10 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 WORKFLOW="$REPO_ROOT/.github/workflows/ravintio.yml"
 CONSUMER_WORKFLOW="$FRAMEWORK/hooks/ravintio.yml"
 TEST_PS1="$SCRIPT_DIR/test_setup.ps1"
@@ -43,7 +45,7 @@ assert_equals "yes" "$([ -n "$J51" ] && echo yes || echo no)" "req-011: workflow
 assert_equals "yes" "$(yes_no 'runs-on:[[:space:]]*windows-latest' "$J51")" "req-011: job runs on windows-latest"
 assert_equals "yes" "$(yes_no 'shell:[[:space:]]*powershell$' "$J51")" "req-011: job uses shell powershell"
 assert_equals "no" "$(yes_no 'shell:[[:space:]]*pwsh' "$J51")" "req-011: job does not use shell pwsh"
-assert_equals "yes" "$(yes_no 'ravintio-framework/tests/test_setup\.ps1' "$J51")" "req-011: job runs test_setup.ps1"
+assert_equals "yes" "$(yes_no "${RAVINTIO_PACK_REL}/tests/test_setup\.ps1" "$J51")" "req-011: job runs test_setup.ps1"
 assert_equals "yes" "$(yes_no '\$PSVersionTable\.PSVersion' "$J51")" "req-011: job prints PSVersionTable.PSVersion"
 assert_equals "yes" "$(yes_no 'Major[[:space:]]*-ne[[:space:]]*5' "$J51")" "req-011: job fails unless the major version is 5"
 assert_equals "yes" "$(yes_no 'permissions:' "$J51")" "req-011: job sets a permissions block"

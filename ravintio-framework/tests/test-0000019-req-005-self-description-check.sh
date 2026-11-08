@@ -6,9 +6,10 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
 FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO_ROOT="$(cd "$FRAMEWORK/.." && pwd)"
+REPO_ROOT="$RAVINTIO_REPO_ROOT"
 CHECK="$FRAMEWORK/scripts/self-description-check.mjs"
 
 echo ""

@@ -16,7 +16,7 @@ hooks:
 ## Prefix
 
 Emit the correct phase prefix as you move through each step:
-- `P7:` for all archive work (Steps 1–7, including Step 5b)
+- `P7:` for all archive work (Steps 1–7, including Step 5b and Step 5c)
 - `P8:` for build assessment (Step 8)
 - `P9:` for ship steps (the P9 marker step and Steps 9–12)
 
@@ -123,9 +123,19 @@ Run this step before Step 6 archives `design.md` (0000035 ADR-010). You own `pro
 3. Act on the exit code:
    - Exit 0: `product.yml` names this release's `version` and `feature`. Continue.
    - Exit 5: the policy is `external`, and only `feature` changed. Step 9 consults the external anchor or the human on the loop.
-   - Exit 4: no `product.yml` exists. With exactly one component, do nothing, because Step 9 reads that `component.yml`. With two or more components, rerun the call with `--create --product-id "{id}" --product-name "{name}"` and one `--component` for each component. Take `{id}` and `{name}` from the design.
+   - Exit 4: no `product.yml` exists. With exactly one component, do nothing, because Step 9 reads that `component.yml` (its path follows the rule in [component-guide.md](../../templates/component-guide.md)). With two or more components, rerun the call with `--create --product-id "{id}" --product-name "{name}"` and one `--component` for each component. Take `{id}` and `{name}` from the design.
    - Exit 2: the script wrote nothing, and stderr names the reason. If an argument broke a rule, correct it and rerun. If the reason names a file-system error code, such as `EACCES`, fix the file or folder permission and rerun. If the manifest is invalid or the derived version differs from `{version}`, stop and report the reason. Never tag a fabricated version.
 4. Log the line the script printed in the P7 build-log block.
+
+### Step 5c: Build the release copy
+
+This step rebuilds the root `ravintio-framework/` release copy from `src/ravintio-framework/` in the framework source repo (0000041 ADR-003). Write the root copy only through `build-release.mjs`, never through **Write** or **Edit**. The Write-or-Edit rule (boot Hard Limit 8) names the script as a sanctioned script, with no arguments.
+
+1. Run `node ravintio-framework/scripts/project-kind.mjs`. If it prints anything other than `framework source`, skip this step and log `P7: Step 5c skipped: project kind {output}`. If `src/ravintio-framework/` exists in that case, also log `P7: Step 5c warning: src/ravintio-framework/ exists, so check product.yml`. A malformed `product.yml` reads as `downstream`, and the warning makes that skip visible.
+2. Run `node ravintio-framework/scripts/build-release.mjs`. The step runs the root copy, the last release, so a broken change under `src/` can't break the build that ships it.
+3. On exit 0, log the `summary:` line in the P7 build-log block.
+4. On exit 2, stop and report the reason. Never copy the pack by hand, and never write the root copy through **Write** or **Edit**.
+5. On any other exit, fix the cause stderr names and rerun. A rerun recovers a leftover state on its own.
 
 ### Step 6: Archive plan/current/
 
@@ -149,11 +159,12 @@ Run this step before Step 6 archives `design.md` (0000035 ADR-010). You own `pro
 
 ### Step 7: Commit archive
 
-Commit the archive, changelog, `docs/about.md`, and `product.yml` to the branch in one commit. Step 5b wrote `product.yml`, so stage it whenever it exists:
+Commit the archive, changelog, `docs/about.md`, and `product.yml` to the branch in one commit. Step 5b wrote `product.yml`, so stage it whenever it exists. In the framework source repo, Step 5c rebuilt the root `ravintio-framework/` copy, so stage that too:
 
 ```
 git add plan/current/ plan/_archive/ plan/changelog/ docs/about.md
 if [ -f product.yml ]; then git add product.yml; fi
+if [ "$(node ravintio-framework/scripts/project-kind.mjs)" = "framework source" ]; then git add -A -- ravintio-framework/; fi
 git --literal-pathspecs diff --cached --name-only --no-renames -z
 node ravintio-framework/scripts/credential-scan.mjs --safe-paths "{out-file}" -- {candidate} ...
 [ -s "{out-file}" ] && git --literal-pathspecs commit -m "plan(p7): archive plan/current" -m "{feature-id}" --pathspec-from-file="{out-file}" --pathspec-file-nul
@@ -293,7 +304,7 @@ Determine the release version (ADR-002, product-level versioning):
    Exit 0 → use the printed version. Exit 5 (`versionPolicy: external`) → present the external-anchor constraint and ask the human for the version. Exit 2 (invalid version, unknown policy, or a `components[]` entry pointing at a missing/unversioned `component.yml`) → show the script's reason and prompt the human for a manual value; never tag a fabricated version. `components[]` entries hold `{id, path}`, not a cached version: the script reads each referenced `component.yml`'s own `version:` field live, so there is nothing to sync here before tagging.
 
    Step 9 only reads `product.yml`. Step 5b set its release fields at P7 (0000035 ADR-010). If the derived version differs from the version the human on the loop confirmed at P0, stop and report the difference. Leave the file as it is. A stale file waits for the next P7.
-2. **No `product.yml` and the project has exactly one component** (exit 4): read the `version` field from the single `component.yml` (for this repo: `ravintio-framework/component.yml`). This is the unchanged pre-0000016 behaviour.
+2. **No `product.yml` and the project has exactly one component** (exit 4): read the single component from the archived design at `plan/_archive/{feature-folder}/design.md`, because Step 6 has archived it. Then read the `version` field from that component's manifest under the rule in [component-guide.md](../../templates/component-guide.md). With no `product.yml`, the rule gives the default path. If the design lists no component, or more than one, stop and report it. Never tag in that case.
 3. **No `product.yml` and the project has 2+ components**: Step 5b runs the script with `--create` at P7, so the file exists by now. If it is still missing, stop and report it. Don't tag.
 
 Validate the final value: must match `[0-9]+\.[0-9]+(\.[0-9]+)?` and be ≤20 characters, and must not be lower than the last release tag. If validation fails, prompt the human to supply the version manually: do not create the tag with an unvalidated value.

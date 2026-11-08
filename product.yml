@@ -12,13 +12,13 @@
 
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
-version: "0.38.0"
-feature: "0000040-retire-fast-path"
+version: "0.39.2"
+feature: "0000043-macos-test-job-timeout"
 
 versionPolicy: "max-component-version"
 
 components:
   - id: "ravintio-framework"
-    path: "ravintio-framework/component.yml"
+    path: "src/ravintio-framework/component.yml"
   - id: "setup-hook-integration"
     path: "src/setup-hook-integration/component.yml"

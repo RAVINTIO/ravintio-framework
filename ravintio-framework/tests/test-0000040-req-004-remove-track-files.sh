@@ -27,10 +27,12 @@ unset CLAUDE_PROJECT_DIR
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
+
+FRAMEWORK="$RAVINTIO_PACK_DIR"
 SETUP_SH="$FRAMEWORK/setup.sh"
 SETUP_PS1="$FRAMEWORK/setup.ps1"
-WORKFLOW="$FRAMEWORK/../.github/workflows/ravintio.yml"
+WORKFLOW="$RAVINTIO_REPO_ROOT/.github/workflows/ravintio.yml"
 PS_BIN="${RAVINTIO_TEST_PWSH:-pwsh}"
 ONLY="${RAVINTIO_TEST_REQ004_ONLY:-}"
 
@@ -190,7 +192,7 @@ in_text() { grep -E -- "$1" <<< "$2" >/dev/null && echo yes || echo no; }
 
 SUITE_NAME="test-0000040-req-004-remove-track-files.sh"
 S51="$(job_block setup-powershell-51 | step_with "$SUITE_NAME")"
-assert_equals "yes" "$(in_text "bash ravintio-framework/tests/$SUITE_NAME\$" "$S51")" "req-004 AC3: the 5.1 job runs the req-004 suite"
+assert_equals "yes" "$(in_text "bash $RAVINTIO_PACK_REL/tests/$SUITE_NAME\$" "$S51")" "req-004 AC3: the 5.1 job runs the req-004 suite"
 assert_equals "yes" "$(in_text 'shell:[[:space:]]*bash$' "$S51")" "req-004 AC3: the req-004 step runs the suite through Git Bash"
 assert_equals "yes" "$(in_text 'RAVINTIO_TEST_PWSH:[[:space:]]*powershell\.exe$' "$S51")" "req-004 AC3: the req-004 step sets RAVINTIO_TEST_PWSH to powershell.exe"
 assert_equals "yes" "$(in_text 'RAVINTIO_TEST_REQ004_ONLY:[[:space:]]*ps1$' "$S51")" "req-004 AC3: the req-004 step runs the .ps1 pass only"

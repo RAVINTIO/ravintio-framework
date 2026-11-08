@@ -19,9 +19,10 @@ unset CLAUDE_PROJECT_DIR
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
+source "$SCRIPT_DIR/helpers/pack-root.sh"
 
-FRAMEWORK="$(cd "$SCRIPT_DIR/.." && pwd)"
-REPO="$(cd "$FRAMEWORK/.." && pwd)"
+FRAMEWORK="$RAVINTIO_PACK_DIR"
+REPO="$RAVINTIO_REPO_ROOT"
 NAME="migrate-0.34.0-rerun-setup.md"
 MIGRATION="$FRAMEWORK/migrations/$NAME"
 POLICY="$FRAMEWORK/standards/framework-update-policy.md"

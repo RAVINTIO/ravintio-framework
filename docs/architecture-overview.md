@@ -3,7 +3,7 @@
 > Living document. Reflects current system state. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
+Last updated: 0000043-macos-test-job-timeout (8 Nov 2026). The macOS test job runs as three shards, each matrix entry carries its own cap, and each test job prints its time against that cap. The pack moves to 0.39.2. Earlier: 0000042-fix-windows-shards-pr-77 (8 Nov 2026). Two 0000041 suites pass on the Windows shards, and the pack moves to 0.39.1. Earlier: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
 
 ---
 
@@ -150,7 +150,7 @@ Self-modification sequencing (ADR-004) governs how such a change is applied to h
 |-----|--------|----------------|
 | `validate-branch` | `ubuntu-latest` | A change to a source folder also touches a file under `plan/` or `docs/`. A source folder is `src/` or the folder of a `component.yml` that `product.yml` lists (0000040 ADR-003) |
 | `self-description-check` | `ubuntu-latest` | The README matches the repository structure (0000019) |
-| `test-suite` | `ubuntu-latest`, `macos-latest`, and `windows-latest` under Git Bash in seven shards, `fail-fast: false` | `run-tests.sh` passes. On failure, the log lists each failed suite by file name. |
+| `test-suite` | `ubuntu-latest` in one job, `macos-latest` in three shards, and `windows-latest` under Git Bash in seven shards, `fail-fast: false` (0000043 ADR-002) | `run-tests.sh` passes within the entry's `cap`. On failure, the log lists each failed suite by file name. Each job then prints its elapsed time against its cap (0000043 ADR-003). |
 | `setup-powershell` | `windows-latest`, PowerShell 7 | `test_setup.ps1` passes, including the live `.ravintio-setup-flags` marker checks |
 | `setup-powershell-51` | `windows-latest`, Windows PowerShell 5.1 | `test_setup.ps1` passes under 5.1, including the live stale clean-up and retired-flag checks (0000037). The 0.37.0 migration helper parses under 5.1, and the req-006 suite's `.ps1` cases pass on `powershell.exe` (0000039) |
 
@@ -162,6 +162,11 @@ Feature 0000037 changed the platform matrix (ADR-012, ADR-013, and ADR-014 of th
 - The suite runs on Windows under Git Bash. `run-tests.sh` reads `RAVINTIO_SHARD_INDEX` and `RAVINTIO_SHARD_COUNT`, so the Windows leg runs in seven shards.
 - Each Windows shard has `timeout-minutes: 20`. Every other job keeps 10.
 - Feature 0000039 gives the Linux and macOS legs of `test-suite` 15 minutes. The macOS leg passed every suite but ran past 10 minutes once the migration helper suite grew. No ADR records this change. The 0000031 and 0000037 CI checks expect the new value.
+- Feature 0000043 moves each `test-suite` cap into the matrix (0000043 ADR-002, which amends 0000037 ADR 014). The bullets above give the caps before that change.
+  - Every entry sits under `include` with a `cap`: 15 for Ubuntu and macOS, and 20 for Windows. Sharded entries also carry `shard` and `shards`.
+  - macOS runs in three shards, and `RAVINTIO_SHARD_COUNT` reads `matrix.shards`. Two shards ran past 10 minutes in two PR #77 runs, so P4 added a third, as ADR-002 sets out.
+  - The test step's `timeout-minutes` reads `matrix.cap`. The job has a fixed 25-minute backstop, so a slow suite fails the step and the job's later steps still run.
+  - A step records the start time in `GITHUB_ENV`. An `if: always()` step prints `Elapsed: {m} min {s} s of a {cap} min cap`, and adds a `Test job margin` warning past two-thirds of the cap (0000043 ADR-003).
 - A suite check that can't run on Windows prints `SKIP (windows): {reason}` and has a row in the skip table in `ravintio-framework/tests/README.md`.
 
 A red check doesn't block a merge until branch protection marks it as required. Only the human on the loop can change that setting.
@@ -299,10 +304,11 @@ The ship agent sets `product.yml` `version` and `feature` in P7, after Step 5 an
 
 ### Sanctioned scripts: the Write-or-Edit rule (boot Hard Limit 8)
 
-The Write-or-Edit rule (boot Hard Limit 8) now names the fixed framework scripts that skill steps run to write files (0000035-ADR-011). Both `standard-boot.md` and `cursor-boot.md` carry one `Sanctioned scripts:` sentence. It names seven scripts:
+The Write-or-Edit rule (boot Hard Limit 8) now names the fixed framework scripts that skill steps run to write files (0000035-ADR-011). Both `standard-boot.md` and `cursor-boot.md` carry one `Sanctioned scripts:` sentence. It names eight scripts:
 
 - `archive-current.mjs`
 - `set-product-release.mjs`
+- `build-release.mjs` (0000041 ADR-003), with no arguments
 - `promote-to-regression.sh`
 - `refresh-delete-boot-files.sh` and `refresh-delete-boot-files.ps1`
 - `setup.sh` and `setup.ps1`
@@ -513,6 +519,40 @@ In a hooked consumer with no design, `gate-write` blocks the CI edit. The migrat
 
 ---
 
+## Pack source under src (0000041)
+
+Release 0.39.0 moves the pack source to `src/ravintio-framework/` (0000041 ADR-002). The declared stack stays unchanged (0000041 ADR-001). In this repo, `src/ravintio-framework/` holds the source and its `component.yml`. The root `ravintio-framework/` is a copy of the last release. This repo runs on that copy, so a broken change under `src/` can't break the run that builds it. Consumers still copy `ravintio-framework/`, which stays their runtime path.
+
+### Release copy and release script
+
+`scripts/build-release.mjs` rebuilds the root copy from `src/ravintio-framework/` without `component.yml` (0000041 ADR-003). It builds in `.ravintio-framework-build/` and swaps the folders. The old copy waits in `.ravintio-framework-previous/` until the swap succeeds, and an interrupted build leaves the old copy whole. It writes only inside those three folders and refuses a path that resolves outside them. It runs only in the source repo, which `project-kind.mjs` decides. The Write-or-Edit rule (boot Hard Limit 8) sanctions the script, and ship Step 5c runs it at P7. `release-check.mjs` compares the root copy with its `release.yml` and refuses a `release.yml` folder.
+
+### release.yml and update detection
+
+The released pack carries `ravintio-framework/release.yml` with a `version`, a `source-commit`, a `built` date, and a SHA-256 for each file (0000041 ADR-004). Orchestrator step 1a, `standards/framework-update-policy.md`, and the migrator read it first and fall back to `component.yml` for a pack before 0.39.0. Step 1a now has two signals. A new `source-commit` or `version` is a release update. A pack file that differs from its hash is a changed file, even when the version is unchanged, and step 1a names it. This closes backlog 0000181. While a leftover `component.yml` sits beside `release.yml`, step 1a warns at every session start.
+
+### Manifest location
+
+A component manifest lives at the path `product.yml` lists, with `src/{component-id}/component.yml` as the default (0000041 ADR-006). `templates/component-guide.md` owns the rule, and the spec and docs agents link to it. The codegen close-out bumps the manifest of each component the run changed. It never names `ravintio-framework/component.yml`, so a consumer's copy is not bumped as source.
+
+### Applies to header and project kind
+
+A repo is the framework source when `product.yml` lists `ravintio-framework` at `src/ravintio-framework/component.yml` and that file exists (0000041 ADR-007). `project-kind.mjs` prints `framework source` or `downstream`. A migration may carry `**Applies to:**` with `framework source`, `downstream`, or `all`, and an absent line reads as `all`. The migrator records `not applicable` with the reason when the kinds differ. A table in the migrator skill maps the released `retroactive-release-tags.md` to `framework source`. This narrows 0000035 ADR-019 for migrations that carry the header or a table row.
+
+### Consumer migration
+
+`migrate-0.39.0-remove-pack-component-yml.md` applies to `downstream` repos only (0000041 ADR-008). If `ravintio-framework/component.yml` remains beside `release.yml`, it offers to remove the file. The human on the loop confirms and runs the delete, and the migrator checks the result. A decline, a `product.yml` entry for the file, or a linked folder records `skipped` and names the file.
+
+### Tests and CI from src
+
+In the source repo, suites read the pack through `tests/helpers/pack-root.sh`, which gives `src/ravintio-framework/` and fails a suite that reads the root copy (0000041 ADR-009). CI runs `src/ravintio-framework/tests/run-tests.sh`. A new `release-copy-integrity` job runs `release-check.mjs --files-only` against the root copy. It reports a skip while the root copy has no `release.yml`. The job is repo-only and is not part of the consumer `hooks/ravintio.yml`. The 0000039 req-010 version equality checks run only on a released tree, where `plan/current/design.md` is absent. `em-dash-guard.mjs` now also covers prose under `src/ravintio-framework/`.
+
+Release 0.39.1 makes two 0000041 suites pass under Git Bash (0000042). Each one puts its link cases behind one `IS_WIN` guard, because `ln -s` makes a copy there (0000042 ADR-002). The req-005 suite passes paths to Node in Windows form and imports `project-kind.mjs` through a file URL (0000042 ADR-001). It checks the released migration by git blob id, so a CRLF checkout can't fail it (0000042 ADR-003). `test-0000042-req-001-windows-guards.sh` runs both suites under a `uname` stand-in that reports `MINGW64_NT`, so a Mac or Linux run checks the Windows branch. It also runs the req-005 suite under a failing `mktemp` stand-in and checks that the caller's folder survives.
+
+Release 0.39.2 gives the macOS test job margin again (0000043). The single macOS job had timed out at 15 minutes in 3 of 4 PR #77 runs. Two shards took 6.5 to 11 minutes each across four runs, so the job now runs three. `test-0000043-req-001-macos-shards.sh` checks the matrix rows and timeouts. `test-0000043-req-002-job-margin.sh` extracts the elapsed step's `run:` block from the workflow and runs it under a fixed `date` stand-in. The step accepts the start time and cap only as 1 to 10 digits with no leading zero, because Bash reads a leading zero as octal.
+
+---
+
 ## Data Ownership
 
 No components own persistent data. RAVINTIO operates on local filesystem artifacts (plan/ files, skill SKILL.md files) written and read during pipeline execution. No databases. New in 0000016 (all plain markdown/YAML, git-tracked): `plan/backlog/` entries (orchestrator-owned, filed by any phase agent), `product.yml` (ship-agent writes, orchestrator reads), and `plan/current/` loop-state/run-log/defect-report/revision-log artifacts (orchestrator-owned). New in 0000020 (local, gitignored, not version-tracked): `<tool-dir>/.ravintio-setup-flags`, owned by `setup-hook-integration`, written on every successful install and read/updated by `ravintio-refresh-setup`. New in 0000025 (git-tracked, additive to the 0000020 marker, not a replacement): `ravintio-overrides/setup-config/{tool}.md`, one file per AI tool, written by `setup.sh`/`setup.ps1` alongside the existing gitignored marker so the flags in effect at install time are versioned and reviewable, not only locally cached.
@@ -527,6 +567,8 @@ New in 0000035 (plain Markdown and text):
 Clarified in 0000032: `ravintio-framework` owns the three committed session markers, `plan/.orchestrator-active`, `plan/.orchestrator-ack`, and `plan/.run-mode`. The orchestrator writes them at P0, and the ship skill deletes them in the P9 marker step. Hooks read them only.
 
 Clarified in 0000040: a consumer repo owns its `.github/workflows/ravintio.yml` and its `plan/` markers. A migration edits the CI file only when its `**May edit:**` line names it and the human on the loop confirms the edit (0000040 ADR-006).
+
+Clarified in 0000041 (0000041 ADR-005): `ravintio-framework` owns every file under `src/ravintio-framework/`. The release script owns the root `ravintio-framework/` copy and the two work folders `.ravintio-framework-build/` and `.ravintio-framework-previous/`, and no agent writes the root copy with **Write** or **Edit**. A consumer owns its copy of `ravintio-framework/component.yml`, and the 0.39.0 migration removes it only on confirmation. `setup-hook-integration` owns no pack file.
 
 ---
 
@@ -589,7 +631,7 @@ Reference `docs/decisions-index.md` for the full ADR list.
 - **ADR-007 (0000035):** `ratchet-check.mjs` uses the shared root and target rules.
 - **ADR-008 (0000035):** Root markers under always-permitted names are not trusted.
 - **ADR-010 (0000035):** `set-product-release.mjs` sets `product.yml` at P7.
-- **ADR-011 (0000035):** The Write-or-Edit rule (boot Hard Limit 8) names seven sanctioned scripts.
+- **ADR-011 (0000035):** The Write-or-Edit rule (boot Hard Limit 8) names seven sanctioned scripts. 0000041 ADR-003 adds an eighth.
 - **ADR-015 (0000035):** Migration files never move. Supersedes the archive step of **ADR-005 (0000005)**.
 - **ADR-016 (0000035):** Each project records migration runs in `plan/_migrations/`.
 - **ADR-002 (0000036):** A non-regular, swapped, or oversize `design.md` reads as no design. Only `EACCES` and `EPERM` fail open. Narrows **ADR-005 (0000003)**.

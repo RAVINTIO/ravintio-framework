@@ -38,7 +38,9 @@ Every artifact the agent produces follows a template, so output is consistent ac
 
 ```
 repo/
-├── ravintio-framework/   ← The framework (drop in, don't modify per-project)
+├── ravintio-framework/   ← The framework release copy, built from
+│                            src/ravintio-framework/ at P7. Nobody edits it by hand.
+│                            (drop in, don't modify per-project)
 │   ├── skills/            ← Agent instructions — orchestrator + phase skills
 │   ├── templates/         ← File format templates for every artifact
 │   ├── schemas/           ← JSON Schema validation definitions
@@ -57,6 +59,7 @@ repo/
 │
 ├── src/                   ← Code (organised by component). Implementation, tests,
 │                            config, manifests. Each component has a component.yml.
+│   └── ravintio-framework/ ← Pack source (this repo only)
 │
 └── docs/                  ← Living documentation — component registry, architecture
                              overview, decisions index, dependency graph. Generated
@@ -112,6 +115,7 @@ The setup script copies skills into the directory your tool auto-discovers, adds
 | [workflows/](ravintio-framework/workflows/) | Agent workflow definitions: feature-pipeline (the Feature Pipeline) and retrofit |
 | [scripts/](ravintio-framework/scripts/) | Deterministic tooling: consistency checks, version derivation, regression promotion, skill sync |
 | [tests/](ravintio-framework/tests/) | Per-feature test scripts plus the promoted regression pack |
+| [docs/](ravintio-framework/docs/) | The pack's own component docs: purpose, interface and data contracts, risk, scope, quirks, tech debt, and test coverage |
 | [external-skills/](ravintio-framework/external-skills/) | Vendored third-party capability skills, available for a pipeline run to load alongside the RAVINTIO skills |
 | [migrations/](ravintio-framework/migrations/) | The framework's migrations, applied by the `ravintio-migrator` skill. Files never move. Each project keeps its run state in `plan/_migrations/`. |
 | [skills-inbox/](ravintio-framework/skills-inbox/) | Drop-in intake point for a new capability skill, processed at the next Phase 0 |
