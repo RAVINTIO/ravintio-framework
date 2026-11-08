@@ -190,3 +190,8 @@ Security review (P5, pass 1): overall High. S-1 High: `test-0000041-req-005-appl
 Decision (P5): fix S-1 and S-7 in this run through a TDD cycle, and accept S-2, S-3, S-4, S-5, and S-6 / reason: S-1 is a regression this diff made, and S-7 is a one-line hardening on the same check. S-2 is R-001, S-3 predates the diff, and S-4 to S-6 are mitigated.
 Deviation (P5, unclassified): req-001 gains two functional requirements, a safe `mktemp` failure path and a tag-only ref for the blob compare.
 Backlog (P5): 0000429, the same `cd "$(mktemp ...)"` form in nine other suites.
+RED (P5, S-1): guard suite assertions 9 and 10 fail with 8 passed and 2 failed. A failing `mktemp` stand-in made the req-005 suite delete the scratch caller folder (`764b7110`).
+GREEN (P5, S-1 and S-7): `mktemp` on its own line with `|| exit 1`, a directory check, the trap on `WORK_TMP` only, and `rev-parse --verify --quiet` through `refs/tags/v0.38.0`. Guard suite 10 of 10, req-005 suite 67 of 67 (`951bc651`).
+Security re-review (P5, fresh context): `security-rereview.md`. S-1 fixed, S-7 fixed, overall Low. Two Info items: R-1, a hostile `mktemp` that prints an existing folder, and R-2, no test for empty output with exit 0.
+Decision (P5): accept R-1 and R-2 / reason: R-1 needs code already running first on `PATH`, and R-2 is a test gap for a check the fix already makes.
+Decision (P5): push and read the PR #77 checks again before the P5 gate passes / reason: ADR-004, and P5 changed code under `src/` after the P4 CI pass.
