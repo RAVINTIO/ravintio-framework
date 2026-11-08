@@ -23,7 +23,7 @@
 - Scalability target: each macOS shard finishes in under 10 minutes, two-thirds of its 15-minute cap.
 - Security: no auth. The job keeps `permissions: contents: read`. The elapsed-time step reads only the shell clock and matrix values.
 - Data privacy: no regulated data
-- Observability: each test job prints one elapsed-time line with its cap. A job past 75% of its cap also prints a `::warning::` annotation.
+- Observability: each test job prints one elapsed-time line with its cap, even after a step timeout. A job past two-thirds of its cap also prints a `::warning::` annotation.
 - Cost boundary: macOS runner minutes stay about the same in total. The split adds one checkout per run.
 
 ## Engineering Layer
@@ -38,12 +38,18 @@
 - Deployment: P7 runs the release script, which rebuilds the root copy from `src/`. The workflow change takes effect on the next PR #77 push.
 - API versioning: not applicable
 - Matrix layout:
-  - `ubuntu-latest` stays one unsharded entry.
-  - `macos-latest` moves from the plain `os` list to 2 `include` entries, shards 1 and 2, each with `shards: 2`.
-  - Each Windows `include` entry gains `shards: 7`. The count and the 20-minute cap don't change.
-  - `RAVINTIO_SHARD_COUNT` reads `matrix.shards`, in place of the fixed `7`.
+  - Every entry moves to `include`, and each entry carries its own `cap`. This gives the cap one source.
+  - `ubuntu-latest` stays one unsharded entry with `cap: 15`, and it has no `shard` or `shards` value.
+  - `macos-latest` becomes 2 entries, shards 1 and 2, each with `shards: 2` and `cap: 15`.
+  - Each Windows entry gains `shards: 7` and `cap: 20`. The count and the cap don't change.
+  - The job `timeout-minutes` reads `matrix.cap`.
+  - `RAVINTIO_SHARD_COUNT` reads `matrix.shards`, in place of the fixed `7`. An entry with no `shards` still passes an empty value, so Ubuntu runs every suite.
   - The job name reads `shard {0} of {1}` from `matrix.shard` and `matrix.shards`.
-- Elapsed time: the test step records the start time and prints `Elapsed: {m} min {s} s of a {cap} min cap` after `run-tests.sh` ends, pass or fail. Past 75% of the cap, it also prints a `::warning::` line. The step keeps the runner's exit code. `run-tests.sh` doesn't change.
+- Elapsed time:
+  - The test step gets its own `timeout-minutes`, one minute below `matrix.cap`. A slow run then fails the step, and the job isn't cancelled.
+  - A later step runs with `if: always()`. It prints `Elapsed: {m} min {s} s of a {cap} min cap` for the test step, so a timed-out run still shows its time.
+  - Past two-thirds of the cap, that step also prints a `::warning::` line. Two-thirds of 15 is 10 minutes, which matches the margin NFR.
+  - The job result still comes from the test step. `run-tests.sh` doesn't change.
 - Suite updates:
   - `test-0000031-req-001-003-ci-jobs.sh` accepts the macOS shard entries.
   - `test-0000037-req-010-windows-git-bash-leg.sh` checks the per-entry shard count in place of `matrix.shard && 7`, and still checks 7 Windows shards.
@@ -59,7 +65,7 @@
 ## Scope
 - In:
   - the matrix layout above
-  - the elapsed-time line and the 75% warning
+  - the per-entry `cap`, the step timeout, the elapsed-time line, and the two-thirds warning
   - the two CI layout suite updates and one new 0000043 suite
   - `tests/README.md` rows, if the README describes the CI layout
   - the 0.39.2 version and the P7 release copy rebuild
@@ -75,6 +81,7 @@
 ## Assumptions
 - The macOS suite time splits roughly evenly across 2 shards by position - impact if wrong: one shard stays near the cap, and the run needs 3 shards.
 - No ruleset requires a check by name - impact if wrong: the renamed macOS checks block the merge until the ruleset changes. The `main` ruleset was read at P0 and names none.
+- A step `timeout-minutes` below the job cap fails the step without cancelling the job, so an `if: always()` step still runs - impact if wrong: a timed-out run shows no elapsed line, and the maintainer reads the time from the job duration instead.
 - `SECONDS` in Bash gives whole-second elapsed time on all three runners - impact if wrong: the elapsed line shows a wrong value, but the job result doesn't change.
 
 ## Risks

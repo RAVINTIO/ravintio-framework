@@ -52,3 +52,7 @@ Strict-mode ack (step 5): the strict-mode banner supplied session ID `a639f887-a
 P0 exchange (CI approach): Q: split macOS into 2 shards and keep the 15-minute cap, or raise the macOS cap? / A: "As recommended", so 2 macOS shards with the 15-minute cap.
 Required checks: the `main` ruleset names no required status check, so renamed macOS check names can't block the merge.
 Backlog pickup (step 3c): 255 entries. The orchestrator recommends pulling in 0000430 only, as the human asked, and leaving the rest. The design draft carries this, and the design confirmation confirms it.
+Scope Lock drafts: 4 parallel `ravintio-scope-lock-agent` dispatches on the cheaper tier, all completed.
+Decision (P0): the elapsed step runs with `if: always()` after a step timeout one minute below the cap / reason: the error-path and happy-path drafts flagged that a job timeout cancels the job before any later step prints.
+Decision (P0): the warning fires past two-thirds of the cap, not 75% / reason: the error-path draft flagged that 75% of 15 minutes sits above the 10-minute margin NFR.
+Decision (P0): each matrix entry carries its own `cap`, and `timeout-minutes` reads it / reason: the first-run and error-path drafts flagged two copies of the cap.
