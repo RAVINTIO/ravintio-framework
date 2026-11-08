@@ -96,7 +96,7 @@ Decision (P0): this session keeps `autonomous`, as the human picked it, and a re
 Skills inbox (P0 to P1): empty.
 Toggle record (P1): `ravintio-overrides/loop-toggles.yml` is absent. In `autonomous`, `design_critic`, `reversal_protocol`, `verify_by_execution`, and `cross_model_review` read as `on`.
 Backlog filed (P1): 0000432, Windows shards 3 and 4 take about 15 of their 20 minutes.
-Deviation (P1, unclassified): the test step's `timeout-minutes` reads `matrix.cap`, and the job `timeout-minutes` is a fixed 25-minute backstop. The design had the job read `matrix.cap` and the step sit one minute below it, but GitHub Actions expressions have no arithmetic, so `matrix.cap - 1` can't be written. The cap keeps one source, and a slow run still fails the step before the job is cancelled.
+Deviation (P1, altering): the test step's `timeout-minutes` reads `matrix.cap`, and the job `timeout-minutes` is a fixed 25-minute backstop. The design had the job read `matrix.cap` and the step sit one minute below it, but GitHub Actions expressions have no arithmetic, so `matrix.cap - 1` can't be written. The cap keeps one source, and a slow run still fails the step before the job is cancelled.
 Decision (P1): the elapsed step reads a start time that an earlier step writes to `GITHUB_ENV` / reason: a later step can't read another step's duration, and the shell clock needs no new tool.
 Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all revised.
 Decision (P1): the 0000043 suite tests the elapsed step by extracting its `run:` block from the workflow / reason: one copy of the logic, and no new script file to ship.
@@ -235,7 +235,7 @@ Security (P5): risk Low. 0 critical, 0 high, 0 medium, 2 low, and 3 info finding
   - S-002 (low): a value over 10 digits can overflow and print a wrong time.
   - S-003 to S-005 (info): no action. The `GITHUB_ENV` write gains PR code nothing, the suite's heredoc path isn't attacker-controlled, and the extracted block comes from the same commit.
   - Out of scope: the workflow has no top-level `permissions:`. Backlog 0000218 already holds it.
-Deviation (P5, unclassified): the elapsed step's guard now rejects a leading zero and values over 10 digits, for S-001 and S-002. req-002 and ADR-003 record it.
+Deviation (P5, additive): the elapsed step's guard now rejects a leading zero and values over 10 digits, for S-001 and S-002. req-002 and ADR-003 record it.
 TDD (P5, S-001 and S-002): RED with 4 new checks failing in the req-002 suite. GREEN after the guard change: the req-002 suite passes 44 checks, and the req-001, 0000031, and 0000037 suites exit 0.
 Re-review (P5): a fresh-context reviewer marks S-001 and S-002 resolved. It ran the real block with hostile values under Bash 3.2.57, and each printed `Elapsed: unknown` and exited 0. See `security-rereview.md`.
   - New S-006 (info): a 10-digit start time later than now passes the guard and prints a negative time. Only a tampered `GITHUB_ENV` can cause it, which gains nothing (S-003). No action.
@@ -267,3 +267,8 @@ Per-component docs (P6): `purpose.md`, `interface-contract.md`, `dependencies.md
 Drift (P6): none found. The glossary terms cap, shard, and margin appear in the workflow comments and suite labels. No API, data ownership, or dependency direction changed. The workflow follows ADR-002 and ADR-003.
 Completeness (P6): the P1 minimal set, 4 ADRs, the security report, and `recommendations.md` exist. No OpenAPI, operational model, SLO, or cost model applies.
 Backlog routing (P6): `recommendations.md` holds no new Deferred Items or Tech Debt row, so P6 files no entry.
+Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 deviations. See `deviation-review.md`.
+  - P1, the fixed 25-minute job backstop: altering. The confirmed design bounded each job at its `matrix.cap`, with the step one minute below it. The built job ceiling is 25 minutes for every entry, while the test step keeps the confirmed cap.
+  - P5, the tighter guard: additive.
+  - None of the 14 Decision lines touches data, a schema, or a destructive operation.
+Exception waiting (P6, 2): the P1 backstop deviation is altering. The human on the loop must accept the fixed 25-minute job timeout, or ask for another bound before merging PR #77. The test step still stops at the confirmed cap of 15 or 20 minutes. Only checkout, the start step, and the elapsed step can run past it, and risk R-004 accepts that.
