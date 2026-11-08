@@ -25,8 +25,12 @@ As a framework maintainer, I see the macOS test suite finish well inside its cap
 - The test step sets `RAVINTIO_SHARD_COUNT` from `matrix.shards`, in place of the fixed `7`. The Ubuntu entry passes an empty value, so `run-tests.sh` runs every suite there.
 - The job name reads `Test suite ({os}, shard {n} of {count})` from `matrix.shard` and `matrix.shards`. The Ubuntu job keeps the name `Test suite (ubuntu-latest)`.
 - The test step's `timeout-minutes` reads `matrix.cap`. The job `timeout-minutes` is a fixed backstop of 25, above every cap (P1 deviation).
-- `test-0000031-req-001-003-ci-jobs.sh` accepts the new layout. It checks that the job holds `ubuntu-latest` and `macos-latest` entries and that the test step's timeout reads `matrix.cap`.
-- `test-0000037-req-010-windows-git-bash-leg.sh` accepts the new layout. It still checks seven `windows-latest` entries, and it checks the shard count through `matrix.shards` in place of `matrix.shard && 7`.
+- `test-0000031-req-001-003-ci-jobs.sh` accepts the new layout. It checks that the job holds `ubuntu-latest` and `macos-latest` entries.
+  - Its old check of the job-level `matrix.os == 'windows-latest' && 20 || 15` expression becomes two checks: the test step's `timeout-minutes` reads `matrix.cap`, and the job's `timeout-minutes` is `25`.
+- `test-0000037-req-010-windows-git-bash-leg.sh` accepts the new layout. It still checks seven `windows-latest` entries.
+  - Its count of `shard:` lines expects 9, which is 2 macOS and 7 Windows. A second count checks 7 `shards: 7` lines.
+  - Its check of `matrix.shard && 7` becomes a check that `RAVINTIO_SHARD_COUNT` reads `matrix.shards`.
+  - Its old check of the job-level Windows cap expression becomes two checks: 7 `cap: 20` lines, and the job's `timeout-minutes` of `25`.
 - A new suite, `test-0000043-req-001-macos-shards.sh`, checks the matrix rows above, the `RAVINTIO_SHARD_COUNT` wiring, and both timeouts.
 - `run-tests.sh` and `ravintio-framework/hooks/ravintio.yml` stay unchanged.
 - Split step: keep. The requirement holds one observable outcome, the macOS margin, in three criteria.
@@ -42,5 +46,5 @@ As a framework maintainer, I see the macOS test suite finish well inside its cap
 
 ## Dependencies
 
-- `run-tests.sh` shard selection, `(position - 1) % count`, from 0000037 ADR-014.
+- `run-tests.sh` shard selection, `(position - 1) % count`, from 0000037 ADR 014.
 - PR #77 and its GitHub Actions workflow.

@@ -98,3 +98,7 @@ Toggle record (P1): `ravintio-overrides/loop-toggles.yml` is absent. In `autonom
 Backlog filed (P1): 0000432, Windows shards 3 and 4 take about 15 of their 20 minutes.
 Deviation (P1, unclassified): the test step's `timeout-minutes` reads `matrix.cap`, and the job `timeout-minutes` is a fixed 25-minute backstop. The design had the job read `matrix.cap` and the step sit one minute below it, but GitHub Actions expressions have no arithmetic, so `matrix.cap - 1` can't be written. The cap keeps one source, and a slow run still fails the step before the job is cancelled.
 Decision (P1): the elapsed step reads a start time that an earlier step writes to `GITHUB_ENV` / reason: a later step can't read another step's duration, and the shell clock needs no new tool.
+Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all revised.
+Decision (P1): the 0000043 suite tests the elapsed step by extracting its `run:` block from the workflow / reason: one copy of the logic, and no new script file to ship.
+Decision (P1): req-001's under-10-minutes criterion keeps the whole-job measure, and the warning watches the step cap / reason: the whole-job measure is stricter, and the step cap is what stops a run.
+Decision (P1): `tests/README.md` stays in scope as a conditional item that adds no row / reason: the ratchet blocks removing an in-scope line, and P1 found the README doesn't describe the CI layout.

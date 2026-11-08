@@ -12,7 +12,7 @@
   - US-002: As a framework maintainer, I see each test job's elapsed time against its cap in the CI log, so that I can act before a job times out.
 - Acceptance criteria confirmed: 4 (from `feature-brief.md`)
 - Constraints:
-  - CI runs on `pull_request` only (0000031 ADR-003).
+  - CI runs on `pull_request` only (0000031 ADR 003).
   - `run-tests.sh` output without `--quiet` stays byte-identical (0000038 req-003).
   - The fix lands on `feat/0000041-pack-source-under-src`, so PR #77 picks it up.
 - Integrations: GitHub Actions runs the suites through `src/ravintio-framework/tests/run-tests.sh`.
@@ -30,7 +30,7 @@
 - Stack: unchanged. Bash suites under `run-tests.sh`, GitHub Actions CI. Build target: local.
 - Components:
   - `ravintio-framework` (component-pack): owns the two CI layout suites and `tests/README.md` under `src/ravintio-framework/tests/`.
-  - repository CI: `.github/workflows/ravintio.yml`, which isn't mirrored to consumers (0000031 ADR-002).
+  - repository CI: `.github/workflows/ravintio.yml`, which isn't mirrored to consumers (0000031 ADR 002).
 - Data ownership:
   - `ravintio-framework` owns every file under `src/ravintio-framework/`.
   - The release script owns the root `ravintio-framework/` copy. No agent writes it with **Write** or **Edit**.
@@ -82,7 +82,7 @@
 - The macOS suite time splits roughly evenly across 2 shards by position - impact if wrong: one shard stays near the cap, and the run needs 3 shards.
 - No ruleset requires a check by name - impact if wrong: the renamed macOS checks block the merge until the ruleset changes. The `main` ruleset was read at P0 and names none.
 - A step `timeout-minutes` below the job backstop fails the step without cancelling the job, so an `if: always()` step still runs - impact if wrong: a timed-out run shows no elapsed line, and the maintainer reads the time from the job duration instead.
-- `SECONDS` in Bash gives whole-second elapsed time on all three runners - impact if wrong: the elapsed line shows a wrong value, but the job result doesn't change.
+- A step's `timeout-minutes` accepts a `matrix` expression - impact if wrong: the workflow fails to parse, and every test job fails.
 
 ## Risks
 - A macOS shard still runs near the cap because the slow suites land in one shard. Likelihood low, impact medium. The elapsed-time line shows it on the first run.

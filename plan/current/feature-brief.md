@@ -81,7 +81,7 @@ The `Test suite (macos-latest)` job runs the whole suite in one job against a 15
 - sharding Ubuntu, which takes 7 to 9 minutes
 - the Windows shard count and cap
 - making any suite faster
-- `ravintio-framework/hooks/ravintio.yml`, the consumer copy, which has no `test-suite` job (0000031 ADR-002)
+- `ravintio-framework/hooks/ravintio.yml`, the consumer copy, which has no `test-suite` job (0000031 ADR 002)
 
 ### Deferred
 
@@ -99,7 +99,7 @@ The `Test suite (macos-latest)` job runs the whole suite in one job against a 15
 
 ### Constraints
 
-- CI runs on `pull_request` only (0000031 ADR-003).
+- CI runs on `pull_request` only (0000031 ADR 003).
 - The fix lands on `feat/0000041-pack-source-under-src`, so PR #77 picks it up.
 - `run-tests.sh` output without `--quiet` stays byte-identical (0000038 req-003).
 
