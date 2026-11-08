@@ -71,14 +71,14 @@ Progress: P0 done at 2026-11-08T08:33:48Z: design confirmed for the 0000042 Wind
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T08:35:22Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T08:41:53Z` |
+| Wall-clock | `6` |
 | Streams | `n/a` |
 | Model tier | primary |
-| Skills loaded | ravintio-spec-agent |
-| Agents spawned | `pending` |
+| Skills loaded | ravintio-spec-agent, ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
-| Parallel task batches | `pending` |
+| Parallel task batches | `0` |
 | Notes | Skills inbox empty. One requirement, so the artefacts are written inline under the size floor. |
 
 Toggle record (P1): design_critic: on (autonomous absent default), reversal_protocol: on (autonomous absent default), verify_by_execution: on (autonomous absent default), cross_model_review: on (autonomous absent default), parallel_streams: off (one unit of work)
@@ -89,3 +89,7 @@ Deviation (P1, unclassified): the design's req-005 fix list now also converts th
 Deviation (P1, unclassified): the orchestrator armed `loop-state-design_critic.md` after critic iteration 1, not before it.
 Decision (P1): AC3 and the brief's in-scope lines stay as written, and the FRs change to fit them / reason: the ratchet guards those lines while the critic loop is active, and the one-guard design meets AC3.
 Decision (P1): the P3 RED evidence for req-001 is the recorded Windows failure in run 42409694287 / reason: macOS and Linux can't reproduce Git Bash link and path behaviour, so no local test can go red first.
+Design critic (P1): iteration 1 REJECT (`critic-verdict-1.md`), iteration 2 APPROVE (`critic-verdict-2.md`).
+Decision (P1): apply critic iteration 2 findings 1 and 3, one assertion for both blob compares and a dynamic import, and accept finding 2 under R-001 / reason: the first two strengthen req-001, and a `test -L` probe adds a case the design didn't plan.
+Gate (P1): one requirement, `req-001`, with three acceptance criteria. Scope: the two suites and two README rows. Deferred: nothing. Skill Map unchanged.
+Progress: P1 done at 2026-11-08T08:41:53Z: req-001 and the spec set approved by the design critic on iteration 2

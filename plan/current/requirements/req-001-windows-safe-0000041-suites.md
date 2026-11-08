@@ -20,12 +20,12 @@ As a framework maintainer, I see both 0000041 suites pass on the Windows CI shar
 - `test-0000041-req-005-applies-to-header.sh` sets `IS_WIN=yes` when `uname -s` starts with `MINGW`, `MSYS`, or `CYGWIN`, as the 0000035 suites do.
 - On Windows, the req-005 suite builds `WORK` from the `pwd -W` form of its scratch folder. Git Bash converts command arguments but not text inside a `node -e` script, so Node then reads a Windows path.
 - On Windows, the req-005 suite also passes `project-kind.mjs` to Node in `pwd -W` form inside the `node -e` scripts. `pack-root.sh` builds `$FW` with `pwd`, so `$PK` is in POSIX form until the suite converts it.
-- The two `projectKind(root)` cases import `project-kind.mjs` through `pathToFileURL(...).href` on every platform.
+- The two `projectKind(root)` cases import `project-kind.mjs` with a dynamic `await import(pathToFileURL(...).href)` under `--input-type=module`, on every platform.
 - The req-005 suite moves its four linked-path cases into one block behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for each of the four cases. Each reason names Git Bash `ln -s` making a copy.
 - The released-migration check makes two blob id compares against `v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md`:
   - the blob id of the pack copy at `HEAD`
   - the `git hash-object` id of the pack copy in the working tree, run inside the repository so `core.autocrlf` applies
-- The check's assertion label names the blob id compare in place of "byte-identical".
+- Both blob compares feed one assertion, so the suite's case count stays at 67. The assertion label names the blob id compare in place of "byte-identical".
 - `test-0000041-req-006-consumer-migration.sh` moves Case 6, the linked `ravintio-framework/`, behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for the case.
 - `src/ravintio-framework/tests/README.md` gains one Windows skip row for each new guard, so two rows, in the table's existing format.
 - `project-kind.mjs`, the migrator, and every released migration stay unchanged.
