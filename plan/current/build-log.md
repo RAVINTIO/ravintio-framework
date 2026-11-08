@@ -48,3 +48,7 @@ Pre-flight (step 0): the human named the PR #77 branch, so the run stays on `fea
 Strict-mode ack (step 5): no session ID in context, so `plan/.orchestrator-ack` holds the UTC timestamp.
 Repo instructions (step 3): five files in `ravintio-overrides/instructions/`.
 Skills inbox (step 6): empty.
+Strict-mode ack (step 5): the strict-mode banner supplied session ID `a639f887-a347-48ac-94ba-4f550ec348f2`, so `plan/.orchestrator-ack` now holds it in place of the timestamp.
+P0 exchange (CI approach): Q: split macOS into 2 shards and keep the 15-minute cap, or raise the macOS cap? / A: "As recommended", so 2 macOS shards with the 15-minute cap.
+Required checks: the `main` ruleset names no required status check, so renamed macOS check names can't block the merge.
+Backlog pickup (step 3c): 255 entries. The orchestrator recommends pulling in 0000430 only, as the human asked, and leaving the rest. The design draft carries this, and the design confirmation confirms it.
