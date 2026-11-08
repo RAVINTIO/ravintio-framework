@@ -272,3 +272,5 @@ Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 de
   - P5, the tighter guard: additive.
   - None of the 14 Decision lines touches data, a schema, or a destructive operation.
 Exception waiting (P6, 2): the P1 backstop deviation is altering. The human on the loop must accept the fixed 25-minute job timeout, or ask for another bound before merging PR #77. The test step still stops at the confirmed cap of 15 or 20 minutes. Only checkout, the start step, and the elapsed step can run past it, and risk R-004 accepts that.
+Cross-model review (P6, iteration 1): APPROVE. Reviewer `claude-fable-5-1`. Implementers `claude-sonnet-5-5` and `claude-opus-5-5`. See `cross-model-review-1.md`.
+  - One minor finding: the req-002 suite runs the extracted block under plain `bash`, but CI runs `shell: bash` as `bash --noprofile --norc -eo pipefail`. The orchestrator applies the one-line fix after the revalidation run ends.
