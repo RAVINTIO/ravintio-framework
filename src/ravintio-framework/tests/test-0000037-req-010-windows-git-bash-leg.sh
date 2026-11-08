@@ -32,11 +32,6 @@ WORKFLOW="$REPO_ROOT/.github/workflows/ravintio.yml"
 CONSUMER_WORKFLOW="$FRAMEWORK/hooks/ravintio.yml"
 TESTS_README="$SCRIPT_DIR/README.md"
 
-# Set to "20" when ADR-014 decision 2 applies. Leave "10" until P3 measures.
-CAP_BRANCH="20"
-# 0000039 raised the Linux and macOS cap from 10 to 15 minutes.
-WINDOWS_CAP_EXPR="\\\$\\{\\{ matrix\\.os == 'windows-latest' && 20 \\|\\| 15 \\}\\}"
-
 job_block() {
   awk -v id="  $1:" '
     $0 == id { on = 1; print; next }
@@ -61,11 +56,9 @@ assert_equals "yes" "$(yes_no "run:[[:space:]]*bash ${RAVINTIO_PACK_REL}/tests/r
 echo "== req-010: job posture =="
 assert_equals "yes" "$(yes_no 'fail-fast:[[:space:]]*false' "$SUITE")" "req-010: strategy keeps fail-fast false"
 assert_equals "yes" "$(yes_no 'contents:[[:space:]]*read' "$SUITE")" "req-010: permissions keep contents read"
-if [ "$CAP_BRANCH" = "20" ]; then
-  assert_equals "yes" "$(yes_no "timeout-minutes:[[:space:]]*$WINDOWS_CAP_EXPR\$" "$SUITE")" "req-010: job uses the 20-minute windows expression (ADR-014)"
-else
-  assert_equals "yes" "$(yes_no 'timeout-minutes:[[:space:]]*10$' "$SUITE")" "req-010: job keeps timeout-minutes 10 (ADR-014, 10 branch)"
-fi
+# 0000043 ADR-002 moved the cap into each matrix entry and fixed the job backstop at 25.
+assert_equals "7" "$(grep -cE '^[[:space:]]+cap:[[:space:]]*20[[:space:]]*$' <<<"$SUITE")" "req-010: seven matrix entries carry cap 20 (ADR-002)"
+assert_equals "yes" "$(yes_no '^    timeout-minutes:[[:space:]]*25[[:space:]]*$' "$SUITE")" "req-010: the job timeout-minutes is 25 (ADR-002)"
 assert_equals "no" "$(yes_no 'secrets\.' "$SUITE")" "req-010: job references no secrets"
 assert_equals "yes" "$(yes_no '^  pull_request:' "$(cat "$WORKFLOW")")" "req-010: workflow keeps the pull_request trigger"
 assert_equals "no" "$(yes_no 'pull_request_target' "$(cat "$WORKFLOW")")" "req-010: workflow never uses pull_request_target"
@@ -79,8 +72,9 @@ assert_equals "yes" "$(yes_no '^## Windows skip table' "$(cat "$TESTS_README")")
 assert_equals "yes" "$(yes_no '^\|[[:space:]]*Suite[[:space:]]*\|[[:space:]]*Reason[[:space:]]*\|[[:space:]]*Date[[:space:]]*\|' "$(cat "$TESTS_README")")" "req-010: skip table has Suite, Reason, and Date columns"
 
 echo "== req-010: shard entries in the workflow (ADR-014 second fallback) =="
-assert_equals "7" "$(grep -cE '^[[:space:]]+shard:[[:space:]]*[0-9]+[[:space:]]*$' <<<"$SUITE")" "req-010: the test-suite job holds seven shard entries"
-assert_equals "yes" "$(yes_no "matrix.shard && 7 " "$SUITE")" "req-010: the step passes a shard count of 7"
+assert_equals "9" "$(grep -cE '^[[:space:]]+shard:[[:space:]]*[0-9]+[[:space:]]*$' <<<"$SUITE")" "req-010: the test-suite job holds nine shard entries (2 macOS, 7 Windows)"
+assert_equals "7" "$(grep -cE '^[[:space:]]+shards:[[:space:]]*7[[:space:]]*$' <<<"$SUITE")" "req-010: seven entries carry shards 7"
+assert_equals "yes" "$(yes_no 'RAVINTIO_SHARD_COUNT:.*matrix\.shards' "$SUITE")" "req-010: the step reads RAVINTIO_SHARD_COUNT from matrix.shards"
 assert_equals "7" "$(grep -cE '^[[:space:]]+-[[:space:]]*os:[[:space:]]*windows-latest' <<<"$SUITE")" "req-010: seven include entries run on windows-latest"
 assert_equals "yes" "$(yes_no 'RAVINTIO_SHARD_INDEX:' "$SUITE")" "req-010: the step sets RAVINTIO_SHARD_INDEX"
 assert_equals "yes" "$(yes_no 'RAVINTIO_SHARD_COUNT:' "$SUITE")" "req-010: the step sets RAVINTIO_SHARD_COUNT"

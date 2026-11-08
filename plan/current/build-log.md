@@ -139,3 +139,25 @@ Note (P2): the critic took two GitHub Actions facts from memory, not from a sour
 Gate (P2): an ADR exists for the stack, the per-entry cap and shards, the elapsed step, and the CI read order. `consistency-check.mjs` clean.
 Credential scan (P2): clean (regex only)
 Progress: P2 done at 2026-11-08T13:38:17Z: 4 ADRs, critic approved on iteration 1
+
+---
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T13:39:02Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), cheaper (TDD subagents) |
+| Skills loaded | ravintio-codegen-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | P3 start `HEAD`: `589ddf01`. |
+
+Skills inbox (P2 to P3): empty.
+Capability skills (before P3): none applies to a YAML and Bash change.
+Dispatch order (P3): sequential. req-002 reads `matrix.cap`, which req-001 adds, and both edit `.github/workflows/ravintio.yml`.
+Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5`, not haiku / reason: the workflow expressions need care, and sonnet is this run's declared cheaper model.
