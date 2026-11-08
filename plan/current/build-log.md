@@ -15,7 +15,7 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Tool | `claude-code` |
 | Primary model | `claude-opus-5-5` |
 | Cheaper model | `claude-sonnet-5-5` |
-| Run mode | `interactive` (until the P0 confirmation turn records the pick) |
+| Run mode | `autonomous` |
 | Parallel streams | `off` (one unit of work) |
 
 ---
@@ -27,17 +27,17 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T13:08:01Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T13:25:13Z` |
+| Wall-clock | `17` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-orchestrator (source copy, step 1b) |
-| Agents spawned | `0` |
+| Model tier | primary (orchestrator), cheaper (4 Scope Lock drafts) |
+| Skills loaded | ravintio-orchestrator (source copy, step 1b), ravintio-scope-lock-agent (4 subagents) |
+| Agents spawned | `4` |
 | MCP calls | `0` |
-| Parallel task batches | `0` |
-| P0 questions asked | `0` |
-| Brief complete | `pending` |
-| Stack unchanged | `pending` |
+| Parallel task batches | `1` |
+| P0 questions asked | `2` |
+| Brief complete | `no` |
+| Stack unchanged | `yes` |
 | Notes | Picks up backlog 0000430 on `feat/0000041-pack-source-under-src`, at the human's request, so its commits update PR #77. |
 
 P0 references loaded: ravintio-framework/skills/ravintio-orchestrator/references/phase-0-assess-and-coach.md, ravintio-framework/skills/ravintio-orchestrator/references/adoption-modes.md
@@ -58,3 +58,18 @@ Decision (P0): the warning fires past two-thirds of the cap, not 75% / reason: t
 Decision (P0): each matrix entry carries its own `cap`, and `timeout-minutes` reads it / reason: the first-run and error-path drafts flagged two copies of the cap.
 P0 exchange (combined confirmation): Q: confirm the design, the four Scope Lock items, and the run mode / A: "3", the run mode only. The design and the four Scope Lock items have no answer yet, so none counts as confirmed.
 Run mode pick: autonomous. Checks pass: the run is on a `feat/` branch, and `ravintio-overrides/loop-toggles.yml` is absent. The anchor line and `plan/.run-mode` wait for the design confirmation commit.
+P0 exchange (combined confirmation, follow-up): Q: confirm the design and give accept, edit, or reject for each Scope Lock item / A: "accept all and confirm the design".
+Scope Lock (happy path): CI runs macOS as 2 shards with a 15-minute cap, each finishes in under 10 minutes and prints its elapsed time, and every PR #77 check passes. [source: agent-draft-accepted]
+Scope Lock (first-run path): the first push prints each macOS shard's elapsed time with no baseline, and the maintainer reads it to judge the split. [source: agent-draft-accepted]
+Scope Lock (error path): the slow suites land in one shard, which fails near its cap, and the other jobs keep running because `fail-fast` stays off. [source: agent-draft-accepted]
+Scope Lock (cross-session): each pushed artifact is safe on PR #77, a stop loses only the file being written, and a new session resumes from `plan/current/` and the build log. [source: agent-draft-accepted]
+Scope Lock complete. All four scenario paths captured.
+Adoption mode: standard-iterative, confirmed by human on 2026-11-08
+Version confirmed: 0.39.2
+Release budget: none, three-story rule
+Backlog: 0000430 pulled in, and its folder deleted in the design confirmation commit. 254 entries left untouched.
+Toggles: `ravintio-overrides/loop-toggles.yml` is absent, so every checker key reads as `on` in `autonomous`.
+P0 gate checklist: every item passes.
+Credential scan (P0): clean (regex only)
+Progress: P0 done at 2026-11-08T13:25:13Z: design confirmed, 2 stories, autonomous run on the PR #77 branch
+Run mode confirmed: autonomous (2026-11-08T13:25:13Z)

@@ -110,6 +110,11 @@ The `Test suite (macos-latest)` job runs the whole suite in one job against a 15
 
 ## Scenario Paths
 
+- **Happy path:** CI runs the macOS tests as 2 shards, each with a 15-minute cap. Each shard finishes in under 10 minutes and prints its elapsed time against its cap. Every PR #77 check passes.
+- **First-run path:** on the first push after the change, each macOS shard prints its elapsed time with no earlier timing to compare. The maintainer reads those first lines to judge whether the split is balanced.
+- **Error path:** the most likely failure is that the slow suites land in one shard, which then runs near its cap. That shard's check fails, and the maintainer sees which shard it was. The other jobs keep running because `fail-fast` stays off.
+- **Cross-session:** each committed and pushed artifact is safe on PR #77. A stop loses only the file being written, and a new session resumes from `plan/current/` and the build log.
+
 ## Acceptance Criteria
 
 - [ ] Every PR #77 check passes, including both macOS shards.
