@@ -227,6 +227,10 @@ jobs:
           # rename pass, so the job needs full history and origin/main.
           fetch-depth: 0
 
+      - name: Record the test step start time
+        shell: bash
+        run: echo "RAVINTIO_TEST_START=$(date +%s)" >> "$GITHUB_ENV"
+
       - name: Run the framework test suite
         shell: bash
         timeout-minutes: ${{ matrix.cap }}
@@ -234,6 +238,25 @@ jobs:
           RAVINTIO_SHARD_INDEX: ${{ matrix.shard }}
           RAVINTIO_SHARD_COUNT: ${{ matrix.shards || '' }}
         run: bash src/ravintio-framework/tests/run-tests.sh
+
+      - name: Report the test step time
+        if: always()
+        shell: bash
+        env:
+          CAP: ${{ matrix.cap }}
+        run: |
+          start="${RAVINTIO_TEST_START:-}"
+          cap="${CAP:-}"
+          case "$start" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
+          case "$cap" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
+          now="$(date +%s)"
+          elapsed=$((now - start))
+          msg="$((elapsed / 60)) min $((elapsed % 60)) s of a ${cap} min cap"
+          echo "Elapsed: ${msg}"
+          if [ "$elapsed" -gt $((cap * 40)) ]; then
+            echo "::warning title=Test job margin::${msg}"
+          fi
+          exit 0
 
   setup-powershell:
     name: Setup under PowerShell 7 (Windows)

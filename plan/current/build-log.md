@@ -168,3 +168,6 @@ TDD (P3, req-001): refactor changed one stale header comment in the 0000037 suit
 TDD (P3, req-002, attempt 1): RED. `test-0000043-req-002-job-margin.sh` exits 1 with 12 passed and 24 failed. The orchestrator reran it to confirm.
 Decision (P3): the warning prints `{m} min {s} s`, the same form as the elapsed line, not raw seconds / reason: ADR-003 leaves `{elapsed}` open, and one form reads more easily. The orchestrator corrected one test expectation before GREEN.
 Decision (P3): the elapsed step is named `Report the test step time`, and it reads the clock with `date +%s` / reason: the suite finds the step by name and fakes `date` for exact timings.
+TDD (P3, req-002, attempt 1): the implementer added both steps, and the behaviour checks passed. It stopped at 32 passed and 4 failed because of a test defect: `awk -v` processed the backslashes in the start-step pattern, so the pattern could never match.
+Decision (P3): the orchestrator fixed `step_index_matching` to read its pattern from `ENVIRON` / reason: the pattern then reaches awk verbatim. No assertion changed, and `git show HEAD` holds no start line, so the check isn't vacuous.
+TDD (P3, req-002, attempt 1): GREEN. The four suites exit 0: req-002, req-001, 0000031, and 0000037.

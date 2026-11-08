@@ -62,8 +62,10 @@ step_n() {
 
 # Prints the 1-based index of the first step whose block matches the regex, or empty.
 step_index_matching() {
-  awk -v re="$2" '
-    function flush() { if (!found && cur != "" && cur ~ re) { found = i } }
+  # The pattern goes through ENVIRON, not -v. awk -v processes backslash
+  # escapes, so \$\( would reach awk as $( and never match.
+  STEP_RE="$2" awk '
+    function flush() { if (!found && cur != "" && cur ~ ENVIRON["STEP_RE"]) { found = i } }
     /^@@STEP@@$/ { flush(); i++; cur = ""; next }
     { cur = cur $0 "\n" }
     END { flush(); if (found) print found }
