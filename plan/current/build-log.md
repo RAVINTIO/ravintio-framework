@@ -146,12 +146,12 @@ Progress: P3 done at 2026-11-08T08:53:43Z: req-001 GREEN on macOS through a unam
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T08:54:10Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T09:24:24Z` |
+| Wall-clock | `30` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-validate-agent |
-| Agents spawned | `pending` |
+| Model tier | primary, cheaper (verify-by-execution) |
+| Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (1 subagent) |
+| Agents spawned | `1` |
 | MCP calls | `0` |
 | Parallel task batches | `1` (local full suite with the PR #77 CI run) |
 | Notes | Library audit, lint, type-check, and build don't apply: the change is Bash suites with no dependency manifest and no build step. The pack's CI holds no lint job. |
@@ -163,3 +163,10 @@ Full suite (P4, local macOS): 138 feature suites passed and 2 failed, 37 regress
 - `test-0000040-req-007-docs-and-adr-supersede.sh`: 53 passed, 1 failed on "plan/_archive/ holds no change against main". The check diffs against the local `main`, and the 0000041 archive on this branch differs. CI has no local `main` and skips it. Backlog 0000428.
 Decision (P4): count both local failures as outside req-001 and pass the local gate / reason: the first came from a wrong environment variable and passes without it, and the second fails on every feature branch after a P7 and has no link to the changed suites.
 Decision (P4): rerun the failed shard 4 job without a code change / reason: backlog 0000265 already tracks this Windows timing flake, and req-001 touches no ratchet-check code. Fixing it is out of scope.
+PR #77 CI (P4, rerun): the shard 4 rerun passes. All 14 checks pass for head `605839ca` (ADR-004 met).
+Windows evidence (P4): shard 5 prints four req-005 `SKIP (windows)` lines, and the suite passes 55 of 55. Shard 6 prints one req-006 line and passes 124 of 124. The guard suite passes 6 of 6 and prints its own skip line for checks 6 and 7.
+Coverage (P4): `plan/current/coverage-table.md`, 1 requirement, 3 criteria, 0 uncovered.
+Self-correct cycles (P4): 0.
+Verify by execution (P4): `plan/current/verification-report.md`, fresh-context checker. AC1, AC2, and AC3 verified.
+Gate (P4): CI passes, 14 of 14 on PR #77 after one flake rerun, and every criterion verifies by execution. Skill Map unchanged.
+Progress: P4 done at 2026-11-08T09:24:24Z: all 14 PR #77 checks pass and req-001 verifies by execution
