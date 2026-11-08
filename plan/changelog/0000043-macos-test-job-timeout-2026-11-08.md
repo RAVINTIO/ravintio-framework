@@ -20,7 +20,7 @@ version: "0.1.0"
 
 ### What was built
 
-- Every `test-suite` matrix entry sits under `include` with its own `cap`. macOS runs in two shards, and `RAVINTIO_SHARD_COUNT` reads `matrix.shards`.
+- Every `test-suite` matrix entry sits under `include` with its own `cap`. macOS runs in three shards, and `RAVINTIO_SHARD_COUNT` reads `matrix.shards`.
 - The test step times out at `matrix.cap`, under a fixed 25-minute job backstop.
 - A step records the start time, and an `if: always()` step prints `Elapsed: {m} min {s} s of a {cap} min cap`, with a warning past two-thirds of the cap.
 - The elapsed step accepts its inputs only as 1 to 10 digits with no leading zero.
@@ -33,7 +33,7 @@ version: "0.1.0"
 ### Decisions
 
 - ADR-001: stack unchanged, and the repository CI owns the workflow file.
-- ADR-002: a per-entry cap and two macOS shards, amending 0000037 ADR 014.
+- ADR-002: a per-entry cap and two macOS shards, amending 0000037 ADR 014. Its 10-minute rule raised macOS to three shards at P4.
 - ADR-003: an always-run elapsed step, tested through its real `run:` block.
 - ADR-004: read the PR #77 checks before the P7 archive.
 
@@ -49,7 +49,7 @@ None
 | 1 - Specification | pass | All artifacts produced: yes | Design critic: REJECT, then APPROVE. |
 | 2 - ADRs | pass | 4 ADRs generated | Design critic: APPROVE on the first pass. |
 | 3 - Code Generation | pass | Implementation complete: yes | Two TDD cycles. One test defect fixed: `awk -v` stripped the pattern's backslashes. |
-| 4 - Validation | pass | CI clean: yes | 0 cycles. Run `42490766491` passed all 15 checks. macOS shards took 392 s and 281 s. |
+| 4 - Validation | pass | CI clean: yes | 1 cycle. Every run passed, but macOS shard 1 of 2 took 668 s and 612 s in two runs, against a 600 s target. P4 reopened after P6 and moved macOS to three shards, as ADR-002 sets out. |
 | 5 - Security | pass | Critical findings: 0 | Risk Low. S-001 and S-002 fixed in a TDD cycle and re-reviewed. |
 | 6 - Docs | pass | All docs synced: yes | Four living docs and two pack docs updated. |
 

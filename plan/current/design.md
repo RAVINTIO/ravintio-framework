@@ -40,7 +40,7 @@
 - Matrix layout:
   - Every entry moves to `include`, and each entry carries its own `cap`. This gives the cap one source.
   - `ubuntu-latest` stays one unsharded entry with `cap: 15`, and it has no `shard` or `shards` value.
-  - `macos-latest` becomes 2 entries, shards 1 and 2, each with `shards: 2` and `cap: 15`.
+  - `macos-latest` becomes 2 entries, shards 1 and 2, each with `shards: 2` and `cap: 15`. P4 raised it to 3 entries with `shards: 3`, under ADR-002's 10-minute rule (P4 deviation).
   - Each Windows entry gains `shards: 7` and `cap: 20`. The count and the cap don't change.
   - The test step's `timeout-minutes` reads `matrix.cap`. The job `timeout-minutes` is a fixed 25-minute backstop above every cap (P1 deviation: GitHub Actions expressions have no arithmetic).
   - `RAVINTIO_SHARD_COUNT` reads `matrix.shards`, in place of the fixed `7`. An entry with no `shards` still passes an empty value, so Ubuntu runs every suite.

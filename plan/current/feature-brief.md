@@ -71,6 +71,7 @@ The `Test suite (macos-latest)` job runs the whole suite in one job against a 15
 ### In Scope
 
 - the `test-suite` matrix: 2 macOS shards with the 15-minute cap, and a per-entry shard count
+  - P4 note: macOS now runs 3 shards, because shard 1 of 2 ran past 10 minutes in two PR #77 runs (ADR-002).
 - one elapsed-time line per test job, even after a timeout, with a warning when a job passes two-thirds of its cap
 - the two suites that pin the CI layout: `test-0000031-req-001-003-ci-jobs.sh` and `test-0000037-req-010-windows-git-bash-leg.sh`
 - `tests/README.md` rows for the changed layout, if the README describes it
@@ -120,4 +121,5 @@ The `Test suite (macos-latest)` job runs the whole suite in one job against a 15
 - [ ] Every PR #77 check passes, including both macOS shards.
 - [ ] Each macOS shard finishes in under 10 minutes on PR #77.
 - [ ] The 2 macOS shards together run every suite exactly once.
+  - P4 note: with 3 shards, the criterion applies to all 3 macOS shards together.
 - [ ] Each test job's log shows its elapsed time and its cap, even when its test step times out, and a job past two-thirds of its cap shows a warning.

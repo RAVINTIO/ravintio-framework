@@ -280,3 +280,25 @@ CI (P6): run `42492328316` on `167cd519`, the security-fix head, concluded `succ
 Gate (P6): zero drift, every expected artifact present, revalidation passed, and the cross-model review approved.
 Credential scan (P6): clean (regex only)
 Progress: P6 done at 2026-11-08T15:18:57Z: 6 docs updated, cross-model review approved, 1 exception waiting
+
+---
+
+### P4: Validate (reopened)
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T15:40:25Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-validate-agent, ravintio-loop-runner |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | P4 reopens before P7, under ADR-004, because the last CI read missed req-001 AC2. |
+
+CI (P4, reopened): run `42494219958` on `68a500d5` concluded `success`, but macOS shard 1 of 2 took 612 s, against req-001 AC2's 600 s target. Across four runs, shard 1 took 392 s, 410 s, 668 s, and 612 s, and shard 2 took 281 s, 397 s, 527 s, and 511 s.
+Self-correct cycle 1 (P4): Check: test (req-001 AC2, CI timing). Error: macOS shard 1 of 2 over 600 s in 2 of 4 runs. Root cause: runner speed varies by about 60%, and two shards leave too little margin on a slow runner. Fix: three macOS shards, as ADR-002 and risk R-001 set out. Result: local GREEN, and CI pending.
+Deviation (P4, unclassified): macOS runs 3 shards in place of the confirmed 2, so the matrix holds 11 entries. ADR-002 named this move in advance. req-001, ADR-002, the design, and the docs record it, and the brief and req-001 criteria carry P4 notes.
+TDD (P4): RED with 4 failing checks across the req-001 and 0000037 suites. GREEN after the matrix change: the four layout and margin suites exit 0.

@@ -44,7 +44,7 @@ The 0000041 req-005 and req-006 suites changed in 0000042: one Windows guard eac
 | `test-0000043-req-001-macos-shards.sh` | The `test-suite` matrix rows, `RAVINTIO_SHARD_COUNT` from `matrix.shards`, the job name, the step timeout from `matrix.cap`, and the 25-minute job timeout. |
 | `test-0000043-req-002-job-margin.sh` | Both timing steps, `shell: bash`, and `if: always()`. It extracts the elapsed step's `run:` block and runs it under a fixed `date` stand-in, covering the two-thirds boundary, a timed-out step, and hostile start and cap values. |
 
-The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the per-entry cap and the 2 macOS shards. The full run for 0000043 covers 179 suites.
+The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the per-entry cap and the 3 macOS shards. The full run for 0000043 covers 179 suites.
 
 ## Known gaps
 
