@@ -195,3 +195,5 @@ GREEN (P5, S-1 and S-7): `mktemp` on its own line with `|| exit 1`, a directory 
 Security re-review (P5, fresh context): `security-rereview.md`. S-1 fixed, S-7 fixed, overall Low. Two Info items: R-1, a hostile `mktemp` that prints an existing folder, and R-2, no test for empty output with exit 0.
 Decision (P5): accept R-1 and R-2 / reason: R-1 needs code already running first on `PATH`, and R-2 is a test gap for a check the fix already makes.
 Decision (P5): push and read the PR #77 checks again before the P5 gate passes / reason: ADR-004, and P5 changed code under `src/` after the P4 CI pass.
+PR #77 CI (P5, head `77626508`, run 42467601591): 13 pass and 1 cancelled. `Test suite (macos-latest)` hit its 15-minute timeout during the 0000032 suites. Earlier macOS runs took 14 min 48 s and 10 min 11 s. Backlog 0000430.
+Decision (P5): rerun the cancelled macOS job without a change / reason: the runner was slow, every suite that ran passed, and the workflow file is outside this run's scope.
