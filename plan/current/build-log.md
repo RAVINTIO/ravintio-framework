@@ -187,11 +187,11 @@ Progress: P3 done at 2026-11-08T14:37:36Z: 2 requirements GREEN, 2 new suites, m
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T14:38:04Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T14:54:26Z` |
+| Wall-clock | `16` |
 | Streams | `n/a` |
 | Model tier | primary |
-| Skills loaded | ravintio-validate-agent (installed copy, not stale) |
+| Skills loaded | ravintio-validate-agent (installed copy, not stale), ravintio-verify-by-execution (installed copy) |
 | Agents spawned | `0` |
 | MCP calls | `0` |
 | Parallel task batches | `1` |
@@ -202,3 +202,12 @@ Library audit (P4): skipped. The change adds no dependency manifest.
 Lint (P4): `bash -n` passes on the four changed suites. The workflow parses as YAML with 10 `include` entries and a 25-minute job timeout. No `actionlint` is installed, so GitHub's own parse of run `42490766491` is the workflow check.
 Typecheck and build (P4): not applicable. No typed language changes, and P7 runs the release build.
 CI (P4): run `42488827931`, for intermediate head `53c926bf`, failed one job. Windows shard 4 failed `test-0000032-req-003` "malformed JSON call completes under 200 ms (took 269 ms)". The hook under test is unchanged, so this is runner load. Backlog 0000433 filed.
+Test (P4): the local full run shows 141 feature suites passed and 1 failed, with 37 regression suites passed. The one failure is the known 0000428 archive check, which CI skips.
+CI (P4, ADR-004): run `42490766491` on head `1ed6e2b2` concluded `success`, with all 15 jobs passing. macOS shard 1 took 392 s and shard 2 took 281 s, both under 10 minutes. Their `Suites run` totals, 90 and 89, sum to Ubuntu's 179.
+Verify by execution (P4): 6 criteria verified. The live step-timeout part of req-002 AC2 wasn't observed, because no test step hit its cap. See `verification-report.md`.
+Margin warning (P4): Windows shard 3, at 14 min 36 s of 20, carries the one `Test job margin` annotation. That matches backlog 0000432.
+Backlog filed (P4): 0000434, `actions/checkout@v4` runs on the deprecated Node.js 20.
+Self-correct cycles (P4): 0.
+Gate (P4): CI passes, and the acceptance criteria verify. `coverage-table.md` maps all 6 criteria.
+Credential scan (P4): clean (regex only)
+Progress: P4 done at 2026-11-08T14:54:26Z: PR #77 green, macOS shards at 6.5 and 4.7 minutes, 0 self-correct cycles
