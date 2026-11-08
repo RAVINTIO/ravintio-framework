@@ -28,7 +28,7 @@ The path conversion copies the pattern in `test-0000035-req-005-ratchet-check-sh
 
 | Alternative | Pros | Cons | Why Rejected |
 |-------------|------|------|-------------|
-| `pwd -W` alone, also for the folder of `project-kind.mjs` | One method for both paths | Works only on a folder, so the suite rebuilds the file path by hand | Five 0000035 suites and `test-0000040-req-005-consumer-migration.sh` already use the `native()` helper for file paths |
+| `pwd -W` alone, also for the folder of `project-kind.mjs` | One method for both paths | Works only on a folder, so the suite rebuilds the file path by hand | Five 0000035 suites already use the `native()` helper for file paths, and `test-0000040-req-005-consumer-migration.sh` calls `cygpath -m` inline |
 | Add a PowerShell suite for the link cases | Could build real Windows links | A second test language for one feature | Out of scope, and the Linux and macOS jobs already cover the link cases |
 
 ## Affected Components

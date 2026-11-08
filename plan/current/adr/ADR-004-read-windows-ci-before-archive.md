@@ -21,7 +21,8 @@ After the P4 CI pass, the run pushes `feat/0000041-pack-source-under-src` and re
 
 - It moves to P5 only when all 14 checks pass. Any red check blocks P5, not only the Windows shards.
 - If a check fails, the P4 validate loop runs the fix, with its cap of 5, while the design is still in `plan/current/`. In `autonomous`, a cap starts a new approach, up to 3.
-- At P7, after the release script rebuilds the root copy, the run runs `release-check.mjs --files-only` before the push. That catches a rebuild fault before the archive leaves `gate-write` closed.
+- At P7, between Step 5c (`build-release.mjs`) and Step 6 (`archive-current.mjs`), the run runs `node src/ravintio-framework/scripts/release-check.mjs --root . --files-only`. It passes on exit 0. That catches a rebuild fault while the design still opens `gate-write`.
+  - The check reads the local `ravintio-framework/release.yml` that Step 5c writes. CI never sees that file while the credential scan holds it back (R-003), so CI's `release-copy-integrity` job reports itself skipped, and that also counts as a pass.
 - P9 still reads the checks again for the final head.
 
 ## Alternatives Considered

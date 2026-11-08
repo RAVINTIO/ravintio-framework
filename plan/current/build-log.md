@@ -99,15 +99,18 @@ Progress: P1 done at 2026-11-08T08:41:53Z: req-001 and the spec set approved by 
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T08:42:33Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T08:49:11Z` |
+| Wall-clock | `6` |
 | Streams | `n/a` |
 | Model tier | primary |
-| Skills loaded | ravintio-adr-agent |
-| Agents spawned | `pending` |
+| Skills loaded | ravintio-adr-agent, ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
-| Parallel task batches | `pending` |
+| Parallel task batches | `0` |
 | Notes | Skills inbox empty. Four short ADRs, written inline under the size floor. |
 
 Deviation (P2, unclassified): `project-kind.mjs` reaches Node through the 0000035 `native()` helper with `cygpath -m`, not through `pwd -W`. Critic P2 iteration 1, finding 1.
 Deviation (P2, unclassified): ADR-004 now blocks P5 on any red PR #77 check, runs fixes in the P4 validate loop, and adds `release-check.mjs --files-only` at P7 before the push. Critic P2 iteration 1, findings 4 and 5.
+Design critic (P2): iteration 1 REJECT (`critic-verdict-p2-1.md`), iteration 2 APPROVE (`critic-verdict-p2-2.md`). Both iteration 2 minor findings applied.
+Gate (P2): four ADRs. ADR-001 stack unchanged, with the 0000035 `native()` helper. ADR-002 one Windows guard per suite for link cases. ADR-003 blob id compare at `HEAD` and in the working tree. ADR-004 read every PR #77 check before P5, and run `release-check.mjs` before the P7 archive. Skill Map unchanged.
+Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design critic on iteration 2
