@@ -305,3 +305,11 @@ Decision (P9): keep the 0000041 PR title, and append a 0000042 section to the bo
 Credential scan (P9): PR text clean (regex only)
 PR: #77 https://github.com/RAVINTIO/ravintio-framework/pull/77
 PR state (P9): draft, because `Exception waiting` lines remain.
+Clean-tree check: committed 1 file (`8d890c6a`), the archived build log.
+CI checks (P9, first read, head `8d890c6a`, run 42472194424): unknown: Test suite (macos-latest), Test suite (windows-latest, shard 3 of 7). Both were cancelled at their job timeouts with no FAIL line. 12 checks pass.
+Decision (P9): rerun the two timed-out jobs without a code change / reason: since head `77626508` passed 14 of 14, `src/` changed only in `component.yml` and two docs files, and no suite reads those changes in a way that adds run time. Backlog 0000430 covers the timeout margin.
+CI checks (P9, rerun 1): Windows shard 3 passes in 19 min 54 s. `Test suite (macos-latest)` is cancelled again at 15 min 18 s, at suite 173 of 177, with no FAIL line. The guard suite takes about 3 s locally, so it isn't the cause.
+Decision (P9): rerun the macOS job once more, and stop at 3 attempts / reason: the earlier rerun passed in 14 min 39 s, and the workflow timeout is outside this run's scope (backlog 0000430).
+CI checks (P9): unknown: Test suite (macos-latest). Rerun 2 was cancelled at 15 min 17 s. 13 checks pass on head `8d890c6a`.
+Exception waiting (P9, 6): CI check Test suite (macos-latest) still cancelled at its 15-minute timeout after 3 attempts on head `8d890c6a`. Rerun the job, or raise the timeout through a Feature Pipeline run for backlog 0000430.
+Progress: P9 blocked at 2026-11-08T11:36:46Z: CI unknown: Test suite (macos-latest) timed out 3 times
