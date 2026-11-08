@@ -165,3 +165,6 @@ TDD (P3, req-001, attempt 1): RED at `28ac725a`. The 0000043 suite had 14 failur
 TDD (P3, req-001, attempt 1): GREEN. The three suites exit 0 with 18, 26, and 52 passed. The full `--quiet` run shows 140 feature suites passed and 1 failed, with 37 regression suites passed.
 Known failure (P3): `test-0000040-req-007-docs-and-adr-supersede.sh` fails one check, "plan/_archive/ holds no change against main", because this branch adds the 0000041 and 0000042 archives. CI has no local `main` and skips the check. Backlog 0000428 already holds it, so the run files nothing new.
 TDD (P3, req-001): refactor changed one stale header comment in the 0000037 suite. No assertion changed. The three suites exit 0, and the full run matches GREEN.
+TDD (P3, req-002, attempt 1): RED. `test-0000043-req-002-job-margin.sh` exits 1 with 12 passed and 24 failed. The orchestrator reran it to confirm.
+Decision (P3): the warning prints `{m} min {s} s`, the same form as the elapsed line, not raw seconds / reason: ADR-003 leaves `{elapsed}` open, and one form reads more easily. The orchestrator corrected one test expectation before GREEN.
+Decision (P3): the elapsed step is named `Report the test step time`, and it reads the clock with `date +%s` / reason: the suite finds the step by name and fakes `date` for exact timings.
