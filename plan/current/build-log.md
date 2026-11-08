@@ -85,8 +85,8 @@ Toggle record (P1): design_critic: on (autonomous absent default), reversal_prot
 Baseline (P1): on macOS, `test-0000041-req-005-applies-to-header.sh` passes 67 and fails 0, and `test-0000041-req-006-consumer-migration.sh` passes 127 and fails 0. Neither prints a SKIP line.
 Decision (P1): split step for req-001: keep / reason: one observable outcome, both Windows shards green with every skip named, and three criteria.
 Decision (P1): after the P4 CI pass, push the branch and read the Windows shards of PR #77 before P7 archives the design / reason: R-002, a fix after the archive hits the `gate-write` block in backlog 0000426.
-Deviation (P1, unclassified): the design's req-005 fix list now also converts the `project-kind.mjs` path with `pwd -W`, groups the four link cases behind one guard with one SKIP line per case, and checks the `HEAD` blob and the working-tree hash against `v0.38.0`. Critic iteration 1, findings 1, 2, and 5.
-Deviation (P1, unclassified): the orchestrator armed `loop-state-design_critic.md` after critic iteration 1, not before it.
+Deviation (P1, additive): the design's req-005 fix list now also converts the `project-kind.mjs` path with `pwd -W`, groups the four link cases behind one guard with one SKIP line per case, and checks the `HEAD` blob and the working-tree hash against `v0.38.0`. Critic iteration 1, findings 1, 2, and 5.
+Deviation (P1, additive): the orchestrator armed `loop-state-design_critic.md` after critic iteration 1, not before it.
 Decision (P1): AC3 and the brief's in-scope lines stay as written, and the FRs change to fit them / reason: the ratchet guards those lines while the critic loop is active, and the one-guard design meets AC3.
 Decision (P1): the P3 RED evidence for req-001 is the recorded Windows failure in run 42409694287 / reason: macOS and Linux can't reproduce Git Bash link and path behaviour, so no local test can go red first.
 Design critic (P1): iteration 1 REJECT (`critic-verdict-1.md`), iteration 2 APPROVE (`critic-verdict-2.md`).
@@ -109,8 +109,8 @@ Progress: P1 done at 2026-11-08T08:41:53Z: req-001 and the spec set approved by 
 | Parallel task batches | `0` |
 | Notes | Skills inbox empty. Four short ADRs, written inline under the size floor. |
 
-Deviation (P2, unclassified): `project-kind.mjs` reaches Node through the 0000035 `native()` helper with `cygpath -m`, not through `pwd -W`. Critic P2 iteration 1, finding 1.
-Deviation (P2, unclassified): ADR-004 now blocks P5 on any red PR #77 check, runs fixes in the P4 validate loop, and adds `release-check.mjs --files-only` at P7 before the push. Critic P2 iteration 1, findings 4 and 5.
+Deviation (P2, additive): `project-kind.mjs` reaches Node through the 0000035 `native()` helper with `cygpath -m`, not through `pwd -W`. Critic P2 iteration 1, finding 1.
+Deviation (P2, additive): ADR-004 now blocks P5 on any red PR #77 check, runs fixes in the P4 validate loop, and adds `release-check.mjs --files-only` at P7 before the push. Critic P2 iteration 1, findings 4 and 5.
 Design critic (P2): iteration 1 REJECT (`critic-verdict-p2-1.md`), iteration 2 APPROVE (`critic-verdict-p2-2.md`). Both iteration 2 minor findings applied.
 Gate (P2): four ADRs. ADR-001 stack unchanged, with the 0000035 `native()` helper. ADR-002 one Windows guard per suite for link cases. ADR-003 blob id compare at `HEAD` and in the working tree. ADR-004 read every PR #77 check before P5, and run `release-check.mjs` before the P7 archive. Skill Map unchanged.
 Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design critic on iteration 2
@@ -132,7 +132,7 @@ Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design crit
 
 Decision (P3): req-001's RED test is a new suite, `test-0000042-req-001-windows-guards.sh`. It puts a `uname` stand-in on `PATH` that reports `MINGW64_NT`, runs both 0000041 suites, and counts their `SKIP (windows)` lines / reason: it goes red on macOS before the fix, which is stronger than the P1 plan to use the recorded CI failure as RED evidence.
 RED (P3, req-001): `test-0000042-req-001-windows-guards.sh` exits 1 with 4 passed and 4 failed. Assertions 2, 3, 5, and 8 fail as expected.
-Deviation (P3, unclassified): the P3 guard suite needs its own `IS_WIN` guard for its two native-run checks on a real Windows shard, so `tests/README.md` gains three rows, not two.
+Deviation (P3, altering): the P3 guard suite needs its own `IS_WIN` guard for its two native-run checks on a real Windows shard, so `tests/README.md` gains three rows, not two.
 GREEN (P3, req-001): the guard suite passes 8 of 8, the req-005 suite 67 of 67, and the req-006 suite 127 of 127, with no SKIP line on macOS. The orchestrator reran all three and reviewed the diff.
 Decision (P3): the version bump goes to `src/ravintio-framework/component.yml`, the path `product.yml` lists, as a patch to 0.39.1 / reason: the design confirmed 0.39.1, and 0000041 moved the manifest under `src/`.
 Refactor (P3, req-001): one change, a loop for the four req-005 SKIP lines. Printed text unchanged. All three suites still pass 8, 67, and 127.
@@ -188,7 +188,7 @@ Progress: P4 done at 2026-11-08T09:24:24Z: all 14 PR #77 checks pass and req-001
 
 Security review (P5, pass 1): overall High. S-1 High: `test-0000041-req-005-applies-to-header.sh` line 27 lets a failed `mktemp` make `WORK` the caller's folder, which the `EXIT` trap then deletes. The 0000042 diff introduced it. S-2 Medium: Windows link-refusal coverage gap, R-001 accepted. S-3 to S-7 Low.
 Decision (P5): fix S-1 and S-7 in this run through a TDD cycle, and accept S-2, S-3, S-4, S-5, and S-6 / reason: S-1 is a regression this diff made, and S-7 is a one-line hardening on the same check. S-2 is R-001, S-3 predates the diff, and S-4 to S-6 are mitigated.
-Deviation (P5, unclassified): req-001 gains two functional requirements, a safe `mktemp` failure path and a tag-only ref for the blob compare.
+Deviation (P5, additive, destructive): req-001 gains two functional requirements, a safe `mktemp` failure path and a tag-only ref for the blob compare.
 Backlog (P5): 0000429, the same `cd "$(mktemp ...)"` form in nine other suites.
 RED (P5, S-1): guard suite assertions 9 and 10 fail with 8 passed and 2 failed. A failing `mktemp` stand-in made the req-005 suite delete the scratch caller folder (`764b7110`).
 GREEN (P5, S-1 and S-7): `mktemp` on its own line with `|| exit 1`, a directory check, the trap on `WORK_TMP` only, and `rev-parse --verify --quiet` through `refs/tags/v0.38.0`. Guard suite 10 of 10, req-005 suite 67 of 67 (`951bc651`).
@@ -220,3 +220,10 @@ P6 Gate B: docs update assessment (continuous run, auto-accepted).
 Two 0000041 suites gain Windows guards, a new guard suite joins, and the pack moves to 0.39.1.
 Auto-accepted: updating the following docs: `docs/decisions-index.md`, `docs/component-registry.md`, `docs/architecture-overview.md`, `src/ravintio-framework/docs/quirks.md`, `src/ravintio-framework/docs/test-coverage.md`. No update needed for `docs/dependency-graph.md`, because no dependency changed. `docs/about.md` takes the version at P7.
 Run-mode read (P6): `run-mode.mjs` prints `interactive` (backlog 0000427). This session keeps `autonomous` per the P0 decision.
+Deviation (P3, altering): req-001's RED test is a new suite, `test-0000042-req-001-windows-guards.sh`, which the confirmed in-scope list doesn't name. Classed by the deviation review.
+Deviation (P5, additive, destructive): the S-1 fix narrows the req-005 `EXIT` trap `rm -rf` to the `mktemp` path `WORK_TMP`. Classed by the deviation review.
+Deviation review (P6): `deviation-review.md`. Six additive items, two altering, and two of the additive items flagged destructive. No schema item.
+Exception waiting (P6, 2): approve the new guard suite `test-0000042-req-001-windows-guards.sh`, which the confirmed in-scope list doesn't name (review item 7).
+Exception waiting (P6, 2): approve the third `tests/README.md` skip row, for the guard suite, against the confirmed "two rows" (review item 5).
+Exception waiting (P6, 1): approve the two P5 functional requirements in req-001, the safe `mktemp` failure path and the tag-only ref, which change an `rm -rf` trap guard (review item 6).
+Exception waiting (P6, 1): approve the S-1 fix that narrows the req-005 `EXIT` trap `rm -rf` to `WORK_TMP` (review item 8).
