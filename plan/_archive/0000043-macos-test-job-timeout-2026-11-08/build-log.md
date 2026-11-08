@@ -317,8 +317,8 @@ Exception waiting (P4, 2): the 3-shard deviation is altering. The human on the l
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T16:05:32Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T16:10:18Z` |
+| Wall-clock | `4` |
 | Streams | `n/a` |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent (source copy, step 1b) |
@@ -341,4 +341,44 @@ Step 6 (P7): `archive-current.mjs` exit 0. It moved 23 items and removed `plan/c
 Step 6b (P7): wrote `docs/about.md` with version 0.39.2, feature `0000043-macos-test-job-timeout`, and updated `08 Nov 2026`.
 Credential scan (P7): held back ravintio-framework/release.yml
 Exception waiting (P7, 7): credential sighting in ravintio-framework/release.yml:634 and ravintio-framework/release.yml:635. Each line is a pack file path and its SHA-256 hash, and the `risk-requirements` path name matches the `api-secret-key` rule. This is the backlog 0000425 false positive, as in 0000041 and 0000042. The human on the loop decides whether to commit `release.yml`. CI's `release-copy-integrity` job reports a skip while the file is absent.
-Step 7 (P7): scan-then-commit over 64 candidates. 63 safe, and `release.yml` unstaged with `git restore --staged`.
+Step 7 (P7): scan-then-commit over 64 candidates. 63 safe, and `release.yml` unstaged with `git restore --staged`. A rescan over the 63 staged paths exited 0, and commit `4d794129` holds them.
+Process note (P7): a Claude Code safety check refused one compound command, because it ran `rm -rf` on a variable folder inside `bash -c`. Nothing in that command ran. The rewrite drops the removals, so two scan folders stay in the session scratchpad.
+Progress: P7 done at 2026-11-08T16:10:18Z: archived to plan/_archive/0000043-macos-test-job-timeout-2026-11-08, release copy at 0.39.2, release.yml held back
+
+---
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T16:10:18Z` |
+| End | `2026-11-08T16:13:48Z` |
+| Wall-clock | `3` |
+| Streams | `n/a` |
+| Model tier | cheaper (haiku, per the ship skill) |
+| Skills loaded | ravintio-build-assessment-agent (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | none |
+
+Build assessment (P8): `build-report.md` written. 18 subagents, 1 self-correct cycle, 0 touchpoints outside the exception list, and 3 exceptions waiting. It flags an unlogged gap from 15:18:57Z to 15:40:25Z, which was the wait for CI run `42494219958` between the P6 gate and the reopened P4.
+Clean-tree check: clean. The only lines are the archived build log and `build-report.md`, both under the archive folder, which the P9 marker step commits.
+Progress: P8 done at 2026-11-08T16:13:48Z: build report written, clean tree
+
+---
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T16:13:48Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | PR #77 exists, so P9 pushes the branch and the tag and updates PR #77. |
