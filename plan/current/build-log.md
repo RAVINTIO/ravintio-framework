@@ -56,3 +56,5 @@ Scope Lock drafts: 4 parallel `ravintio-scope-lock-agent` dispatches on the chea
 Decision (P0): the elapsed step runs with `if: always()` after a step timeout one minute below the cap / reason: the error-path and happy-path drafts flagged that a job timeout cancels the job before any later step prints.
 Decision (P0): the warning fires past two-thirds of the cap, not 75% / reason: the error-path draft flagged that 75% of 15 minutes sits above the 10-minute margin NFR.
 Decision (P0): each matrix entry carries its own `cap`, and `timeout-minutes` reads it / reason: the first-run and error-path drafts flagged two copies of the cap.
+P0 exchange (combined confirmation): Q: confirm the design, the four Scope Lock items, and the run mode / A: "3", the run mode only. The design and the four Scope Lock items have no answer yet, so none counts as confirmed.
+Run mode pick: autonomous. Checks pass: the run is on a `feat/` branch, and `ravintio-overrides/loop-toggles.yml` is absent. The anchor line and `plan/.run-mode` wait for the design confirmation commit.
