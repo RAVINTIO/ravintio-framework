@@ -3,7 +3,7 @@
 > Living document. Reflects current system state. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
+Last updated: 0000042-fix-windows-shards-pr-77 (8 Nov 2026). Two 0000041 suites pass on the Windows shards, and the pack moves to 0.39.1. Earlier: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
 
 ---
 
@@ -541,6 +541,8 @@ A repo is the framework source when `product.yml` lists `ravintio-framework` at 
 ### Tests and CI from src
 
 In the source repo, suites read the pack through `tests/helpers/pack-root.sh`, which gives `src/ravintio-framework/` and fails a suite that reads the root copy (0000041 ADR-009). CI runs `src/ravintio-framework/tests/run-tests.sh`. A new `release-copy-integrity` job runs `release-check.mjs --files-only` against the root copy. It reports a skip while the root copy has no `release.yml`. The job is repo-only and is not part of the consumer `hooks/ravintio.yml`. The 0000039 req-010 version equality checks run only on a released tree, where `plan/current/design.md` is absent. `em-dash-guard.mjs` now also covers prose under `src/ravintio-framework/`.
+
+Release 0.39.1 makes two 0000041 suites pass under Git Bash (0000042). Each one puts its link cases behind one `IS_WIN` guard, because `ln -s` makes a copy there (0000042 ADR-002). The req-005 suite passes paths to Node in Windows form and imports `project-kind.mjs` through a file URL (0000042 ADR-001). It checks the released migration by git blob id, so a CRLF checkout can't fail it (0000042 ADR-003). `test-0000042-req-001-windows-guards.sh` runs both suites under a `uname` stand-in that reports `MINGW64_NT`, so a Mac or Linux run checks the Windows branch. It also runs the req-005 suite under a failing `mktemp` stand-in and checks that the caller's folder survives.
 
 ---
 

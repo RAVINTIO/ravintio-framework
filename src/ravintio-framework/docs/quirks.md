@@ -1,6 +1,6 @@
 # Quirks - ravintio-framework
 
-Last updated: 0000041-pack-source-under-src
+Last updated: 0000042-fix-windows-shards-pr-77
 
 ## Two copies of the pack
 
@@ -39,3 +39,15 @@ Copying a new pack over an old one never removes `component.yml`. Step 1a warns 
 ## Version suite
 
 The 0000039 req-010 equality checks run only on a released tree, where `plan/current/design.md` is absent. On an open run they print `SKIP (open run):` with the reason.
+
+## Paths inside node -e scripts on Windows
+
+Git Bash converts command arguments to Windows paths, but not text inside a `node -e` script. A suite that writes a path into such a script converts it first. It uses `pwd -W` for its scratch folder and the `native()` helper, which runs `cygpath -m`, for any other path. Node otherwise reads `/d/a/...` as `D:\d\a\...` (0000042 ADR-001).
+
+## Link cases skip on Windows
+
+Git Bash `ln -s` makes a copy, so no link case can run on a Windows shard. Each suite puts its link cases behind one `IS_WIN` guard, and `tests/README.md` lists each guard. `test-0000042-req-001-windows-guards.sh` checks the guards from Linux and macOS through a `uname` stand-in (0000042 ADR-002).
+
+## Line endings and released files
+
+A Windows checkout converts LF to CRLF, so a byte compare against a `git show` copy fails although the file is unchanged. Compare git blob ids instead, with `git hash-object` run inside the repo for the working-tree copy (0000042 ADR-003).

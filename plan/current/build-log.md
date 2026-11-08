@@ -200,3 +200,23 @@ Decision (P5): rerun the cancelled macOS job without a change / reason: the runn
 PR #77 CI (P5, rerun): the macOS job passes in 14 min 39 s. All 14 checks pass for head `77626508`.
 Gate (P5): overall risk Low after the re-review. S-1 and S-7 fixed and re-reviewed. S-2 Medium accepted under R-001. S-3 to S-6 Low and R-1, R-2 Info accepted. Zero critical or high findings open. Skill Map unchanged.
 Progress: P5 done at 2026-11-08T10:03:52Z: security risk Low after fixing S-1 and S-7, and all 14 PR #77 checks pass
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T10:04:28Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-docs-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `1` (all doc edits in one batch) |
+| Notes | Gate A: `docs/` exists. Small edits, written inline under the size floor. |
+
+P6 Gate B: docs update assessment (continuous run, auto-accepted).
+Two 0000041 suites gain Windows guards, a new guard suite joins, and the pack moves to 0.39.1.
+Auto-accepted: updating the following docs: `docs/decisions-index.md`, `docs/component-registry.md`, `docs/architecture-overview.md`, `src/ravintio-framework/docs/quirks.md`, `src/ravintio-framework/docs/test-coverage.md`. No update needed for `docs/dependency-graph.md`, because no dependency changed. `docs/about.md` takes the version at P7.
+Run-mode read (P6): `run-mode.mjs` prints `interactive` (backlog 0000427). This session keeps `autonomous` per the P0 decision.
