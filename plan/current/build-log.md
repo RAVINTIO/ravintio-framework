@@ -114,3 +114,21 @@ Deviation (P2, unclassified): ADR-004 now blocks P5 on any red PR #77 check, run
 Design critic (P2): iteration 1 REJECT (`critic-verdict-p2-1.md`), iteration 2 APPROVE (`critic-verdict-p2-2.md`). Both iteration 2 minor findings applied.
 Gate (P2): four ADRs. ADR-001 stack unchanged, with the 0000035 `native()` helper. ADR-002 one Windows guard per suite for link cases. ADR-003 blob id compare at `HEAD` and in the working tree. ADR-004 read every PR #77 check before P5, and run `release-check.mjs` before the P7 archive. Skill Map unchanged.
 Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design critic on iteration 2
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T08:49:53Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary (orchestration), cheaper (TDD subagents) |
+| Skills loaded | ravintio-codegen-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | Skills inbox empty. No capability skill fits Bash suites. One requirement, so the TDD loop runs in sequence: test-writer, implementer, refactor. |
+
+Decision (P3): req-001's RED test is a new suite, `test-0000042-req-001-windows-guards.sh`. It puts a `uname` stand-in on `PATH` that reports `MINGW64_NT`, runs both 0000041 suites, and counts their `SKIP (windows)` lines / reason: it goes red on macOS before the fix, which is stronger than the P1 plan to use the recorded CI failure as RED evidence.
+Decision (P3): the version bump goes to `src/ravintio-framework/component.yml`, the path `product.yml` lists, as a patch to 0.39.1 / reason: the design confirmed 0.39.1, and 0000041 moved the manifest under `src/`.
