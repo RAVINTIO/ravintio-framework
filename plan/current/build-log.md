@@ -131,4 +131,7 @@ Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design crit
 | Notes | Skills inbox empty. No capability skill fits Bash suites. One requirement, so the TDD loop runs in sequence: test-writer, implementer, refactor. |
 
 Decision (P3): req-001's RED test is a new suite, `test-0000042-req-001-windows-guards.sh`. It puts a `uname` stand-in on `PATH` that reports `MINGW64_NT`, runs both 0000041 suites, and counts their `SKIP (windows)` lines / reason: it goes red on macOS before the fix, which is stronger than the P1 plan to use the recorded CI failure as RED evidence.
+RED (P3, req-001): `test-0000042-req-001-windows-guards.sh` exits 1 with 4 passed and 4 failed. Assertions 2, 3, 5, and 8 fail as expected.
+Deviation (P3, unclassified): the P3 guard suite needs its own `IS_WIN` guard for its two native-run checks on a real Windows shard, so `tests/README.md` gains three rows, not two.
+GREEN (P3, req-001): the guard suite passes 8 of 8, the req-005 suite 67 of 67, and the req-006 suite 127 of 127, with no SKIP line on macOS. The orchestrator reran all three and reviewed the diff.
 Decision (P3): the version bump goes to `src/ravintio-framework/component.yml`, the path `product.yml` lists, as a patch to 0.39.1 / reason: the design confirmed 0.39.1, and 0000041 moved the manifest under `src/`.

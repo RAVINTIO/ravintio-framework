@@ -19,6 +19,10 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/helpers/assert.sh"
 source "$SCRIPT_DIR/helpers/pack-root.sh"
 
+# IS_WIN comes from the real uname. The stand-in below only reaches the suites it runs.
+IS_WIN=no
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) IS_WIN=yes ;; esac
+
 WORK="$(mktemp -d -t ravintio_0000042_req001_XXXXXX)" || { echo "  FAIL: req-001: mktemp -d failed"; exit 1; }
 trap 'rm -rf "$WORK"' EXIT
 
@@ -82,15 +86,20 @@ W6_SKIPS="$(grep -c 'SKIP (windows)' "$W6" || true)"
 W6_LN="$(grep 'SKIP (windows)' "$W6" | grep -c 'ln -s' || true)"
 assert_equals "1:1" "$W6_SKIPS:$W6_LN" "req-001: req-006 suite prints 1 SKIP (windows) line naming ln -s under a MINGW uname"
 
-# 6. req-005 without the stand-in: no SKIP lines, 67 cases.
-N5_SKIPS="$(grep -c 'SKIP (windows)' "$N5" || true)"
-N5_RESULT="$(grep -o 'Results: [0-9]* passed, [0-9]* failed' "$N5" | tail -n 1)"
-assert_equals "0|Results: 67 passed, 0 failed" "$N5_SKIPS|$N5_RESULT" "req-001: req-005 suite prints no SKIP line and passes 67 cases natively"
+if [ "$IS_WIN" = yes ]; then
+  # 6 and 7. A native Windows run prints the skips these checks expect to be absent.
+  echo "  SKIP (windows): native-run checks 6 and 7: a native Windows run prints the SKIP lines that these checks expect to be absent"
+else
+  # 6. req-005 without the stand-in: no SKIP lines, 67 cases.
+  N5_SKIPS="$(grep -c 'SKIP (windows)' "$N5" || true)"
+  N5_RESULT="$(grep -o 'Results: [0-9]* passed, [0-9]* failed' "$N5" | tail -n 1)"
+  assert_equals "0|Results: 67 passed, 0 failed" "$N5_SKIPS|$N5_RESULT" "req-001: req-005 suite prints no SKIP line and passes 67 cases natively"
 
-# 7. req-006 without the stand-in: no SKIP lines, 127 cases.
-N6_SKIPS="$(grep -c 'SKIP (windows)' "$N6" || true)"
-N6_RESULT="$(grep -o 'Results: [0-9]* passed, [0-9]* failed' "$N6" | tail -n 1)"
-assert_equals "0|Results: 127 passed, 0 failed" "$N6_SKIPS|$N6_RESULT" "req-001: req-006 suite prints no SKIP line and passes 127 cases natively"
+  # 7. req-006 without the stand-in: no SKIP lines, 127 cases.
+  N6_SKIPS="$(grep -c 'SKIP (windows)' "$N6" || true)"
+  N6_RESULT="$(grep -o 'Results: [0-9]* passed, [0-9]* failed' "$N6" | tail -n 1)"
+  assert_equals "0|Results: 127 passed, 0 failed" "$N6_SKIPS|$N6_RESULT" "req-001: req-006 suite prints no SKIP line and passes 127 cases natively"
+fi
 
 # 8. README Windows skip table has one row per suite.
 ROW_005="$(grep -c '^| `test-0000041-req-005-applies-to-header.sh` |' "$README" || true)"

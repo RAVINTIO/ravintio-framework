@@ -27,7 +27,8 @@ As a framework maintainer, I see both 0000041 suites pass on the Windows CI shar
   - the `git hash-object` id of the pack copy in the working tree, run inside the repository so `core.autocrlf` applies
 - Both blob compares feed one assertion, so the suite's case count stays at 67. The assertion label names the blob id compare in place of "byte-identical".
 - `test-0000041-req-006-consumer-migration.sh` moves Case 6, the linked `ravintio-framework/`, behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for the case.
-- `src/ravintio-framework/tests/README.md` gains one Windows skip row for each new guard, so two rows, in the table's existing format.
+- `src/ravintio-framework/tests/README.md` gains one Windows skip row for each new guard, in the table's existing format. That makes three rows: the two 0000041 suites and the P3 guard suite `test-0000042-req-001-windows-guards.sh` (P3 deviation).
+- The guard suite skips its two native-run checks on a real Windows shard behind its own `IS_WIN` guard, because a native Windows run prints the skips that those checks expect to be absent.
 - `project-kind.mjs`, the migrator, and every released migration stay unchanged.
 - Split step: keep. The requirement holds one observable outcome and three criteria.
 

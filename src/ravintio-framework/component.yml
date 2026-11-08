@@ -1,7 +1,7 @@
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
-feature: "0000041-pack-source-under-src"
-version: "0.39.0"
+feature: "0000042-fix-windows-shards-pr-77"
+version: "0.39.1"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
@@ -242,7 +242,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-11-07"
+  updatedAt: "2026-11-08"
   # Updated by 0000041 (codegen-agent) P3: the pack source moved to
   # src/ravintio-framework/. Added build-release.mjs, release-check.mjs,
   # project-kind.mjs, the tests/helpers/pack-root.sh resolver, and the 0.39.0
