@@ -94,4 +94,4 @@ Five files in `ravintio-overrides/instructions/`, read at P0.
 - `custom-005-p9-push-and-raise-pr.md`: at P9, push and raise the PR without asking. Never merge. PR #77 already exists, so P9 pushes the branch and the tag, and it updates PR #77 instead of raising a new one.
 
 ## Confirmation
-Human confirmed this design before proceeding: no // Date and Time confirmed: pending
+Human confirmed this design before proceeding: yes // Date and Time confirmed: 08 Nov 2026 @ 08:33 AM GMT
