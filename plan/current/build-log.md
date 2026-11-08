@@ -119,14 +119,23 @@ Progress: P1 done at 2026-11-08T13:34:19Z: 2 requirements, critic approved on it
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T13:34:44Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T13:38:17Z` |
+| Wall-clock | `3` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-adr-agent (installed copy, not stale) |
-| Agents spawned | `0` |
+| Model tier | primary (orchestrator), primary (1 critic pass) |
+| Skills loaded | ravintio-adr-agent (installed copy, not stale), ravintio-design-critic (1 subagent) |
+| Agents spawned | `1` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | Four short ADRs run inline. ADR-003 and ADR-004 cite ADR-002, and each ADR is one file from context already held. |
 
 Skills inbox (P1 to P2): empty.
+Critic (P2, iteration 1): APPROVE. See `critic-verdict-p2-1.md`. Four minor findings, all applied after the pass.
+  - design.md Scope now names two new 0000043 suites.
+  - req-002 AC1 checks the log with an anchored output pattern.
+  - ADR-002 names what a move to 3 macOS shards amends.
+  - ADR-003 Context no longer claims, without a source, that a job timeout skips every later step.
+Note (P2): the critic took two GitHub Actions facts from memory, not from a source. These are execution plan A-002 and A-003, and the P4 CI run on PR #77 tests both.
+Gate (P2): an ADR exists for the stack, the per-entry cap and shards, the elapsed step, and the CI read order. `consistency-check.mjs` clean.
+Credential scan (P2): clean (regex only)
+Progress: P2 done at 2026-11-08T13:38:17Z: 4 ADRs, critic approved on iteration 1

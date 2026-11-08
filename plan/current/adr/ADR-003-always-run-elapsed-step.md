@@ -13,7 +13,7 @@ version: "0.1.0"
 
 ## Context
 
-US-002 asks for each test job's elapsed time against its cap. A timed-out job is the case that matters most, and a job timeout cancels every later step. `run-tests.sh` output must stay byte-identical (0000038 req-003), so the runner can't print the time. A step can't read another step's duration.
+US-002 asks for each test job's elapsed time against its cap. A timed-out job is the case that matters most. A job timeout cancels the job, and this run has no source that says a later step still runs after it. A step timeout only fails the step, so later `if: always()` steps run. The P4 CI run checks this (execution plan A-002). `run-tests.sh` output must stay byte-identical (0000038 req-003), so the runner can't print the time. A step can't read another step's duration.
 
 ## Decision
 

@@ -34,7 +34,7 @@ As a framework maintainer, I see each test job's elapsed time against its cap in
 ## Acceptance Criteria
 
 - [ ] Every test job log on PR #77 shows one `Elapsed:` line with its cap.
-  - Verified by: execution - the job logs from `gh run view --log` for the pushed head
+  - Verified by: execution - the job logs from `gh run view --log` for the pushed head, matched once per job with the anchored output pattern `Elapsed: [0-9]+ min [0-9]+ s of a (15|20) min cap$`, because the log also echoes the step's source text
 - [ ] The elapsed step prints its line after the test step fails or times out.
   - Verified by: execution - the 0000043 suite runs the extracted `run:` block with a start time 16 minutes old and a cap of 15, and checks the `if: always()` condition
 - [ ] A test step past two-thirds of its cap prints one `::warning` line, and a test step at or under it prints none.

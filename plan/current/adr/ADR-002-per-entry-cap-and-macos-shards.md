@@ -24,7 +24,7 @@ The macOS job runs every suite against a 15-minute job cap and timed out in 3 of
 - `RAVINTIO_SHARD_COUNT` reads `matrix.shards`, and the job name reads `matrix.shards`.
 - The test step's `timeout-minutes` reads `matrix.cap`.
 - The job `timeout-minutes` is a fixed `25`, above every cap. A slow suite then fails the step, and the job runs its later steps (ADR-003).
-- If a macOS shard takes over 10 minutes in the P4 CI run, P4 raises macOS to 3 shards before P7. This is risk R-001's action.
+- If a macOS shard takes over 10 minutes in the P4 CI run, P4 raises macOS to 3 shards before P7. This is risk R-001's action. The move amends req-001, this ADR, and both layout suites, whose `shard:` count rises to 10. The run logs it as a deviation.
 
 ## Alternatives Considered
 

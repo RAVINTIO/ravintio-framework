@@ -67,7 +67,7 @@
 - In:
   - the matrix layout above
   - the per-entry `cap`, the step timeout, the elapsed-time line, and the two-thirds warning
-  - the two CI layout suite updates and one new 0000043 suite
+  - the two CI layout suite updates and two new 0000043 suites
   - `tests/README.md` rows, if the README describes the CI layout
   - the 0.39.2 version and the P7 release copy rebuild
 - Out:
