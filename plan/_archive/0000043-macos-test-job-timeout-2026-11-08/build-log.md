@@ -382,3 +382,12 @@ Progress: P8 done at 2026-11-08T16:13:48Z: build report written, clean tree
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | PR #77 exists, so P9 pushes the branch and the tag and updates PR #77. |
+
+Marker step (P9): `git status --porcelain plan/_archive/` listed only this feature's archive. `build-report.md` staged. Scan-then-commit over 5 candidates exited 0. Commit `ab1009f8` deletes the 3 markers, and none stays tracked.
+Step 9 (P9): `product-version.mjs` exit 0, version 0.39.2, matching the P0 confirmation and above `v0.39.1`. Tag `v0.39.2` created on `ab1009f8`.
+Step 10 (P9): no override holds `local-git-only`, `no remote`, `no push`, or `restore-pr-attribution` in its contents, so Option [1] applies with no attribution footer. The branch check passed on `feat/0000041-pack-source-under-src`, and the branch is pushed.
+Credential scan (P9): PR text clean (regex only)
+Decision (P9): PR #77 keeps its 0000041 title, and its body gains a 0000043 section after the 0000042 one / reason: the PR carries three runs, and a full rewrite would drop the 0000041 and 0000042 descriptions. 0000042 took the same path.
+PR: #77 https://github.com/RAVINTIO/ravintio-framework/pull/77
+Draft (P9): PR #77 stays draft, because the build log holds `Exception waiting` lines. Its body lists each one by item number and path.
+PRTMP (P9): /private/tmp/claude-501/-Users-martinmayer-d-ravintio-framework/a639f887-a347-48ac-94ba-4f550ec348f2/scratchpad/prtmp.uLSbQh
