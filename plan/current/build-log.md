@@ -93,3 +93,18 @@ Design critic (P1): iteration 1 REJECT (`critic-verdict-1.md`), iteration 2 APPR
 Decision (P1): apply critic iteration 2 findings 1 and 3, one assertion for both blob compares and a dynamic import, and accept finding 2 under R-001 / reason: the first two strengthen req-001, and a `test -L` probe adds a case the design didn't plan.
 Gate (P1): one requirement, `req-001`, with three acceptance criteria. Scope: the two suites and two README rows. Deferred: nothing. Skill Map unchanged.
 Progress: P1 done at 2026-11-08T08:41:53Z: req-001 and the spec set approved by the design critic on iteration 2
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T08:42:33Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-adr-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `pending` |
+| Notes | Skills inbox empty. Four short ADRs, written inline under the size floor. |
