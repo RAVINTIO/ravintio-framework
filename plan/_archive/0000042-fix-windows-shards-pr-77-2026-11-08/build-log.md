@@ -261,3 +261,39 @@ docs/about.md (P7): version 0.39.1, feature 0000042-fix-windows-shards-pr-77, up
 Credential scan (P7): held back ravintio-framework/release.yml
 Exception waiting (P7, 7): credential sighting in ravintio-framework/release.yml:634 and ravintio-framework/release.yml:635. Both lines are path and SHA-256 pairs, as in 0000041 (backlog 0000425). If you confirm a false positive, commit the file.
 Progress: P7 done at 2026-11-08T10:32:38Z: plan archived, release copy rebuilt at 0.39.1, release.yml held back by the credential scan
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T10:33:12Z` |
+| End | `2026-11-08T10:35:28Z` |
+| Wall-clock | `2` |
+| Streams | `n/a` |
+| Model tier | cheaper (`claude-haiku-5-5`) |
+| Skills loaded | ravintio-build-assessment-agent (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | The header's cheaper model, `claude-sonnet-5-5`, ran the P0 to P6 TDD and verify subagents. P8 ran on `claude-haiku-5-5`, as the ship skill names. |
+
+Build report (P8): `build-report.md` written.
+P0 question count (P8 note): the count stays 2. The orchestrator asked two questions, the branch fork and the combined confirmation turn. The happy-path exchange was the human's edit to a Scope Lock draft inside the combined turn, and the orchestrator re-presented that same turn.
+Touchpoints (P8 note): the P0 confirmation turn was the last time the run asked or waited for the human on the loop. Every later wait was a CI run or a subagent, so the run wrote no `Human touchpoint` line. The P6 exception items wait for the final report, as the exception list says.
+Clean-tree check: clean
+Progress: P8 done at 2026-11-08T10:35:28Z: build report written, clean tree
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T10:35:28Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | PR #77 already exists, so Step 10 updates it and raises no new PR. |
