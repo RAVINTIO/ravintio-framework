@@ -65,3 +65,23 @@ Run mode confirmed: autonomous (2026-11-08T08:33:48Z)
 Run-mode mismatch (P0): `run-mode.mjs` prints `interactive` after the anchor commit `e2c82a17`, with "a commit removed or edited the confirmation line". The removal is the 0000041 P7 archive commit `ecdc151d`. Backlog 0000427.
 Decision (P0): this session keeps `autonomous`, because the human on the loop chose it in this session and the script's refusal comes from an earlier run's history / reason: the anchor guards against a subagent switching the mode on, and no subagent wrote it. A resumed session reads `interactive`, which is the safer side.
 Progress: P0 done at 2026-11-08T08:33:48Z: design confirmed for the 0000042 Windows suite fix, autonomous, version 0.39.1
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T08:35:22Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-spec-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `pending` |
+| Notes | Skills inbox empty. One requirement, so the artefacts are written inline under the size floor. |
+
+Toggle record (P1): design_critic: on (autonomous absent default), reversal_protocol: on (autonomous absent default), verify_by_execution: on (autonomous absent default), cross_model_review: on (autonomous absent default), parallel_streams: off (one unit of work)
+Baseline (P1): on macOS, `test-0000041-req-005-applies-to-header.sh` passes 67 and fails 0, and `test-0000041-req-006-consumer-migration.sh` passes 127 and fails 0. Neither prints a SKIP line.
+Decision (P1): split step for req-001: keep / reason: one observable outcome, both Windows shards green with every skip named, and three criteria.
+Decision (P1): the P3 RED evidence for req-001 is the recorded Windows failure in run 42409694287 / reason: macOS and Linux can't reproduce Git Bash link and path behaviour, so no local test can go red first.
