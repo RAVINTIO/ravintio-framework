@@ -297,3 +297,11 @@ Progress: P8 done at 2026-11-08T10:35:28Z: build report written, clean tree
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | PR #77 already exists, so Step 10 updates it and raises no new PR. |
+
+P9 marker step: commit `a6f9976c` cleared `plan/.orchestrator-active`, `plan/.orchestrator-ack`, and `plan/.run-mode`. `git ls-files` lists none of them.
+Version (P9): `product-version.mjs` prints 0.39.1, which matches the P0 version. Tag `v0.39.1` created locally.
+Branch check (P9): `feat/0000041-pack-source-under-src`.
+Decision (P9): keep the 0000041 PR title, and append a 0000042 section to the body / reason: PR #77 carries both runs, and the human on the loop merges one PR.
+Credential scan (P9): PR text clean (regex only)
+PR: #77 https://github.com/RAVINTIO/ravintio-framework/pull/77
+PR state (P9): draft, because `Exception waiting` lines remain.
