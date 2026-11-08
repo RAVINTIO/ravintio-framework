@@ -130,14 +130,15 @@ FAKE_NOW=1800000000
 # run_elapsed AGE CAP  -> sets OUT and RC. AGE "unset" leaves the start unset. Other
 # non-numeric AGE values are passed through as the start time.
 run_elapsed() {
-  local age="$1" cap="$2" start
+  local age="$1" cap="$2" start_arg
   : >"$TMP_ROOT/github_env"
   case "$age" in
-    unset) OUT="$(env -u RAVINTIO_TEST_START PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash "$TMP_ROOT/elapsed.sh" 2>&1)"; RC=$? ;;
-    ''|*[!0-9]*) OUT="$(PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" RAVINTIO_TEST_START="$age" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash "$TMP_ROOT/elapsed.sh" 2>&1)"; RC=$? ;;
-    *) start=$((FAKE_NOW - age))
-       OUT="$(PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" RAVINTIO_TEST_START="$start" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash "$TMP_ROOT/elapsed.sh" 2>&1)"; RC=$? ;;
+    unset) start_arg=(-u RAVINTIO_TEST_START) ;;
+    ''|*[!0-9]*) start_arg=(RAVINTIO_TEST_START="$age") ;;
+    *) start_arg=(RAVINTIO_TEST_START="$((FAKE_NOW - age))") ;;
   esac
+  OUT="$(env "${start_arg[@]}" PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash "$TMP_ROOT/elapsed.sh" 2>&1)"
+  RC=$?
 }
 count_matching() { grep -Ec -- "$1" <<<"$OUT"; }
 

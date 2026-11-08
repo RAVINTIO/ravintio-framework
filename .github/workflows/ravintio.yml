@@ -245,8 +245,10 @@ jobs:
         env:
           CAP: ${{ matrix.cap }}
         run: |
+          # Warn at two thirds of the cap: cap * 60 s * 2/3 = cap * 40 s.
           start="${RAVINTIO_TEST_START:-}"
           cap="${CAP:-}"
+          # Accept digits only, so a bad value never reaches the arithmetic.
           case "$start" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
           case "$cap" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
           now="$(date +%s)"

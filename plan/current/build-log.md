@@ -147,12 +147,12 @@ Progress: P2 done at 2026-11-08T13:38:17Z: 4 ADRs, critic approved on iteration 
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T13:39:02Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T14:37:36Z` |
+| Wall-clock | `58` |
 | Streams | `n/a` |
 | Model tier | primary (orchestrator), cheaper (TDD subagents) |
-| Skills loaded | ravintio-codegen-agent (source copy, step 1b) |
-| Agents spawned | `0` |
+| Skills loaded | ravintio-codegen-agent (source copy, step 1b), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `6` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | P3 start `HEAD`: `589ddf01`. |
@@ -171,3 +171,11 @@ Decision (P3): the elapsed step is named `Report the test step time`, and it rea
 TDD (P3, req-002, attempt 1): the implementer added both steps, and the behaviour checks passed. It stopped at 32 passed and 4 failed because of a test defect: `awk -v` processed the backslashes in the start-step pattern, so the pattern could never match.
 Decision (P3): the orchestrator fixed `step_index_matching` to read its pattern from `ENVIRON` / reason: the pattern then reaches awk verbatim. No assertion changed, and `git show HEAD` holds no start line, so the check isn't vacuous.
 TDD (P3, req-002, attempt 1): GREEN. The four suites exit 0: req-002, req-001, 0000031, and 0000037.
+Full run (P3): 141 feature suites passed and 1 failed, with 37 regression suites passed. The one failure is the known 0000428 archive check.
+TDD (P3, req-002): refactor added two comment lines in the elapsed step and merged three `env` calls in `run_elapsed` into one. The suite still reports 36 passed. The four suites exit 0.
+Process note (P3): the req-001 implementer left background work running after its report. The orchestrator stopped it, and `git status` showed no stray change.
+Requirement-ID scan (P3): 2 requirements, 0 unmapped. All 6 criteria declare `execution`, deferred to P4. Both new suites carry `# Verified by: execution`.
+Component close-out (P3): only `ravintio-framework` changed under `src/`. Its manifest goes from 0.39.1 to 0.39.2 with feature `0000043-macos-test-job-timeout`.
+Decision (P3): a patch bump to 0.39.2, not the codegen rule's minor bump / reason: the confirmed design records 0.39.2, because the change fixes CI and adds no pack feature. 0000042 took a patch bump the same way.
+Credential scan (P3): clean (regex only)
+Progress: P3 done at 2026-11-08T14:37:36Z: 2 requirements GREEN, 2 new suites, manifest at 0.39.2
