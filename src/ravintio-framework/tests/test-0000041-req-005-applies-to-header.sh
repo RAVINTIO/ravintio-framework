@@ -24,8 +24,10 @@ PK="$FW/scripts/project-kind.mjs"
 MANIFEST_PATH="src/ravintio-framework/component.yml"
 
 # Git Bash gives /tmp/x, which node reads as C:\tmp\x inside a node -e script. pwd -W gives the Windows form.
-WORK="$(cd "$(mktemp -d -t ravintio_0000041_req005_XXXXXX)" && { pwd -W 2>/dev/null || pwd; })" || { echo "  FAIL: req-005: mktemp -d failed"; exit 1; }
-trap 'rm -rf "$WORK"' EXIT
+WORK_TMP="$(mktemp -d -t ravintio_0000041_req005_XXXXXX)" || { echo "  FAIL: req-005: mktemp -d failed"; exit 1; }
+if [ -z "$WORK_TMP" ] || [ ! -d "$WORK_TMP" ]; then echo "  FAIL: req-005: mktemp -d failed"; exit 1; fi
+trap 'rm -rf "$WORK_TMP"' EXIT
+WORK="$(cd "$WORK_TMP" && { pwd -W 2>/dev/null || pwd; })" || { echo "  FAIL: req-005: cannot enter the scratch folder"; exit 1; }
 
 native() {
   if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s' "$1"; fi
@@ -249,8 +251,8 @@ has "migrator reports each not applicable record and its reason to the human" 'r
 # Blob ids ignore line-ending conversion: hash-object runs inside the repo, so core.autocrlf applies.
 REL="$FW/migrations/retroactive-release-tags.md"
 REL_PATH="$RAVINTIO_PACK_REL/migrations/retroactive-release-tags.md"
-OLD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md 2>/dev/null)" # root-copy-ok: history stores the released file at the old path
-HEAD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse "HEAD:$REL_PATH" 2>/dev/null)"
+OLD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse --verify --quiet "refs/tags/v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md" 2>/dev/null)" # root-copy-ok: history stores the released file at the old path
+HEAD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse --verify --quiet "HEAD:$REL_PATH" 2>/dev/null)"
 WT_ID="$(git -C "$RAVINTIO_REPO_ROOT" hash-object --path="$REL_PATH" "$REL" 2>/dev/null)"
 if [ -n "$OLD_ID" ] && [ "$OLD_ID" = "$HEAD_ID" ] && [ "$OLD_ID" = "$WT_ID" ]; then
   assert_equals "yes" "yes" "req-005: retroactive-release-tags.md blob id matches v0.38.0 at HEAD and in the working tree"
