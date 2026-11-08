@@ -29,6 +29,8 @@ As a framework maintainer, I see both 0000041 suites pass on the Windows CI shar
 - `test-0000041-req-006-consumer-migration.sh` moves Case 6, the linked `ravintio-framework/`, behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for the case.
 - `src/ravintio-framework/tests/README.md` gains one Windows skip row for each new guard, in the table's existing format. That makes three rows: the two 0000041 suites and the P3 guard suite `test-0000042-req-001-windows-guards.sh` (P3 deviation).
 - The guard suite skips its two native-run checks on a real Windows shard behind its own `IS_WIN` guard, because a native Windows run prints the skips that those checks expect to be absent.
+- If `mktemp` fails, the req-005 suite exits non-zero before it writes or deletes anything. It assigns the `mktemp` result on its own line with `|| exit 1`, converts the folder in a second step, and its `EXIT` trap removes only the `mktemp` path (P5 deviation, security finding S-1).
+- The released-migration check resolves the old blob through `refs/tags/v0.38.0` with `git rev-parse --verify`, so a local branch named `v0.38.0` can't shadow the tag (P5 deviation, security finding S-7).
 - `project-kind.mjs`, the migrator, and every released migration stay unchanged.
 - Split step: keep. The requirement holds one observable outcome and three criteria.
 

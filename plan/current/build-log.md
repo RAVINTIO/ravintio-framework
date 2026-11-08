@@ -170,3 +170,23 @@ Self-correct cycles (P4): 0.
 Verify by execution (P4): `plan/current/verification-report.md`, fresh-context checker. AC1, AC2, and AC3 verified.
 Gate (P4): CI passes, 14 of 14 on PR #77 after one flake rerun, and every criterion verifies by execution. Skill Map unchanged.
 Progress: P4 done at 2026-11-08T09:24:24Z: all 14 PR #77 checks pass and req-001 verifies by execution
+
+### P5: Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T09:24:50Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-security-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | One component and a test-only diff, so one fresh-context reviewer covers every section. |
+
+Security review (P5, pass 1): overall High. S-1 High: `test-0000041-req-005-applies-to-header.sh` line 27 lets a failed `mktemp` make `WORK` the caller's folder, which the `EXIT` trap then deletes. The 0000042 diff introduced it. S-2 Medium: Windows link-refusal coverage gap, R-001 accepted. S-3 to S-7 Low.
+Decision (P5): fix S-1 and S-7 in this run through a TDD cycle, and accept S-2, S-3, S-4, S-5, and S-6 / reason: S-1 is a regression this diff made, and S-7 is a one-line hardening on the same check. S-2 is R-001, S-3 predates the diff, and S-4 to S-6 are mitigated.
+Deviation (P5, unclassified): req-001 gains two functional requirements, a safe `mktemp` failure path and a tag-only ref for the blob compare.
+Backlog (P5): 0000429, the same `cd "$(mktemp ...)"` form in nine other suites.
