@@ -67,7 +67,7 @@ PR #77 carries release 0.39.0, and two of its 14 CI checks fail. Both failures s
 
 ### In Scope
 
-- `test-0000041-req-005-applies-to-header.sh`: Windows paths for Node, a file URL import, a link-case skip on Windows, and a byte compare that ignores line-ending conversion
+- `test-0000041-req-005-applies-to-header.sh`: Windows paths for Node, a file URL import, a link-case skip on Windows, and a git blob id compare of the released migration at `HEAD` and `v0.38.0` in place of the working-tree byte compare
 - `test-0000041-req-006-consumer-migration.sh`: a Windows skip for Case 6, the linked `ravintio-framework/`
 - `tests/README.md`: one Windows skip row per suite
 - the 0.39.1 patch version, and the P7 release copy rebuild
