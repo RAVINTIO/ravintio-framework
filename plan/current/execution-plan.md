@@ -44,7 +44,7 @@ Not applicable. The change touches test code and one README.
 |----|-----------|----------------|
 | A-001 | Git Bash `ln -s` makes a copy on the Windows runner | The skip hides link coverage that Windows could give |
 | A-002 | The Windows checkout converts LF to CRLF | The blob compare passes, but the byte compare failed for a reason still unknown |
-| A-003 | Node reads `/tmp/...` inside a `node -e` string as `C:\tmp\...` | The `pwd -W` change does nothing, and the import cases still fail |
+| A-003 | Node reads a POSIX path inside a `node -e` string against the current drive, such as `D:\tmp\...` | The `pwd -W` change does nothing, and the import cases still fail |
 
 ## Open Questions
 

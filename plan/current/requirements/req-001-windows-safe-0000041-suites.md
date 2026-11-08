@@ -18,12 +18,16 @@ As a framework maintainer, I see both 0000041 suites pass on the Windows CI shar
 ## Functional Requirements
 
 - `test-0000041-req-005-applies-to-header.sh` sets `IS_WIN=yes` when `uname -s` starts with `MINGW`, `MSYS`, or `CYGWIN`, as the 0000035 suites do.
-- On Windows, the req-005 suite builds `WORK` from the `pwd -W` form of its scratch folder, so Node reads a Windows path inside `node -e` scripts.
-- On Windows, the req-005 suite skips the four linked-path cases with one `SKIP (windows): {reason}` line. The reason names Git Bash `ln -s` making a copy.
+- On Windows, the req-005 suite builds `WORK` from the `pwd -W` form of its scratch folder. Git Bash converts command arguments but not text inside a `node -e` script, so Node then reads a Windows path.
+- On Windows, the req-005 suite also passes `project-kind.mjs` to Node in `pwd -W` form inside the `node -e` scripts. `pack-root.sh` builds `$FW` with `pwd`, so `$PK` is in POSIX form until the suite converts it.
 - The two `projectKind(root)` cases import `project-kind.mjs` through `pathToFileURL(...).href` on every platform.
-- The released-migration check compares the git blob id of `retroactive-release-tags.md` at `v0.38.0` with the blob id of the pack copy. The pack copy's id comes from `git hash-object`, which applies the checkout's line-ending conversion in reverse.
-- `test-0000041-req-006-consumer-migration.sh` skips Case 6, the linked `ravintio-framework/`, on Windows with one `SKIP (windows): {reason}` line.
-- `src/ravintio-framework/tests/README.md` gains one Windows skip row for each suite, in the table's existing format.
+- The req-005 suite moves its four linked-path cases into one block behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for each of the four cases. Each reason names Git Bash `ln -s` making a copy.
+- The released-migration check makes two blob id compares against `v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md`:
+  - the blob id of the pack copy at `HEAD`
+  - the `git hash-object` id of the pack copy in the working tree, run inside the repository so `core.autocrlf` applies
+- The check's assertion label names the blob id compare in place of "byte-identical".
+- `test-0000041-req-006-consumer-migration.sh` moves Case 6, the linked `ravintio-framework/`, behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for the case.
+- `src/ravintio-framework/tests/README.md` gains one Windows skip row for each new guard, so two rows, in the table's existing format.
 - `project-kind.mjs`, the migrator, and every released migration stay unchanged.
 - Split step: keep. The requirement holds one observable outcome and three criteria.
 

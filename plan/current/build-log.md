@@ -85,4 +85,7 @@ Toggle record (P1): design_critic: on (autonomous absent default), reversal_prot
 Baseline (P1): on macOS, `test-0000041-req-005-applies-to-header.sh` passes 67 and fails 0, and `test-0000041-req-006-consumer-migration.sh` passes 127 and fails 0. Neither prints a SKIP line.
 Decision (P1): split step for req-001: keep / reason: one observable outcome, both Windows shards green with every skip named, and three criteria.
 Decision (P1): after the P4 CI pass, push the branch and read the Windows shards of PR #77 before P7 archives the design / reason: R-002, a fix after the archive hits the `gate-write` block in backlog 0000426.
+Deviation (P1, unclassified): the design's req-005 fix list now also converts the `project-kind.mjs` path with `pwd -W`, groups the four link cases behind one guard with one SKIP line per case, and checks the `HEAD` blob and the working-tree hash against `v0.38.0`. Critic iteration 1, findings 1, 2, and 5.
+Deviation (P1, unclassified): the orchestrator armed `loop-state-design_critic.md` after critic iteration 1, not before it.
+Decision (P1): AC3 and the brief's in-scope lines stay as written, and the FRs change to fit them / reason: the ratchet guards those lines while the critic loop is active, and the one-guard design meets AC3.
 Decision (P1): the P3 RED evidence for req-001 is the recorded Windows failure in run 42409694287 / reason: macOS and Linux can't reproduce Git Bash link and path behaviour, so no local test can go red first.

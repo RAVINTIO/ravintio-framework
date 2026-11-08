@@ -36,12 +36,12 @@
 - API versioning: not applicable
 - req-005 suite fixes (backlog 0000426):
   - `IS_WIN` comes from `uname -s`, as in the 0000035 suites.
-  - On Windows, `WORK` holds the `pwd -W` form of the scratch folder, so Node reads a Windows path inside `-e` scripts.
-  - The four linked-path cases print one `SKIP (windows)` line on Windows, because Git Bash `ln -s` makes a copy.
+  - On Windows, `WORK` and the `project-kind.mjs` path reach Node in `pwd -W` form inside `-e` scripts (P1 deviation).
+  - One `IS_WIN` guard covers the four linked-path cases, and it prints one `SKIP (windows)` line per case on Windows (P1 deviation). Git Bash `ln -s` makes a copy.
   - The two `projectKind(root)` cases import `project-kind.mjs` through `pathToFileURL(...).href`.
-  - The released-migration check compares git blob ids, not working-tree bytes. A CRLF checkout then can't fail it.
-- req-006 suite fix: Case 6, the linked `ravintio-framework/`, prints one `SKIP (windows)` line on Windows.
-- README: `tests/README.md` gains one Windows skip row per suite, in the table's existing format.
+  - The released-migration check compares git blob ids, not working-tree bytes. It checks the `HEAD` blob and the `git hash-object` id of the working-tree file against `v0.38.0` (P1 deviation). A CRLF checkout then can't fail it.
+- req-006 suite fix: one `IS_WIN` guard covers Case 6, the linked `ravintio-framework/`, and prints one `SKIP (windows)` line on Windows.
+- README: `tests/README.md` gains one Windows skip row per guard, so one row per suite, in the table's existing format.
 - Version: last known `0.39.0`, and `v0.39.0` is already on `origin`. Suggested `0.39.1`, a patch bump, because the change fixes tests and adds no feature. The `ravintio-framework` manifest under `src/` carries the bump.
 
 ## Component Paths
@@ -66,12 +66,12 @@
 ## Assumptions
 - Git Bash `ln -s` makes a copy - impact if wrong: the link cases could run on Windows, and the skip hides coverage that Windows could give.
 - Checkout converts LF to CRLF on the Windows runner - impact if wrong: the blob compare still passes, but the byte compare failed for another reason that needs a look.
-- Node reads `/tmp/...` inside an `-e` string as `C:\tmp\...` - impact if wrong: the `pwd -W` change does nothing, and the import cases still fail.
+- Node reads a POSIX path such as `/tmp/...` or `/d/a/...` inside an `-e` string against the current drive, such as `D:\tmp\...` - impact if wrong: the `pwd -W` change does nothing, and the import cases still fail.
 
 ## Risks
 - A skip hides a real Windows defect in `project-kind.mjs` link handling. Likelihood low, impact medium. Linux and macOS still run every link case.
 - The P7 credential scan holds back the new `release.yml` again, as in 0000041. Likelihood high, impact low. The `release-copy-integrity` job passes with its skip notice.
-- The P9 CI check finds a third failure after the archive, and `gate-write` blocks the fix again (backlog 0000426). Likelihood low, impact high. P4 runs the Windows-sensitive cases' logic on macOS only, so the PR checks are the final proof.
+- The P9 CI check finds a third failure after the archive, and `gate-write` blocks the fix again (backlog 0000426). Likelihood low, impact high. P4 runs the Windows-sensitive cases' logic on macOS only, so the PR checks are the final proof. After the P4 CI pass, the run pushes the branch and reads the Windows shards before P7 archives the design (P1 decision).
 
 ## Dependencies
 - Upstream: PR #77 and run `42409694287` on GitHub Actions
