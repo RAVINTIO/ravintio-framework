@@ -1,6 +1,6 @@
 # Quirks - ravintio-framework
 
-Last updated: 0000042-fix-windows-shards-pr-77
+Last updated: 0000043-macos-test-job-timeout
 
 ## Two copies of the pack
 
@@ -51,3 +51,13 @@ Git Bash `ln -s` makes a copy, so no link case can run on a Windows shard. The 0
 ## Line endings and released files
 
 A Windows checkout converts LF to CRLF, so a byte compare against a `git show` copy fails although the file is unchanged. Compare git blob ids instead, with `git hash-object` run inside the repo for the working-tree copy (0000042 ADR-003).
+
+## Testing a workflow step's script
+
+`test-0000043-req-002-job-margin.sh` finds the `Report the test step time` step by its name and strips a 10-space block indent from its `run:` block. A rename or a reformat of that step breaks the extraction, so change the suite with the step (0000043 ADR-003).
+
+Pass an awk pattern through `ENVIRON`, not `awk -v`. `awk -v` processes backslash escapes, so `\$\(` reaches awk as `$(` and never matches.
+
+## Leading zeros in Bash arithmetic
+
+Bash reads a number with a leading zero as octal, so `$((08))` fails. The elapsed step rejects a start time or cap with a leading zero for this reason (0000043 security finding S-001).

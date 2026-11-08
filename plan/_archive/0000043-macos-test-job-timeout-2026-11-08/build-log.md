@@ -309,3 +309,36 @@ Gate (P4, reopened): CI passes, and every acceptance criterion verifies. `verifi
 Progress: P4 done at 2026-11-08T16:03:21Z: macOS in 3 shards at 4.6 to 5.4 minutes, 1 self-correct cycle
 Deviation review (P4, reopened): a fresh-context `ravintio-reversal-assessor` classed the 3-shard move as altering. See row 3 of `deviation-review.md`. The confirmed design named 2 macOS entries, and the 10-minute rule came from ADR-002 at P2, after the human gate. The problem and the users don't change. No schema or destructive flag.
 Exception waiting (P4, 2): the 3-shard deviation is altering. The human on the loop must accept 3 macOS shards, or ask for 2 shards with a higher cap, before merging PR #77. Evidence: with 2 shards, shard 1 took 668 s and 612 s in two of four runs. With 3 shards, the slowest took 323 s.
+
+---
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T16:05:32Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | none |
+
+Skills inbox (P6 to P7): empty.
+Cross-reference check (P7): no living doc links into `plan/current/`. The 0000043 decisions-index entry already links to `plan/_archive/0000043-macos-test-job-timeout-2026-11-08/adr/`.
+Step 1 (P7): the P6 iteration log at `plan/changelog/0000043-macos-test-job-timeout-2026-11-08.md` already holds the changelog's fields in its Release summary. The ship step keeps that one file, as 0000042 did.
+Step 2 (P7): no `.skips` file.
+Step 3 (P7): wrote `plan/current/.feature-id`.
+Step 4 (P7): no regression candidates. No suite from this run carries a `# REGRESSION-CANDIDATE:` tag.
+Step 5 (P7): wrote `plan/changelog/0000043-macos-test-job-timeout-test-report-2026-11-08.md`.
+Step 5b (P7): `set-product-release.mjs` exit 0: `product.yml: version "0.39.2", feature "0000043-macos-test-job-timeout"`.
+Step 5c (P7): project kind `framework source`. `build-release.mjs` exit 0: `summary: version 0.39.2, source-commit 8ec4bd3660032167d36d2d816310d4a7e527809d, added 2, changed 5, removed 0, unchanged 1202`.
+Release check (P7, ADR-004): `release-check.mjs --root . --files-only` exit 0, before the archive.
+Step 6 (P7): `archive-current.mjs` exit 0. It moved 23 items and removed `plan/current/.feature-id`. `archive-dir: plan/_archive/0000043-macos-test-job-timeout-2026-11-08`.
+Step 6b (P7): wrote `docs/about.md` with version 0.39.2, feature `0000043-macos-test-job-timeout`, and updated `08 Nov 2026`.
+Credential scan (P7): held back ravintio-framework/release.yml
+Exception waiting (P7, 7): credential sighting in ravintio-framework/release.yml:634 and ravintio-framework/release.yml:635. Each line is a pack file path and its SHA-256 hash, and the `risk-requirements` path name matches the `api-secret-key` rule. This is the backlog 0000425 false positive, as in 0000041 and 0000042. The human on the loop decides whether to commit `release.yml`. CI's `release-copy-integrity` job reports a skip while the file is absent.
+Step 7 (P7): scan-then-commit over 64 candidates. 63 safe, and `release.yml` unstaged with `git restore --staged`.
