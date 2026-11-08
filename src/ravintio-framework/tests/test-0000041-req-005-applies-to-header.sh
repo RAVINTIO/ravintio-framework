@@ -112,10 +112,10 @@ expect_downstream "$R" "missing component.yml"
 
 # The four linked-path cases. ln -s makes a copy under Git Bash, so Windows skips them.
 if [ "$IS_WIN" = yes ]; then
-  echo "  SKIP (windows): linked product.yml: ln -s makes a copy under Git Bash, so a link cannot be built"
-  echo "  SKIP (windows): linked component.yml: ln -s makes a copy under Git Bash, so a link cannot be built"
-  echo "  SKIP (windows): linked src/ravintio-framework folder: ln -s makes a copy under Git Bash, so a link cannot be built"
-  echo "  SKIP (windows): linked src folder: ln -s makes a copy under Git Bash, so a link cannot be built"
+  LN_REASON="ln -s makes a copy under Git Bash, so a link cannot be built"
+  for LINKED in "product.yml" "component.yml" "src/ravintio-framework folder" "src folder"; do
+    echo "  SKIP (windows): linked $LINKED: $LN_REASON"
+  done
 else
   R="$(mk_repo linked-product)"
   mv "$R/product.yml" "$R/real-product.yml"; ln -s real-product.yml "$R/product.yml"

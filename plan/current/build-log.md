@@ -120,12 +120,12 @@ Progress: P2 done at 2026-11-08T08:49:11Z: four ADRs approved by the design crit
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T08:49:53Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T08:53:43Z` |
+| Wall-clock | `4` |
 | Streams | `n/a` |
 | Model tier | primary (orchestration), cheaper (TDD subagents) |
-| Skills loaded | ravintio-codegen-agent |
-| Agents spawned | `pending` |
+| Skills loaded | ravintio-codegen-agent, ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `3` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | Skills inbox empty. No capability skill fits Bash suites. One requirement, so the TDD loop runs in sequence: test-writer, implementer, refactor. |
@@ -135,3 +135,8 @@ RED (P3, req-001): `test-0000042-req-001-windows-guards.sh` exits 1 with 4 passe
 Deviation (P3, unclassified): the P3 guard suite needs its own `IS_WIN` guard for its two native-run checks on a real Windows shard, so `tests/README.md` gains three rows, not two.
 GREEN (P3, req-001): the guard suite passes 8 of 8, the req-005 suite 67 of 67, and the req-006 suite 127 of 127, with no SKIP line on macOS. The orchestrator reran all three and reviewed the diff.
 Decision (P3): the version bump goes to `src/ravintio-framework/component.yml`, the path `product.yml` lists, as a patch to 0.39.1 / reason: the design confirmed 0.39.1, and 0000041 moved the manifest under `src/`.
+Refactor (P3, req-001): one change, a loop for the four req-005 SKIP lines. Printed text unchanged. All three suites still pass 8, 67, and 127.
+Parallelism (P3): one requirement, so the TDD loop ran in sequence. Each step depends on the one before.
+Requirement-ID scan (P3): 1 requirements, 0 unmapped. All three criteria read `execution`, deferred to P4.
+Gate (P3): req-001 GREEN, three suites and `tests/README.md` changed, manifest at 0.39.1. Skill Map unchanged.
+Progress: P3 done at 2026-11-08T08:53:43Z: req-001 GREEN on macOS through a uname stand-in, version 0.39.1
