@@ -46,7 +46,7 @@ Git Bash converts command arguments to Windows paths, but not text inside a `nod
 
 ## Link cases skip on Windows
 
-Git Bash `ln -s` makes a copy, so no link case can run on a Windows shard. Each suite puts its link cases behind one `IS_WIN` guard, and `tests/README.md` lists each guard. `test-0000042-req-001-windows-guards.sh` checks the guards from Linux and macOS through a `uname` stand-in (0000042 ADR-002).
+Git Bash `ln -s` makes a copy, so no link case can run on a Windows shard. The 0000041 req-005 and req-006 suites each put their link cases behind one `IS_WIN` guard, and `tests/README.md` lists each guard. `test-0000042-req-001-windows-guards.sh` checks the guards from Linux and macOS through a `uname` stand-in (0000042 ADR-002).
 
 ## Line endings and released files
 

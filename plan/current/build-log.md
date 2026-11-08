@@ -227,3 +227,5 @@ Exception waiting (P6, 2): approve the new guard suite `test-0000042-req-001-win
 Exception waiting (P6, 2): approve the third `tests/README.md` skip row, for the guard suite, against the confirmed "two rows" (review item 5).
 Exception waiting (P6, 1): approve the two P5 functional requirements in req-001, the safe `mktemp` failure path and the tag-only ref, which change an `rm -rf` trap guard (review item 6).
 Exception waiting (P6, 1): approve the S-1 fix that narrows the req-005 `EXIT` trap `rm -rf` to `WORK_TMP` (review item 8).
+Cross-model review (P6): `cross-model-review-1.md`, reviewer `claude-opus-5-5`, implementer `claude-sonnet-5-5`. APPROVE on iteration 1. One Low and five Info findings.
+Decision (P6): apply findings 1, 2, and 6 (manifest entry and comment, a doubled space, and the quirks wording), and accept 3, 4, and 5 / reason: the first three are doc fixes, 3 and 4 are Info notes on test design, and P9 reads the final head's checks for 5.

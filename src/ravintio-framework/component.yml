@@ -190,6 +190,7 @@ scope:
     - "The pack source under src/ravintio-framework/, scripts/build-release.mjs, scripts/release-check.mjs, scripts/project-kind.mjs, and tests/helpers/pack-root.sh (0000041)"
     - "The ravintio-framework/release.yml file contract, plan/framework-release.yml, and the Applies to migration header (0000041-ADR-004, ADR-007)"
     - "migrations/migrate-0.39.0-remove-pack-component-yml.md and the eight test-0000041 suites (0000041-ADR-008, ADR-009)"
+    - "Windows guards in the 0000041 req-005 and req-006 suites, the blob id compare for a released migration, and the guard suite tests/test-0000042-req-001-windows-guards.sh (0000042-ADR-002, ADR-003)"
   outOfScope:
     - "Application-level code generation (handled by ravintio-codegen-agent)"
     - "CI pipeline configuration for consumer projects"
@@ -318,6 +319,8 @@ metadata:
   # Updated by 0000041 (docs-agent) P6: version 0.39.0. Added the pack docs
   # under docs/, and the responsibilities, scope, risk, and quirks entries for
   # the release script, release.yml readers, project kind, and migration.
+  # Updated by 0000042 (docs-agent) P6: version 0.39.1. Added the inScope
+  # entry for the Windows guards, the blob id compare, and the guard suite.
   createdBy: "agent"
   lastModifiedBy: "ravintio-docs-agent"
   skill: "ravintio-docs-agent"
