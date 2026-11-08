@@ -42,11 +42,11 @@
   - `ubuntu-latest` stays one unsharded entry with `cap: 15`, and it has no `shard` or `shards` value.
   - `macos-latest` becomes 2 entries, shards 1 and 2, each with `shards: 2` and `cap: 15`.
   - Each Windows entry gains `shards: 7` and `cap: 20`. The count and the cap don't change.
-  - The job `timeout-minutes` reads `matrix.cap`.
+  - The test step's `timeout-minutes` reads `matrix.cap`. The job `timeout-minutes` is a fixed 25-minute backstop above every cap (P1 deviation: GitHub Actions expressions have no arithmetic).
   - `RAVINTIO_SHARD_COUNT` reads `matrix.shards`, in place of the fixed `7`. An entry with no `shards` still passes an empty value, so Ubuntu runs every suite.
   - The job name reads `shard {0} of {1}` from `matrix.shard` and `matrix.shards`.
 - Elapsed time:
-  - The test step gets its own `timeout-minutes`, one minute below `matrix.cap`. A slow run then fails the step, and the job isn't cancelled.
+  - The test step's own `timeout-minutes` reads `matrix.cap`. A slow run then fails the step, and the job isn't cancelled.
   - A later step runs with `if: always()`. It prints `Elapsed: {m} min {s} s of a {cap} min cap` for the test step, so a timed-out run still shows its time.
   - Past two-thirds of the cap, that step also prints a `::warning::` line. Two-thirds of 15 is 10 minutes, which matches the margin NFR.
   - The job result still comes from the test step. `run-tests.sh` doesn't change.
@@ -81,7 +81,7 @@
 ## Assumptions
 - The macOS suite time splits roughly evenly across 2 shards by position - impact if wrong: one shard stays near the cap, and the run needs 3 shards.
 - No ruleset requires a check by name - impact if wrong: the renamed macOS checks block the merge until the ruleset changes. The `main` ruleset was read at P0 and names none.
-- A step `timeout-minutes` below the job cap fails the step without cancelling the job, so an `if: always()` step still runs - impact if wrong: a timed-out run shows no elapsed line, and the maintainer reads the time from the job duration instead.
+- A step `timeout-minutes` below the job backstop fails the step without cancelling the job, so an `if: always()` step still runs - impact if wrong: a timed-out run shows no elapsed line, and the maintainer reads the time from the job duration instead.
 - `SECONDS` in Bash gives whole-second elapsed time on all three runners - impact if wrong: the elapsed line shows a wrong value, but the job result doesn't change.
 
 ## Risks

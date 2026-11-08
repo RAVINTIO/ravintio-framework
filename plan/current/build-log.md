@@ -75,3 +75,26 @@ Progress: P0 done at 2026-11-08T13:25:13Z: design confirmed, 2 stories, autonomo
 Run mode confirmed: autonomous (2026-11-08T13:25:13Z)
 Run-mode mismatch (P0): `run-mode.mjs` prints `interactive` after the anchor commit `1cebbc2b`, with "a commit removed or edited the confirmation line". The removals are earlier P7 archive commits on this branch. Backlog 0000427.
 Decision (P0): this session keeps `autonomous`, as the human picked it, and a resumed session reads `interactive` / reason: backlog 0000427 is a known defect, and 0000042 took the same path.
+
+---
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T13:26:13Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-spec-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | The spec units run inline. Each is one short file from context already held, and req-001 and req-002 share the matrix, so they fall under the size floor. |
+
+Skills inbox (P0 to P1): empty.
+Toggle record (P1): `ravintio-overrides/loop-toggles.yml` is absent. In `autonomous`, `design_critic`, `reversal_protocol`, `verify_by_execution`, and `cross_model_review` read as `on`.
+Backlog filed (P1): 0000432, Windows shards 3 and 4 take about 15 of their 20 minutes.
+Deviation (P1, unclassified): the test step's `timeout-minutes` reads `matrix.cap`, and the job `timeout-minutes` is a fixed 25-minute backstop. The design had the job read `matrix.cap` and the step sit one minute below it, but GitHub Actions expressions have no arithmetic, so `matrix.cap - 1` can't be written. The cap keeps one source, and a slow run still fails the step before the job is cancelled.
+Decision (P1): the elapsed step reads a start time that an earlier step writes to `GITHUB_ENV` / reason: a later step can't read another step's duration, and the shell clock needs no new tool.
