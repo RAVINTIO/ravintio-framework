@@ -25,6 +25,7 @@ As a framework maintainer, I see each test job's elapsed time against its cap in
 - That step prints one line: `Elapsed: {m} min {s} s of a {cap} min cap`. It reads `{cap}` from `matrix.cap` through an `env` value.
 - When the elapsed seconds exceed the cap in minutes times 40, which is two-thirds of the cap, the step also prints `::warning title=Test job margin::{elapsed} of a {cap} min cap`. For a cap of 15, 600 s prints no warning and 601 s prints one. For a cap of 20, the line sits at 800 s.
 - If the start time is missing or isn't a number, the step prints `Elapsed: unknown` and exits 0.
+- The step accepts the start time and `CAP` only as 1 to 10 digits with no leading zero. Bash reads a leading zero as octal, and a longer value can overflow (P5 deviation, security findings S-001 and S-002).
 - The elapsed step always exits 0. The job result comes from the test step.
 - The steps reference no secret, and the job keeps `permissions: contents: read`.
 - `run-tests.sh` stays unchanged, so its output without `--quiet` stays byte-identical (0000038 req-003).

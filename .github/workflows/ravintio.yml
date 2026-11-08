@@ -248,9 +248,11 @@ jobs:
           # Warn at two thirds of the cap: cap * 60 s * 2/3 = cap * 40 s.
           start="${RAVINTIO_TEST_START:-}"
           cap="${CAP:-}"
-          # Accept digits only, so a bad value never reaches the arithmetic.
-          case "$start" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
-          case "$cap" in ''|*[!0-9]*) echo "Elapsed: unknown"; exit 0 ;; esac
+          # Accept 1 to 10 digits with no leading zero, so a bad value never
+          # reaches the arithmetic. Bash reads a leading zero as octal, and
+          # more than 10 digits can overflow (security review S-001, S-002).
+          case "$start" in ''|0*|*[!0-9]*|???????????*) echo "Elapsed: unknown"; exit 0 ;; esac
+          case "$cap" in ''|0*|*[!0-9]*|???????????*) echo "Elapsed: unknown"; exit 0 ;; esac
           now="$(date +%s)"
           elapsed=$((now - start))
           msg="$((elapsed / 60)) min $((elapsed % 60)) s of a ${cap} min cap"

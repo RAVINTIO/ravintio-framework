@@ -21,7 +21,7 @@ US-002 asks for each test job's elapsed time against its cap. A timed-out job is
 - A `shell: bash` step after the test step runs with `if: always()`. Its `env` passes `CAP` from `matrix.cap` (ADR-002).
 - It prints `Elapsed: {m} min {s} s of a {cap} min cap`.
 - When the elapsed seconds exceed `CAP * 40`, it also prints `::warning title=Test job margin::{elapsed} of a {cap} min cap`.
-- It checks that the start time and `CAP` are digits only before any arithmetic. Otherwise it prints `Elapsed: unknown`.
+- It checks that the start time and `CAP` are 1 to 10 digits with no leading zero before any arithmetic. Otherwise it prints `Elapsed: unknown` (P5 deviation, security findings S-001 and S-002).
 - It always exits 0. The job result comes from the test step.
 - The logic stays inline in the step's `run:` block. `test-0000043-req-002-job-margin.sh` extracts that block from the workflow and runs it under Bash with faked values.
 

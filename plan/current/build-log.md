@@ -211,3 +211,29 @@ Self-correct cycles (P4): 0.
 Gate (P4): CI passes, and the acceptance criteria verify. `coverage-table.md` maps all 6 criteria.
 Credential scan (P4): clean (regex only)
 Progress: P4 done at 2026-11-08T14:54:26Z: PR #77 green, macOS shards at 6.5 and 4.7 minutes, 0 self-correct cycles
+
+---
+
+### P5: Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T14:54:54Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary (security subagent) |
+| Skills loaded | ravintio-security-agent (installed copy, not stale) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | none |
+
+Skills inbox (P4 to P5): empty.
+Security (P5): risk Low. 0 critical, 0 high, 0 medium, 2 low, and 3 info findings. See `security-report.md`.
+  - S-001 (low): a start time or cap with a leading zero, such as `08`, reads as octal, and Bash arithmetic fails.
+  - S-002 (low): a value over 10 digits can overflow and print a wrong time.
+  - S-003 to S-005 (info): no action. The `GITHUB_ENV` write gains PR code nothing, the suite's heredoc path isn't attacker-controlled, and the extracted block comes from the same commit.
+  - Out of scope: the workflow has no top-level `permissions:`. Backlog 0000218 already holds it.
+Deviation (P5, unclassified): the elapsed step's guard now rejects a leading zero and values over 10 digits, for S-001 and S-002. req-002 and ADR-003 record it.
+TDD (P5, S-001 and S-002): RED with 4 new checks failing in the req-002 suite. GREEN after the guard change: the req-002 suite passes 44 checks, and the req-001, 0000031, and 0000037 suites exit 0.

@@ -127,13 +127,15 @@ printf '%s\n' "$BLOCK" >"$TMP_ROOT/elapsed.sh"
 
 FAKE_NOW=1800000000
 
-# run_elapsed AGE CAP  -> sets OUT and RC. AGE "unset" leaves the start unset. Other
+# run_elapsed AGE CAP  -> sets OUT and RC. AGE "unset" leaves the start unset.
+# AGE "raw:VALUE" passes VALUE through as the start time unchanged. Other
 # non-numeric AGE values are passed through as the start time.
 run_elapsed() {
   local age="$1" cap="$2" start_arg
   : >"$TMP_ROOT/github_env"
   case "$age" in
     unset) start_arg=(-u RAVINTIO_TEST_START) ;;
+    raw:*) start_arg=(RAVINTIO_TEST_START="${age#raw:}") ;;
     ''|*[!0-9]*) start_arg=(RAVINTIO_TEST_START="$age") ;;
     *) start_arg=(RAVINTIO_TEST_START="$((FAKE_NOW - age))") ;;
   esac
@@ -183,5 +185,22 @@ run_elapsed 540 "15; echo hi"
 assert_equals "1" "$(count_matching '^Elapsed: unknown$')" "req-002: CAP '15; echo hi' prints 'Elapsed: unknown'"
 assert_equals "0" "$RC" "req-002: CAP '15; echo hi' exits 0"
 assert_equals "0" "$(count_matching '^hi$')" "req-002: CAP '15; echo hi' runs no injected command"
+
+# Security review S-001: a leading zero reads as octal in Bash arithmetic, and
+# "08" or "09" makes it fail. The step must reject such values and exit 0.
+run_elapsed raw:08 15
+assert_equals "1" "$(count_matching '^Elapsed: unknown$')" "req-002: start time '08' prints 'Elapsed: unknown' (S-001)"
+assert_equals "0" "$RC" "req-002: start time '08' exits 0 (S-001)"
+run_elapsed 540 08
+assert_equals "1" "$(count_matching '^Elapsed: unknown$')" "req-002: CAP '08' prints 'Elapsed: unknown' (S-001)"
+assert_equals "0" "$RC" "req-002: CAP '08' exits 0 (S-001)"
+
+# Security review S-002: a value over 10 digits can overflow, so the step rejects it.
+run_elapsed raw:12345678901 15
+assert_equals "1" "$(count_matching '^Elapsed: unknown$')" "req-002: an 11-digit start time prints 'Elapsed: unknown' (S-002)"
+assert_equals "0" "$RC" "req-002: an 11-digit start time exits 0 (S-002)"
+run_elapsed 540 12345678901
+assert_equals "1" "$(count_matching '^Elapsed: unknown$')" "req-002: an 11-digit CAP prints 'Elapsed: unknown' (S-002)"
+assert_equals "0" "$RC" "req-002: an 11-digit CAP exits 0 (S-002)"
 
 print_summary
