@@ -167,35 +167,59 @@ jobs:
   # consumer repos). Consumers don't change the framework, so these tests
   # tell them nothing new. See ADR-002 (feature 0000031).
   test-suite:
-    name: Test suite (${{ matrix.os }}${{ matrix.shard && format(', shard {0} of 7', matrix.shard) || '' }})
+    name: Test suite (${{ matrix.os }}${{ matrix.shard && format(', shard {0} of {1}', matrix.shard, matrix.shards) || '' }})
     runs-on: ${{ matrix.os }}
-    # The Git Bash leg ran past 10 minutes, so Windows gets 20 minutes per shard
-    # and runs seven shards. Seven keeps the four slowest setup suites in
-    # separate shards. See ADR-014 (feature 0000037). The macOS leg passed
-    # every suite but ran past 10 minutes once the 0000039 helper suite grew,
-    # so Linux and macOS get 15.
-    timeout-minutes: ${{ matrix.os == 'windows-latest' && 20 || 15 }}
+    # Every matrix entry sets its own per-step cap and shard count. Ubuntu runs
+    # unsharded with a 15 minute cap. macOS runs two shards with a 15 minute
+    # cap each. Windows runs seven shards with a 20 minute cap each, and seven
+    # keeps the four slowest setup suites in separate shards. The job timeout
+    # of 25 minutes is a ceiling above the largest cap. The test step carries
+    # the real cap. See ADR-002 (feature 0000043) and ADR-014 (feature 0000037).
+    timeout-minutes: 25
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
         include:
+          - os: ubuntu-latest
+            cap: 15
+          - os: macos-latest
+            shard: 1
+            shards: 2
+            cap: 15
+          - os: macos-latest
+            shard: 2
+            shards: 2
+            cap: 15
           - os: windows-latest
             shard: 1
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 2
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 3
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 4
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 5
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 6
+            shards: 7
+            cap: 20
           - os: windows-latest
             shard: 7
+            shards: 7
+            cap: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -205,9 +229,10 @@ jobs:
 
       - name: Run the framework test suite
         shell: bash
+        timeout-minutes: ${{ matrix.cap }}
         env:
           RAVINTIO_SHARD_INDEX: ${{ matrix.shard }}
-          RAVINTIO_SHARD_COUNT: ${{ matrix.shard && 7 || '' }}
+          RAVINTIO_SHARD_COUNT: ${{ matrix.shards || '' }}
         run: bash src/ravintio-framework/tests/run-tests.sh
 
   setup-powershell:
