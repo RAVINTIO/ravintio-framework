@@ -106,4 +106,33 @@ ROW_005="$(grep -c '^| `test-0000041-req-005-applies-to-header.sh` |' "$README" 
 ROW_006="$(grep -c '^| `test-0000041-req-006-consumer-migration.sh` |' "$README" || true)"
 assert_equals "1:1" "$ROW_005:$ROW_006" "req-001: tests/README.md Windows skip table has one row each for the req-005 and req-006 suites"
 
+# 9 and 10. If mktemp fails, the req-005 suite exits non-zero and deletes nothing.
+# The stand-in mktemp goes on PATH for this one run only. The caller folder is a
+# scratch folder inside WORK, so a bug harms nothing outside it.
+MKSTUB="$WORK/mktemp-stub-bin"
+CALLER="$WORK/caller"
+mkdir -p "$MKSTUB" "$CALLER"
+cat > "$MKSTUB/mktemp" <<'MKSTUB_EOF'
+#!/bin/sh
+exit 1
+MKSTUB_EOF
+chmod +x "$MKSTUB/mktemp"
+echo "keep" > "$CALLER/keep.txt"
+
+CALLER_BEFORE="$(ls -A "$CALLER" 2>/dev/null | LC_ALL=C sort)"
+MK_OUT="$WORK/mktemp-fail-005.out"
+(cd "$CALLER" && PATH="$MKSTUB:$PATH" bash "$SUITE_005") > "$MK_OUT" 2>&1
+MK_EXIT=$?
+CALLER_AFTER="$(ls -A "$CALLER" 2>/dev/null | LC_ALL=C sort)"
+
+# 9. req-005 exits non-zero when mktemp fails.
+MK_NONZERO=no
+[ "$MK_EXIT" -ne 0 ] && MK_NONZERO=yes
+assert_equals "yes" "$MK_NONZERO" "req-001: req-005 suite exits non-zero when mktemp fails"
+
+# 10. The caller folder, its sentinel and its listing survive.
+CALLER_KEPT=no
+[ -d "$CALLER" ] && [ -f "$CALLER/keep.txt" ] && [ "$CALLER_BEFORE" = "$CALLER_AFTER" ] && CALLER_KEPT=yes
+assert_equals "yes" "$CALLER_KEPT" "req-001: req-005 suite leaves the caller folder and its entries intact when mktemp fails"
+
 print_summary
