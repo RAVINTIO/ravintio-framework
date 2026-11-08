@@ -176,12 +176,12 @@ Progress: P4 done at 2026-11-08T09:24:24Z: all 14 PR #77 checks pass and req-001
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T09:24:50Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T10:03:52Z` |
+| Wall-clock | `39` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-security-agent |
-| Agents spawned | `pending` |
+| Model tier | primary, cheaper (TDD subagents) |
+| Skills loaded | ravintio-security-agent, ravintio-test-writer, ravintio-implementer |
+| Agents spawned | `4` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | One component and a test-only diff, so one fresh-context reviewer covers every section. |
@@ -197,3 +197,6 @@ Decision (P5): accept R-1 and R-2 / reason: R-1 needs code already running first
 Decision (P5): push and read the PR #77 checks again before the P5 gate passes / reason: ADR-004, and P5 changed code under `src/` after the P4 CI pass.
 PR #77 CI (P5, head `77626508`, run 42467601591): 13 pass and 1 cancelled. `Test suite (macos-latest)` hit its 15-minute timeout during the 0000032 suites. Earlier macOS runs took 14 min 48 s and 10 min 11 s. Backlog 0000430.
 Decision (P5): rerun the cancelled macOS job without a change / reason: the runner was slow, every suite that ran passed, and the workflow file is outside this run's scope.
+PR #77 CI (P5, rerun): the macOS job passes in 14 min 39 s. All 14 checks pass for head `77626508`.
+Gate (P5): overall risk Low after the re-review. S-1 and S-7 fixed and re-reviewed. S-2 Medium accepted under R-001. S-3 to S-6 Low and R-1, R-2 Info accepted. Zero critical or high findings open. Skill Map unchanged.
+Progress: P5 done at 2026-11-08T10:03:52Z: security risk Low after fixing S-1 and S-7, and all 14 PR #77 checks pass
