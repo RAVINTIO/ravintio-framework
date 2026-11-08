@@ -373,8 +373,8 @@ Progress: P8 done at 2026-11-08T16:13:48Z: build report written, clean tree
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T16:13:48Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T16:47:11Z` |
+| Wall-clock | `33` |
 | Streams | `n/a` |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent (source copy, step 1b) |
@@ -390,4 +390,9 @@ Credential scan (P9): PR text clean (regex only)
 Decision (P9): PR #77 keeps its 0000041 title, and its body gains a 0000043 section after the 0000042 one / reason: the PR carries three runs, and a full rewrite would drop the 0000041 and 0000042 descriptions. 0000042 took the same path.
 PR: #77 https://github.com/RAVINTIO/ravintio-framework/pull/77
 Draft (P9): PR #77 stays draft, because the build log holds `Exception waiting` lines. Its body lists each one by item number and path.
-PRTMP (P9): /private/tmp/claude-501/-Users-martinmayer-d-ravintio-framework/a639f887-a347-48ac-94ba-4f550ec348f2/scratchpad/prtmp.uLSbQh
+PRTMP (P9): /private/tmp/claude-501/-Users-martinmayer-d-ravintio-framework/a639f887-a347-48ac-94ba-4f550ec348f2/scratchpad/prtmp.uLSbQh, removed after `gh pr edit`.
+Step 10b (P9): the clean-tree check listed the archived build log. Scan-then-commit exited 0, and commit `580e6cd5` holds it. Pushed.
+CI checks (P9): all passed. 16 of 16 checks pass for head `580e6cd5`, the head that P9 read, in run `42499047016`.
+Process note (P9): the poll loop's early-exit test failed on every pass, because zsh doesn't split `$n` into words. The loop ran its full 30-minute window, and its final read still holds.
+Tag (P9): `v0.39.2` stays on the marker commit `ab1009f8`, as `v0.39.1` did for 0000042. No fix commit landed after it.
+Progress: P9 done at 2026-11-08T16:47:11Z: PR #77 green on 16 checks, tag v0.39.2, draft with 3 exceptions waiting
