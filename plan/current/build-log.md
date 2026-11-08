@@ -250,12 +250,12 @@ Progress: P5 done at 2026-11-08T14:58:34Z: risk Low, 2 low findings fixed and re
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T14:59:10Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T15:18:57Z` |
+| Wall-clock | `19` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-docs-agent (source copy, step 1b) |
-| Agents spawned | `0` |
+| Model tier | primary (orchestrator and deviation review), `claude-fable-5-1` (cross-model review) |
+| Skills loaded | ravintio-docs-agent (source copy, step 1b), ravintio-reversal-assessor (1 subagent) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `1` |
 | Notes | The doc edits ran inline as one batch of parallel calls. Each is a short edit from context already held, under the size floor. |
@@ -274,3 +274,9 @@ Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 de
 Exception waiting (P6, 2): the P1 backstop deviation is altering. The human on the loop must accept the fixed 25-minute job timeout, or ask for another bound before merging PR #77. The test step still stops at the confirmed cap of 15 or 20 minutes. Only checkout, the start step, and the elapsed step can run past it, and risk R-004 accepts that.
 Cross-model review (P6, iteration 1): APPROVE. Reviewer `claude-fable-5-1`. Implementers `claude-sonnet-5-5` and `claude-opus-5-5`. See `cross-model-review-1.md`.
   - One minor finding: the req-002 suite runs the extracted block under plain `bash`, but CI runs `shell: bash` as `bash --noprofile --norc -eo pipefail`. The orchestrator applies the one-line fix after the revalidation run ends.
+Revalidation (P6): P4 steps 0-5, pass. The full run shows 141 feature suites passed and 1 failed, with 37 regression suites passed. The one failure is the known 0000428 archive check. `self-description-check.mjs` and `consistency-check.mjs` pass.
+Cross-model fix (P6): the req-002 suite now runs the block with `bash --noprofile --norc -eo pipefail`. It passes 44 checks. The edit came after the revalidation run, so P7 waits for the CI run on the pushed head.
+CI (P6): run `42492328316` on `167cd519`, the security-fix head, concluded `success`.
+Gate (P6): zero drift, every expected artifact present, revalidation passed, and the cross-model review approved.
+Credential scan (P6): clean (regex only)
+Progress: P6 done at 2026-11-08T15:18:57Z: 6 docs updated, cross-model review approved, 1 exception waiting

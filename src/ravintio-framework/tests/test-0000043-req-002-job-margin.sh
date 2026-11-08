@@ -127,6 +127,8 @@ printf '%s\n' "$BLOCK" >"$TMP_ROOT/elapsed.sh"
 
 FAKE_NOW=1800000000
 
+# The block runs with the options GitHub Actions gives `shell: bash`, so a
+# future edit meets the same -e and pipefail rules as in CI.
 # run_elapsed AGE CAP  -> sets OUT and RC. AGE "unset" leaves the start unset.
 # AGE "raw:VALUE" passes VALUE through as the start time unchanged. Other
 # non-numeric AGE values are passed through as the start time.
@@ -139,7 +141,7 @@ run_elapsed() {
     ''|*[!0-9]*) start_arg=(RAVINTIO_TEST_START="$age") ;;
     *) start_arg=(RAVINTIO_TEST_START="$((FAKE_NOW - age))") ;;
   esac
-  OUT="$(env "${start_arg[@]}" PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash "$TMP_ROOT/elapsed.sh" 2>&1)"
+  OUT="$(env "${start_arg[@]}" PATH="$TMP_ROOT/bin:$PATH" FAKE_NOW="$FAKE_NOW" CAP="$cap" GITHUB_ENV="$TMP_ROOT/github_env" bash --noprofile --norc -eo pipefail "$TMP_ROOT/elapsed.sh" 2>&1)"
   RC=$?
 }
 count_matching() { grep -Ec -- "$1" <<<"$OUT"; }
