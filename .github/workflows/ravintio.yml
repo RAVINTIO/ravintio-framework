@@ -170,8 +170,8 @@ jobs:
     name: Test suite (${{ matrix.os }}${{ matrix.shard && format(', shard {0} of {1}', matrix.shard, matrix.shards) || '' }})
     runs-on: ${{ matrix.os }}
     # Every matrix entry sets its own per-step cap and shard count. Ubuntu runs
-    # unsharded with a 15 minute cap. macOS runs two shards with a 15 minute
-    # cap each. Windows runs seven shards with a 20 minute cap each, and seven
+    # unsharded with a 15 minute cap. macOS runs three shards with a 15 minute
+    # cap each, because two shards ran past 10 minutes. Windows runs seven shards with a 20 minute cap each, and seven
     # keeps the four slowest setup suites in separate shards. The job timeout
     # of 25 minutes is a ceiling above the largest cap. The test step carries
     # the real cap. See ADR-002 (feature 0000043) and ADR-014 (feature 0000037).
@@ -186,11 +186,15 @@ jobs:
             cap: 15
           - os: macos-latest
             shard: 1
-            shards: 2
+            shards: 3
             cap: 15
           - os: macos-latest
             shard: 2
-            shards: 2
+            shards: 3
+            cap: 15
+          - os: macos-latest
+            shard: 3
+            shards: 3
             cap: 15
           - os: windows-latest
             shard: 1

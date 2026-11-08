@@ -4,7 +4,9 @@
 # Verified by: execution
 #
 # req-001: every test-suite matrix entry sits under include and carries a cap (ADR-002).
-# req-001: ubuntu-latest is one entry with cap 15. macos-latest is two shards with cap 15.
+# req-001: ubuntu-latest is one entry with cap 15. macos-latest is three shards with cap 15.
+# P4 raised macOS from two shards to three, because shard 1 of 2 ran past 10 minutes
+# in two PR #77 runs (ADR-002, risk R-001).
 # req-001: windows-latest is seven shards with cap 20.
 # req-001: RAVINTIO_SHARD_COUNT and the job name read matrix.shards.
 # req-001: the test step timeout-minutes reads matrix.cap and the job timeout-minutes is 25.
@@ -55,14 +57,15 @@ rows_for() { grep -E "^$1\|" <<<"$ROWS"; }
 echo "== req-001: matrix rows =="
 assert_equals "yes" "$([ -n "$SUITE" ] && echo yes || echo no)" "req-001: workflow has a test-suite job"
 assert_equals "no" "$(yes_no 'os:[[:space:]]*\[' "$SUITE")" "req-001: no plain os list remains in the matrix"
-assert_equals "10" "$(grep -c . <<<"$ROWS")" "req-001: the matrix holds ten include entries"
+assert_equals "11" "$(grep -c . <<<"$ROWS")" "req-001: the matrix holds eleven include entries"
 
 assert_equals "1" "$(rows_for ubuntu-latest | grep -c .)" "req-001: the matrix holds one ubuntu-latest entry"
 assert_equals "ubuntu-latest|||15" "$(rows_for ubuntu-latest)" "req-001: the ubuntu-latest entry has cap 15 and no shard or shards"
 
-assert_equals "2" "$(rows_for macos-latest | grep -c .)" "req-001: the matrix holds two macos-latest entries"
-assert_equals "macos-latest|1|2|15
-macos-latest|2|2|15" "$(rows_for macos-latest | sort)" "req-001: macos-latest has shards 1 and 2, each with shards 2 and cap 15"
+assert_equals "3" "$(rows_for macos-latest | grep -c .)" "req-001: the matrix holds three macos-latest entries"
+assert_equals "macos-latest|1|3|15
+macos-latest|2|3|15
+macos-latest|3|3|15" "$(rows_for macos-latest | sort)" "req-001: macos-latest has shards 1 to 3, each with shards 3 and cap 15"
 
 WIN_WANT="$(for n in 1 2 3 4 5 6 7; do echo "windows-latest|$n|7|20"; done)"
 assert_equals "7" "$(rows_for windows-latest | grep -c .)" "req-001: the matrix holds seven windows-latest entries"

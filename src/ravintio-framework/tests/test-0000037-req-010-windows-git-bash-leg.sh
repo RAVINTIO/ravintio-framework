@@ -72,7 +72,7 @@ assert_equals "yes" "$(yes_no '^## Windows skip table' "$(cat "$TESTS_README")")
 assert_equals "yes" "$(yes_no '^\|[[:space:]]*Suite[[:space:]]*\|[[:space:]]*Reason[[:space:]]*\|[[:space:]]*Date[[:space:]]*\|' "$(cat "$TESTS_README")")" "req-010: skip table has Suite, Reason, and Date columns"
 
 echo "== req-010: shard entries in the workflow (ADR-014 second fallback) =="
-assert_equals "9" "$(grep -cE '^[[:space:]]+shard:[[:space:]]*[0-9]+[[:space:]]*$' <<<"$SUITE")" "req-010: the test-suite job holds nine shard entries (2 macOS, 7 Windows)"
+assert_equals "10" "$(grep -cE '^[[:space:]]+shard:[[:space:]]*[0-9]+[[:space:]]*$' <<<"$SUITE")" "req-010: the test-suite job holds ten shard entries (3 macOS, 7 Windows)"
 assert_equals "7" "$(grep -cE '^[[:space:]]+shards:[[:space:]]*7[[:space:]]*$' <<<"$SUITE")" "req-010: seven entries carry shards 7"
 assert_equals "yes" "$(yes_no 'RAVINTIO_SHARD_COUNT:.*matrix\.shards' "$SUITE")" "req-010: the step reads RAVINTIO_SHARD_COUNT from matrix.shards"
 assert_equals "7" "$(grep -cE '^[[:space:]]+-[[:space:]]*os:[[:space:]]*windows-latest' <<<"$SUITE")" "req-010: seven include entries run on windows-latest"
