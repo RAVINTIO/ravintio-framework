@@ -11,6 +11,7 @@ summary: "In, out, and deferred scope for 0000043."
 - The start-time step and the `if: always()` elapsed step, with the two-thirds warning (req-002)
 - Updates to `test-0000031-req-001-003-ci-jobs.sh` and `test-0000037-req-010-windows-git-bash-leg.sh`
 - One new suite, `test-0000043-req-001-macos-shards.sh`
+- A second new suite, `test-0000043-req-002-job-margin.sh`
 - `tests/README.md` rows, if the README describes the CI layout. P1 found that it doesn't, so P3 adds no row.
 - The 0.39.2 patch version, and the P7 release copy rebuild
 

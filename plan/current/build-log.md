@@ -83,12 +83,12 @@ Decision (P0): this session keeps `autonomous`, as the human picked it, and a re
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T13:26:13Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T13:34:19Z` |
+| Wall-clock | `8` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-spec-agent (source copy, step 1b) |
-| Agents spawned | `0` |
+| Model tier | primary (orchestrator), primary (2 critic passes) |
+| Skills loaded | ravintio-spec-agent (source copy, step 1b), ravintio-design-critic (2 subagents), ravintio-loop-runner |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | The spec units run inline. Each is one short file from context already held, and req-001 and req-002 share the matrix, so they fall under the size floor. |
@@ -102,3 +102,12 @@ Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all
 Decision (P1): the 0000043 suite tests the elapsed step by extracting its `run:` block from the workflow / reason: one copy of the logic, and no new script file to ship.
 Decision (P1): req-001's under-10-minutes criterion keeps the whole-job measure, and the warning watches the step cap / reason: the whole-job measure is stricter, and the step cap is what stops a run.
 Decision (P1): `tests/README.md` stays in scope as a conditional item that adds no row / reason: the ratchet blocks removing an in-scope line, and P1 found the README doesn't describe the CI layout.
+Critic (P1, iteration 2): APPROVE. See `critic-verdict-2.md`. All 8 iteration 1 findings resolved. The loop closes with `status: done`.
+Correction (P1): the loop-state iteration 1 timestamp was an estimate, not a `date -u` reading. The loop state records the correction.
+Decision (P1): apply the three minor iteration 2 findings after the loop closed / reason: each is a one-line wording fix, and none changes scope.
+  - "job" becomes "test step" in the glossary, the design Observability line, and req-002 AC3.
+  - The warning boundary is strict: elapsed seconds greater than the cap times 40.
+  - req-002's checks move to their own suite, `test-0000043-req-002-job-margin.sh`.
+Gate (P1): every artifact produced, no OpenAPI spec because the change adds no API, and `consistency-check.mjs` clean after the minor fixes. Skill Map updated.
+Credential scan (P1): clean (regex only)
+Progress: P1 done at 2026-11-08T13:34:19Z: 2 requirements, critic approved on iteration 2

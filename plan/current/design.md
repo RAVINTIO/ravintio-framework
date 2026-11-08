@@ -23,7 +23,7 @@
 - Scalability target: each macOS shard finishes in under 10 minutes, two-thirds of its 15-minute cap.
 - Security: no auth. The job keeps `permissions: contents: read`. The elapsed-time step reads only the shell clock and matrix values.
 - Data privacy: no regulated data
-- Observability: each test job prints one elapsed-time line with its cap, even after a step timeout. A job past two-thirds of its cap also prints a `::warning::` annotation.
+- Observability: each test job prints one elapsed-time line with its cap, even after a step timeout. A test step past two-thirds of its cap also prints a `::warning::` annotation.
 - Cost boundary: macOS runner minutes stay about the same in total. The split adds one checkout per run.
 
 ## Engineering Layer
@@ -53,7 +53,8 @@
 - Suite updates:
   - `test-0000031-req-001-003-ci-jobs.sh` accepts the macOS shard entries.
   - `test-0000037-req-010-windows-git-bash-leg.sh` checks the per-entry shard count in place of `matrix.shard && 7`, and still checks 7 Windows shards.
-  - A new 0000043 suite checks the macOS shard entries, the shard count wiring, and the elapsed-time step.
+  - A new suite, `test-0000043-req-001-macos-shards.sh`, checks the macOS shard entries and the shard count wiring.
+  - A second new suite, `test-0000043-req-002-job-margin.sh`, checks the elapsed-time step (P1 decision).
 - Version: last known `0.39.1`, and `v0.39.1` is already on `origin`. Suggested `0.39.2`, a patch bump, because the change fixes CI and adds no pack feature. The `ravintio-framework` manifest under `src/` carries the bump.
 
 ## Component Paths
@@ -100,7 +101,7 @@ None
 | Requirement | Best-fit Skill | Rationale |
 |-------------|----------------|-----------|
 | REQ-001 - sharded-macos-test-job | ravintio-codegen-agent | workflow and suite edits through the TDD loop |
-| REQ-002 - visible-job-margin | ravintio-codegen-agent | one workflow step with a suite check through the TDD loop |
+| REQ-002 - visible-job-margin | ravintio-codegen-agent | two workflow steps with their own suite through the TDD loop |
 
 ## Repo Instructions
 Five files in `ravintio-overrides/instructions/`, read at P0.
