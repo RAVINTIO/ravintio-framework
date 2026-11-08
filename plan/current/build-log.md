@@ -242,3 +242,28 @@ Re-review (P5): a fresh-context reviewer marks S-001 and S-002 resolved. It ran 
 Gate (P5): report produced with specific findings. Risk Low, with 0 critical, 0 high, and 0 medium findings open.
 Credential scan (P5): clean (regex only)
 Progress: P5 done at 2026-11-08T14:58:34Z: risk Low, 2 low findings fixed and re-reviewed
+
+---
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T14:59:10Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-docs-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | The doc edits ran inline as one batch of parallel calls. Each is a short edit from context already held, under the size floor. |
+
+Skills inbox (P5 to P6): empty.
+Gate A (P6): `docs/` exists.
+P6 Gate B: docs update assessment (autonomous run, auto-accepted). The run changed the CI test matrix and timing steps, with no new component, API, or dependency. Auto-accepted: updating `docs/architecture-overview.md`, `docs/component-registry.md`, `docs/decisions-index.md`, and `docs/dependency-graph.md`, plus `src/ravintio-framework/docs/quirks.md` and `test-coverage.md`. No update needed for `docs/api-index.md`, because no component exposes an API.
+Per-component docs (P6): `purpose.md`, `interface-contract.md`, `dependencies.md`, `risk.md`, and `scope.md` need no change, because the pack's purpose, interface, and dependencies are unchanged. No `data-contract.md` applies, because the pack owns no data.
+Drift (P6): none found. The glossary terms cap, shard, and margin appear in the workflow comments and suite labels. No API, data ownership, or dependency direction changed. The workflow follows ADR-002 and ADR-003.
+Completeness (P6): the P1 minimal set, 4 ADRs, the security report, and `recommendations.md` exist. No OpenAPI, operational model, SLO, or cost model applies.
+Backlog routing (P6): `recommendations.md` holds no new Deferred Items or Tech Debt row, so P6 files no entry.

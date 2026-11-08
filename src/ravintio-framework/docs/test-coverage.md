@@ -1,6 +1,6 @@
 # Test coverage - ravintio-framework
 
-Last updated: 0000042-fix-windows-shards-pr-77
+Last updated: 0000043-macos-test-job-timeout
 
 ## Summary
 
@@ -37,6 +37,15 @@ Existing suites changed in 0000041 to read the pack through `tests/helpers/pack-
 
 The 0000041 req-005 and req-006 suites changed in 0000042: one Windows guard each, Windows paths for Node, and a blob id compare. The full run for 0000042 covers 177 suites.
 
+## 0000043 suites
+
+| Suite | Requirement |
+|---|---|
+| `test-0000043-req-001-macos-shards.sh` | The `test-suite` matrix rows, `RAVINTIO_SHARD_COUNT` from `matrix.shards`, the job name, the step timeout from `matrix.cap`, and the 25-minute job timeout. |
+| `test-0000043-req-002-job-margin.sh` | Both timing steps, `shell: bash`, and `if: always()`. It extracts the elapsed step's `run:` block and runs it under a fixed `date` stand-in, covering the two-thirds boundary, a timed-out step, and hostile start and cap values. |
+
+The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the per-entry cap and the 2 macOS shards. The full run for 0000043 covers 179 suites.
+
 ## Known gaps
 
 - The case-collision case (RS-F07) skips on a case-insensitive file system. Linux CI runs it.
@@ -45,3 +54,4 @@ The 0000041 req-005 and req-006 suites changed in 0000042: one Windows guard eac
 - No test covers a deleted `release.yml` in the CI integrity job (backlog 0000418).
 - No Windows run tests that `project-kind.mjs` and the 0.39.0 migration refuse links. Linux and macOS run those cases (0000042 ADR-002, backlog 0000431).
 - No test covers a `mktemp` that prints nothing and exits 0 in the req-005 suite. The suite checks for it (0000042 security re-review R-2).
+- No CI run has shown the elapsed step after a real step timeout. The req-002 suite runs the step's block with a start 16 minutes old (0000043 verification report).

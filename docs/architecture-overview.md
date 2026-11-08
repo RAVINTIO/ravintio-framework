@@ -3,7 +3,7 @@
 > Living document. Reflects current system state. Updated after every pipeline run.
 > Do not archive this file; update it in place.
 
-Last updated: 0000042-fix-windows-shards-pr-77 (8 Nov 2026). Two 0000041 suites pass on the Windows shards, and the pack moves to 0.39.1. Earlier: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
+Last updated: 0000043-macos-test-job-timeout (8 Nov 2026). The macOS test job runs as two shards, each matrix entry carries its own cap, and each test job prints its time against that cap. The pack moves to 0.39.2. Earlier: 0000042-fix-windows-shards-pr-77 (8 Nov 2026). Two 0000041 suites pass on the Windows shards, and the pack moves to 0.39.1. Earlier: 0000041-pack-source-under-src (7 Nov 2026). The pack source lives at `src/ravintio-framework/`, and the root `ravintio-framework/` is a release copy with a `release.yml` and no `component.yml`. Earlier: 0000040-retire-fast-path (7 Nov 2026). Every change now runs the Feature Pipeline, and pre-push and CI apply a source folder rule read from `product.yml`. Earlier: 0000039-ravintio-rebrand (25 Oct 2026). The pack, the overrides folder, and every skill now carry the RAVINTIO name, with a consumer migration and a brand guard. Earlier: 0000038-token-efficiency-windows-shard (24 Oct 2026)
 
 ---
 
@@ -150,7 +150,7 @@ Self-modification sequencing (ADR-004) governs how such a change is applied to h
 |-----|--------|----------------|
 | `validate-branch` | `ubuntu-latest` | A change to a source folder also touches a file under `plan/` or `docs/`. A source folder is `src/` or the folder of a `component.yml` that `product.yml` lists (0000040 ADR-003) |
 | `self-description-check` | `ubuntu-latest` | The README matches the repository structure (0000019) |
-| `test-suite` | `ubuntu-latest`, `macos-latest`, and `windows-latest` under Git Bash in seven shards, `fail-fast: false` | `run-tests.sh` passes. On failure, the log lists each failed suite by file name. |
+| `test-suite` | `ubuntu-latest` in one job, `macos-latest` in two shards, and `windows-latest` under Git Bash in seven shards, `fail-fast: false` (0000043 ADR-002) | `run-tests.sh` passes within the entry's `cap`. On failure, the log lists each failed suite by file name. Each job then prints its elapsed time against its cap (0000043 ADR-003). |
 | `setup-powershell` | `windows-latest`, PowerShell 7 | `test_setup.ps1` passes, including the live `.ravintio-setup-flags` marker checks |
 | `setup-powershell-51` | `windows-latest`, Windows PowerShell 5.1 | `test_setup.ps1` passes under 5.1, including the live stale clean-up and retired-flag checks (0000037). The 0.37.0 migration helper parses under 5.1, and the req-006 suite's `.ps1` cases pass on `powershell.exe` (0000039) |
 
@@ -162,6 +162,11 @@ Feature 0000037 changed the platform matrix (ADR-012, ADR-013, and ADR-014 of th
 - The suite runs on Windows under Git Bash. `run-tests.sh` reads `RAVINTIO_SHARD_INDEX` and `RAVINTIO_SHARD_COUNT`, so the Windows leg runs in seven shards.
 - Each Windows shard has `timeout-minutes: 20`. Every other job keeps 10.
 - Feature 0000039 gives the Linux and macOS legs of `test-suite` 15 minutes. The macOS leg passed every suite but ran past 10 minutes once the migration helper suite grew. No ADR records this change. The 0000031 and 0000037 CI checks expect the new value.
+- Feature 0000043 moves each `test-suite` cap into the matrix (0000043 ADR-002, which amends 0000037 ADR 014). The bullets above give the caps before that change.
+  - Every entry sits under `include` with a `cap`: 15 for Ubuntu and macOS, and 20 for Windows. Sharded entries also carry `shard` and `shards`.
+  - macOS runs in two shards, and `RAVINTIO_SHARD_COUNT` reads `matrix.shards`.
+  - The test step's `timeout-minutes` reads `matrix.cap`. The job has a fixed 25-minute backstop, so a slow suite fails the step and the job's later steps still run.
+  - A step records the start time in `GITHUB_ENV`. An `if: always()` step prints `Elapsed: {m} min {s} s of a {cap} min cap`, and adds a `Test job margin` warning past two-thirds of the cap (0000043 ADR-003).
 - A suite check that can't run on Windows prints `SKIP (windows): {reason}` and has a row in the skip table in `ravintio-framework/tests/README.md`.
 
 A red check doesn't block a merge until branch protection marks it as required. Only the human on the loop can change that setting.
@@ -543,6 +548,8 @@ A repo is the framework source when `product.yml` lists `ravintio-framework` at 
 In the source repo, suites read the pack through `tests/helpers/pack-root.sh`, which gives `src/ravintio-framework/` and fails a suite that reads the root copy (0000041 ADR-009). CI runs `src/ravintio-framework/tests/run-tests.sh`. A new `release-copy-integrity` job runs `release-check.mjs --files-only` against the root copy. It reports a skip while the root copy has no `release.yml`. The job is repo-only and is not part of the consumer `hooks/ravintio.yml`. The 0000039 req-010 version equality checks run only on a released tree, where `plan/current/design.md` is absent. `em-dash-guard.mjs` now also covers prose under `src/ravintio-framework/`.
 
 Release 0.39.1 makes two 0000041 suites pass under Git Bash (0000042). Each one puts its link cases behind one `IS_WIN` guard, because `ln -s` makes a copy there (0000042 ADR-002). The req-005 suite passes paths to Node in Windows form and imports `project-kind.mjs` through a file URL (0000042 ADR-001). It checks the released migration by git blob id, so a CRLF checkout can't fail it (0000042 ADR-003). `test-0000042-req-001-windows-guards.sh` runs both suites under a `uname` stand-in that reports `MINGW64_NT`, so a Mac or Linux run checks the Windows branch. It also runs the req-005 suite under a failing `mktemp` stand-in and checks that the caller's folder survives.
+
+Release 0.39.2 gives the macOS test job margin again (0000043). The single macOS job had timed out at 15 minutes in 3 of 4 PR #77 runs. Two shards now take about 6.5 and 4.7 minutes. `test-0000043-req-001-macos-shards.sh` checks the matrix rows and timeouts. `test-0000043-req-002-job-margin.sh` extracts the elapsed step's `run:` block from the workflow and runs it under a fixed `date` stand-in. The step accepts the start time and cap only as 1 to 10 digits with no leading zero, because Bash reads a leading zero as octal.
 
 ---
 
