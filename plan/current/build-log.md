@@ -206,12 +206,12 @@ Progress: P5 done at 2026-11-08T10:03:52Z: security risk Low after fixing S-1 an
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T10:04:28Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T10:31:01Z` |
+| Wall-clock | `26` |
 | Streams | `n/a` |
 | Model tier | primary |
-| Skills loaded | ravintio-docs-agent |
-| Agents spawned | `pending` |
+| Skills loaded | ravintio-docs-agent, ravintio-reversal-assessor (1 subagent), cross-model reviewer (1 subagent) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `1` (all doc edits in one batch) |
 | Notes | Gate A: `docs/` exists. Small edits, written inline under the size floor. |
@@ -229,3 +229,7 @@ Exception waiting (P6, 1): approve the two P5 functional requirements in req-001
 Exception waiting (P6, 1): approve the S-1 fix that narrows the req-005 `EXIT` trap `rm -rf` to `WORK_TMP` (review item 8).
 Cross-model review (P6): `cross-model-review-1.md`, reviewer `claude-opus-5-5`, implementer `claude-sonnet-5-5`. APPROVE on iteration 1. One Low and five Info findings.
 Decision (P6): apply findings 1, 2, and 6 (manifest entry and comment, a doubled space, and the quirks wording), and accept 3, 4, and 5 / reason: the first three are doc fixes, 3 and 4 are Info notes on test design, and P9 reads the final head's checks for 5.
+Revalidation (P6): P4 steps 0-5, pass. The full suite after the P6 commit `21bb30bc` ran 177 suites with one failure, the 0000040 req-007 archive check (backlog 0000428), which no P6 edit causes. After the review fixes in `f19370d5`, all 25 suites that read `component.yml` pass except that same check. `ravintio-overrides/doc-checks.yml` is absent.
+Drift (P6): none. Component boundaries, data ownership, and ADR compliance match. No API. Glossary terms (`IS_WIN`, guard, Windows skip, blob id, release copy) appear in the suites and docs.
+Gate (P6): five living and component docs updated, recommendations and changelog written, backlog 0000431 filed for the tech debt row. Skill Map unchanged.
+Progress: P6 done at 2026-11-08T10:31:01Z: docs updated, cross-model review approved, and four exception items wait for the human on the loop
