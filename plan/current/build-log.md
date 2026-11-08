@@ -300,10 +300,12 @@ Progress: P6 done at 2026-11-08T15:18:57Z: 6 docs updated, cross-model review ap
 
 CI (P4, reopened): run `42494219958` on `68a500d5` concluded `success`, but macOS shard 1 of 2 took 612 s, against req-001 AC2's 600 s target. Across four runs, shard 1 took 392 s, 410 s, 668 s, and 612 s, and shard 2 took 281 s, 397 s, 527 s, and 511 s.
 Self-correct cycle 1 (P4): Check: test (req-001 AC2, CI timing). Error: macOS shard 1 of 2 over 600 s in 2 of 4 runs. Root cause: runner speed varies by about 60%, and two shards leave too little margin on a slow runner. Fix: three macOS shards, as ADR-002 and risk R-001 set out. Result: local GREEN, and CI pending.
-Deviation (P4, unclassified): macOS runs 3 shards in place of the confirmed 2, so the matrix holds 11 entries. ADR-002 named this move in advance. req-001, ADR-002, the design, and the docs record it, and the brief and req-001 criteria carry P4 notes.
+Deviation (P4, altering): macOS runs 3 shards in place of the confirmed 2, so the matrix holds 11 entries. ADR-002 named this move in advance. req-001, ADR-002, the design, and the docs record it, and the brief and req-001 criteria carry P4 notes.
 TDD (P4): RED with 4 failing checks across the req-001 and 0000037 suites. GREEN after the matrix change: the four layout and margin suites exit 0.
 Test (P4, reopened): the local full run shows 141 feature suites passed and 1 failed, with 37 regression suites passed. The one failure is the known 0000428 archive check.
 CI (P4, reopened): run `42496182854` on `1b44f04e` concluded `success`. The macOS shards took 323 s, 275 s, and 320 s, with `Suites run` totals of 60, 60, and 59, summing to Ubuntu's 179. Each prints its elapsed line.
 Self-correct cycles (P4, reopened): 1. The validate loop closes with `status: done`.
 Gate (P4, reopened): CI passes, and every acceptance criterion verifies. `verification-report.md` holds the new evidence.
 Progress: P4 done at 2026-11-08T16:03:21Z: macOS in 3 shards at 4.6 to 5.4 minutes, 1 self-correct cycle
+Deviation review (P4, reopened): a fresh-context `ravintio-reversal-assessor` classed the 3-shard move as altering. See row 3 of `deviation-review.md`. The confirmed design named 2 macOS entries, and the 10-minute rule came from ADR-002 at P2, after the human gate. The problem and the users don't change. No schema or destructive flag.
+Exception waiting (P4, 2): the 3-shard deviation is altering. The human on the loop must accept 3 macOS shards, or ask for 2 shards with a higher cap, before merging PR #77. Evidence: with 2 shards, shard 1 took 668 s and 612 s in two of four runs. With 3 shards, the slowest took 323 s.
