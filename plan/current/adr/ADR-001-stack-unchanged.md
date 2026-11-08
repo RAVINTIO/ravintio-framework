@@ -17,13 +17,18 @@ The confirmed design declares the stack unchanged: Bash suites under `run-tests.
 
 ## Decision
 
-The fix uses only tools the suites already use: Bash, `uname`, `pwd -W`, `git`, and Node's built-in `node:url` module. It adds no dependency and no CI job.
+The fix uses only tools the suites already use: Bash, `uname`, `pwd -W`, `cygpath`, `git`, and Node's built-in `node:url` module. It adds no dependency and no CI job.
+
+The path conversion copies the pattern in `test-0000035-req-005-ratchet-check-shared-root.sh`:
+
+- `WORK` takes the `pwd -W` form of the scratch folder, with a `pwd` fallback.
+- A `native()` helper converts any other path with `cygpath -m` when `command -v cygpath` finds it, and passes the path through unchanged otherwise. The suite runs `$PK` through `native()`.
 
 ## Alternatives Considered
 
 | Alternative | Pros | Cons | Why Rejected |
 |-------------|------|------|-------------|
-| Use `cygpath -m` for path conversion | Converts any path, not only a folder | Not every MSYS install ships it, and the 0000035 suites don't use it | `pwd -W` is built into Git Bash and converts the two folders the fix needs |
+| `pwd -W` alone, also for the folder of `project-kind.mjs` | One method for both paths | Works only on a folder, so the suite rebuilds the file path by hand | Five 0000035 suites and `test-0000040-req-005-consumer-migration.sh` already use the `native()` helper for file paths |
 | Add a PowerShell suite for the link cases | Could build real Windows links | A second test language for one feature | Out of scope, and the Linux and macOS jobs already cover the link cases |
 
 ## Affected Components
@@ -38,10 +43,10 @@ The fix uses only tools the suites already use: Bash, `uname`, `pwd -W`, `git`, 
 - The fix needs no new tool on any CI runner.
 
 **Negative:**
-- `pwd -W` works only on a folder, so the suite converts the folder of `project-kind.mjs` and appends the file name.
+- The Windows-only path code runs only on a Windows shard. Each fault there costs a CI round trip of about 15 minutes, because no local runner can show it.
 
 **Risks:**
-- A future Git Bash release could change `pwd -W` output. The suites print the path they use, so a failure would show it.
+- A runner without `cygpath` would pass `$PK` through in POSIX form, and the import cases would fail again. Git for Windows ships `cygpath`, and the 0000035 suites rely on it today.
 
 ## Related ADRs
 

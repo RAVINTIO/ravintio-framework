@@ -30,7 +30,7 @@ Each suite gets one `IS_WIN` guard around its link cases.
 | Alternative | Pros | Cons | Why Rejected |
 |-------------|------|------|-------------|
 | Set `MSYS=winsymlinks:nativestrict` in the suites | Runs the link cases on Windows | Fails without Developer Mode or admin rights, and no other suite does it | The runner's link rights aren't a contract the pack can rely on |
-| Probe with `ln -s` and `test -L`, then run the cases when a real link results | Runs the cases wherever links work | Adds a case path that this run can't test on any runner it has | Extra scope, and the critic accepted the gap under R-001 |
+| Probe with `ln -s` and `test -L`, then run the cases when a real link results | Runs the cases wherever links work | Adds a case path that this run can't test on any runner it has | The `windows-latest` runner gives no real links to Git Bash today, so the probe path would never run in CI and its own faults would stay unseen |
 | One guard per case, four in the req-005 suite | No reordering of cases | Four README rows for one cause | One guard per cause keeps the skip table short |
 
 ## Affected Components

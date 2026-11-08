@@ -17,7 +17,12 @@ Only the Windows shards can prove req-001's first criterion. In 0000041, P9 read
 
 ## Decision
 
-After the P4 CI pass, the run pushes `feat/0000041-pack-source-under-src` and reads the PR #77 checks for that head. It moves to P5 only when both Windows shards pass. If a shard fails, the fix loop runs while the design is still in `plan/current/`. P9 still reads the checks again for the final head.
+After the P4 CI pass, the run pushes `feat/0000041-pack-source-under-src` and reads the PR #77 checks for that head.
+
+- It moves to P5 only when all 14 checks pass. Any red check blocks P5, not only the Windows shards.
+- If a check fails, the P4 validate loop runs the fix, with its cap of 5, while the design is still in `plan/current/`. In `autonomous`, a cap starts a new approach, up to 3.
+- At P7, after the release script rebuilds the root copy, the run runs `release-check.mjs --files-only` before the push. That catches a rebuild fault before the archive leaves `gate-write` closed.
+- P9 still reads the checks again for the final head.
 
 ## Alternatives Considered
 
@@ -41,7 +46,7 @@ After the P4 CI pass, the run pushes `feat/0000041-pack-source-under-src` and re
 - P4 waits for a full CI run, about 15 minutes.
 
 **Risks:**
-- P7 rebuilds the release copy and changes the head again. P9 reads the checks for that head. A failure caused only by the rebuild would still meet the 0000426 block.
+- P7 rebuilds the release copy and changes the head again. A CI failure caused only by the rebuild, which `release-check.mjs` doesn't catch, would still meet the 0000426 block.
 
 ## Related ADRs
 

@@ -9,7 +9,7 @@ summary: "Risks specific to the 0000042 Windows suite fix."
 | ID | Category | Description | Likelihood | Impact | Mitigation | Status |
 |----|----------|------------|------------|--------|-----------|--------|
 | R-001 | technical | The four link-case skips hide a real Windows defect in `project-kind.mjs` link handling | low | medium | P4 checks that the Linux and macOS runs still pass every link case. Each guard prints its reason on Windows. | accepted |
-| R-002 | technical | A third Windows failure shows only after P7, and `gate-write` blocks the fix (backlog 0000426) | low | high | After the P4 CI pass, the run pushes the branch and reads the Windows shards before P7 archives the design | open |
+| R-002 | technical | A third Windows failure shows only after P7, and `gate-write` blocks the fix (backlog 0000426) | low | high | After the P4 CI pass, the run pushes the branch and reads every PR #77 check before P5. At P7, it runs `release-check.mjs --files-only` after the rebuild and before the push (ADR-004). | open |
 | R-003 | operational | The P7 credential scan holds back `release.yml` again (backlog 0000425) | high | low | The `release-copy-integrity` job passes with its skip notice. The final report names the held-back file. | accepted |
 | R-004 | technical | The blob compare reads the wrong pack path in the source repo, where `RAVINTIO_PACK_DIR` points at `src/ravintio-framework/` | medium | medium | P3 builds the compared path from `$FW` relative to `RAVINTIO_REPO_ROOT`, and P4 runs the suite in the source repo to check it | open |
 

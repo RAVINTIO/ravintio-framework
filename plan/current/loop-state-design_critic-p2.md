@@ -13,14 +13,20 @@ status: "active"
 | Loop id | `design_critic` |
 | Owning phase | `P2` |
 | Toggle level | `on` |
-| Iteration | `0` of cap `3` |
+| Iteration | `1` of cap `3` |
 | Approach | `1 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
 | Last decision | `continue` |
-| Last updated | `2026-11-08T08:42:33Z` |
+| Last updated | `2026-11-08T08:46:32Z` |
 
 ---
 
 ## Run Log
 
 Append-only: one record per iteration. Never rewrite a prior record.
+
+### Iteration 1 (2026-11-08T08:46:32Z)
+- **Approach:** 1
+- **Action:** fresh-context critic pass over the P1 and P2 set.
+- **Observation:** REJECT in `critic-verdict-p2-1.md`. One major finding: ADR-001 rejected `cygpath -m` on a false claim, because five 0000035 suites use it. Five minor findings on ADR negatives, the ADR-004 loop and cap, the P7 rebuild risk, and the ADR-002 rejection reason.
+- **Decision:** continue: adopt the 0000035 `native()` helper, fix all five minor findings, and run iteration 2.

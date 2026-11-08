@@ -36,7 +36,7 @@
 - API versioning: not applicable
 - req-005 suite fixes (backlog 0000426):
   - `IS_WIN` comes from `uname -s`, as in the 0000035 suites.
-  - On Windows, `WORK` and the `project-kind.mjs` path reach Node in `pwd -W` form inside `-e` scripts (P1 deviation).
+  - On Windows, `WORK` reaches Node in `pwd -W` form, and the `project-kind.mjs` path through the 0000035 `native()` helper with `cygpath -m`, inside `-e` scripts (P1 and P2 deviations).
   - One `IS_WIN` guard covers the four linked-path cases, and it prints one `SKIP (windows)` line per case on Windows (P1 deviation). Git Bash `ln -s` makes a copy.
   - The two `projectKind(root)` cases import `project-kind.mjs` through `pathToFileURL(...).href`.
   - The released-migration check compares git blob ids, not working-tree bytes. It checks the `HEAD` blob and the `git hash-object` id of the working-tree file against `v0.38.0` (P1 deviation). A CRLF checkout then can't fail it.

@@ -18,8 +18,8 @@ As a framework maintainer, I see both 0000041 suites pass on the Windows CI shar
 ## Functional Requirements
 
 - `test-0000041-req-005-applies-to-header.sh` sets `IS_WIN=yes` when `uname -s` starts with `MINGW`, `MSYS`, or `CYGWIN`, as the 0000035 suites do.
-- On Windows, the req-005 suite builds `WORK` from the `pwd -W` form of its scratch folder. Git Bash converts command arguments but not text inside a `node -e` script, so Node then reads a Windows path.
-- On Windows, the req-005 suite also passes `project-kind.mjs` to Node in `pwd -W` form inside the `node -e` scripts. `pack-root.sh` builds `$FW` with `pwd`, so `$PK` is in POSIX form until the suite converts it.
+- On Windows, the req-005 suite builds `WORK` from the `pwd -W` form of its scratch folder, with a `pwd` fallback. Git Bash converts command arguments but not text inside a `node -e` script, so Node then reads a Windows path.
+- The req-005 suite adds the `native()` helper from the 0000035 suites, which runs `cygpath -m` when `command -v cygpath` finds it. The `node -e` scripts read `project-kind.mjs` through `native "$PK"`, because `pack-root.sh` builds `$FW` with `pwd` in POSIX form.
 - The two `projectKind(root)` cases import `project-kind.mjs` with a dynamic `await import(pathToFileURL(...).href)` under `--input-type=module`, on every platform.
 - The req-005 suite moves its four linked-path cases into one block behind one `IS_WIN` guard. On Windows, the guard prints one `SKIP (windows): {reason}` line for each of the four cases. Each reason names Git Bash `ln -s` making a copy.
 - The released-migration check makes two blob id compares against `v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md`:

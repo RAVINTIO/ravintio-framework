@@ -108,3 +108,6 @@ Progress: P1 done at 2026-11-08T08:41:53Z: req-001 and the spec set approved by 
 | MCP calls | `0` |
 | Parallel task batches | `pending` |
 | Notes | Skills inbox empty. Four short ADRs, written inline under the size floor. |
+
+Deviation (P2, unclassified): `project-kind.mjs` reaches Node through the 0000035 `native()` helper with `cygpath -m`, not through `pwd -W`. Critic P2 iteration 1, finding 1.
+Deviation (P2, unclassified): ADR-004 now blocks P5 on any red PR #77 check, runs fixes in the P4 validate loop, and adds `release-check.mjs --files-only` at P7 before the push. Critic P2 iteration 1, findings 4 and 5.

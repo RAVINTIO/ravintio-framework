@@ -45,7 +45,7 @@ The check takes the blob id of `v0.38.0:ravintio-framework/migrations/retroactiv
 - It still catches a committed or an uncommitted edit.
 
 **Negative:**
-- The check now depends on git reading the repository, not only on file bytes.
+- `hash-object` applies `core.autocrlf`, so an uncommitted edit that changes only line endings now passes. The `HEAD` blob compare still catches it once someone commits it.
 
 **Risks:**
 - The suite must build the pack path relative to `RAVINTIO_REPO_ROOT`. R-004 in the risk register tracks it.
