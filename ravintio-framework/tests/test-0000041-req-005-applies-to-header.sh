@@ -23,8 +23,19 @@ FW="$RAVINTIO_PACK_DIR"
 PK="$FW/scripts/project-kind.mjs"
 MANIFEST_PATH="src/ravintio-framework/component.yml"
 
-WORK="$(mktemp -d -t ravintio_0000041_req005_XXXXXX)" || { echo "  FAIL: req-005: mktemp -d failed"; exit 1; }
-trap 'rm -rf "$WORK"' EXIT
+# Git Bash gives /tmp/x, which node reads as C:\tmp\x inside a node -e script. pwd -W gives the Windows form.
+WORK_TMP="$(mktemp -d -t ravintio_0000041_req005_XXXXXX)" || { echo "  FAIL: req-005: mktemp -d failed"; exit 1; }
+if [ -z "$WORK_TMP" ] || [ ! -d "$WORK_TMP" ]; then echo "  FAIL: req-005: mktemp -d failed"; exit 1; fi
+trap 'rm -rf "$WORK_TMP"' EXIT
+WORK="$(cd "$WORK_TMP" && { pwd -W 2>/dev/null || pwd; })" || { echo "  FAIL: req-005: cannot enter the scratch folder"; exit 1; }
+
+native() {
+  if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s' "$1"; fi
+}
+
+# IS_WIN: yes under Git Bash, MSYS, or Cygwin. There, ln -s copies the target.
+IS_WIN=no
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) IS_WIN=yes ;; esac
 
 PRODUCT_OK='id: "ravintio-framework"
 name: "RAVINTIO Framework"
@@ -90,10 +101,6 @@ R="$(mk_repo no-product)"; rm -f "$R/product.yml"
 expect_downstream "$R" "no product.yml"
 assert_contains "product.yml" "$ERR" "req-005: no product.yml reason names product.yml"
 
-R="$(mk_repo linked-product)"
-mv "$R/product.yml" "$R/real-product.yml"; ln -s real-product.yml "$R/product.yml"
-expect_downstream "$R" "linked product.yml"
-
 R="$(mk_repo no-entry)"
 printf 'id: "other"\ncomponents:\n  - id: "setup-hook-integration"\n    path: "src/setup-hook-integration/component.yml"\n' > "$R/product.yml"
 expect_downstream "$R" "no ravintio-framework entry"
@@ -105,17 +112,29 @@ expect_downstream "$R" "a different path"
 R="$(mk_repo no-manifest)"; rm -f "$R/$MANIFEST_PATH"
 expect_downstream "$R" "missing component.yml"
 
-R="$(mk_repo linked-manifest)"
-mv "$R/$MANIFEST_PATH" "$R/real-component.yml"; ln -s ../../real-component.yml "$R/$MANIFEST_PATH"
-expect_downstream "$R" "linked component.yml"
+# The four linked-path cases. ln -s makes a copy under Git Bash, so Windows skips them.
+if [ "$IS_WIN" = yes ]; then
+  LN_REASON="ln -s makes a copy under Git Bash, so a link cannot be built"
+  for LINKED in "product.yml" "component.yml" "src/ravintio-framework folder" "src folder"; do
+    echo "  SKIP (windows): linked $LINKED: $LN_REASON"
+  done
+else
+  R="$(mk_repo linked-product)"
+  mv "$R/product.yml" "$R/real-product.yml"; ln -s real-product.yml "$R/product.yml"
+  expect_downstream "$R" "linked product.yml"
 
-R="$(mk_repo linked-dir)"
-mv "$R/src/ravintio-framework" "$R/real-pack"; ln -s ../real-pack "$R/src/ravintio-framework"
-expect_downstream "$R" "linked src/ravintio-framework folder"
+  R="$(mk_repo linked-manifest)"
+  mv "$R/$MANIFEST_PATH" "$R/real-component.yml"; ln -s ../../real-component.yml "$R/$MANIFEST_PATH"
+  expect_downstream "$R" "linked component.yml"
 
-R="$(mk_repo linked-src)"
-mv "$R/src" "$R/real-src"; ln -s real-src "$R/src"
-expect_downstream "$R" "linked src folder"
+  R="$(mk_repo linked-dir)"
+  mv "$R/src/ravintio-framework" "$R/real-pack"; ln -s ../real-pack "$R/src/ravintio-framework"
+  expect_downstream "$R" "linked src/ravintio-framework folder"
+
+  R="$(mk_repo linked-src)"
+  mv "$R/src" "$R/real-src"; ln -s real-src "$R/src"
+  expect_downstream "$R" "linked src folder"
+fi
 
 R="$(mk_repo malformed)"
 printf '\001\002 :: [ { not yaml\n  - - id\n"unterminated\n' > "$R/product.yml"
@@ -138,7 +157,8 @@ assert_equals "2" "$RC" "req-005: --root with no value exits 2"
 # --- exported function ------------------------------------------------------
 R="$(mk_repo fn-source)"
 FN_OUT="$(node --input-type=module -e "
-import { projectKind } from '$PK';
+const { pathToFileURL } = await import('node:url');
+const { projectKind } = await import(pathToFileURL('$(native "$PK")').href);
 const r = projectKind('$R');
 console.log(JSON.stringify({ kind: r.kind, reasonType: typeof r.reason }));
 " 2>/dev/null)"
@@ -146,7 +166,8 @@ assert_equals '{"kind":"framework source","reasonType":"string"}' "$FN_OUT" "req
 
 R="$(mk_repo fn-down)"; rm -f "$R/product.yml"
 FN_OUT="$(node --input-type=module -e "
-import { projectKind } from '$PK';
+const { pathToFileURL } = await import('node:url');
+const { projectKind } = await import(pathToFileURL('$(native "$PK")').href);
 const r = projectKind('$R');
 console.log(JSON.stringify({ kind: r.kind, hasReason: typeof r.reason === 'string' && r.reason.length > 0 }));
 " 2>/dev/null)"
@@ -225,14 +246,18 @@ fi
 has "migrator reports each not applicable record and its reason to the human" 'report.*not applicable.*reason|report.*reason.*not applicable' "$STEP1B"
 
 # ============================================================================
-# AC3: the released retroactive-release-tags.md matches v0.38.0 byte for byte
+# AC3: the released retroactive-release-tags.md keeps the v0.38.0 blob id
 # ============================================================================
+# Blob ids ignore line-ending conversion: hash-object runs inside the repo, so core.autocrlf applies.
 REL="$FW/migrations/retroactive-release-tags.md"
-git -C "$RAVINTIO_REPO_ROOT" show v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md > "$WORK/v038.md" 2>/dev/null # root-copy-ok: history stores the released file at the old path
-if [ -s "$WORK/v038.md" ] && [ -f "$REL" ] && cmp -s "$WORK/v038.md" "$REL"; then
-  assert_equals "yes" "yes" "req-005: retroactive-release-tags.md is byte-identical to v0.38.0"
+REL_PATH="$RAVINTIO_PACK_REL/migrations/retroactive-release-tags.md"
+OLD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse --verify --quiet "refs/tags/v0.38.0:ravintio-framework/migrations/retroactive-release-tags.md" 2>/dev/null)" # root-copy-ok: history stores the released file at the old path
+HEAD_ID="$(git -C "$RAVINTIO_REPO_ROOT" rev-parse --verify --quiet "HEAD:$REL_PATH" 2>/dev/null)"
+WT_ID="$(git -C "$RAVINTIO_REPO_ROOT" hash-object --path="$REL_PATH" "$REL" 2>/dev/null)"
+if [ -n "$OLD_ID" ] && [ "$OLD_ID" = "$HEAD_ID" ] && [ "$OLD_ID" = "$WT_ID" ]; then
+  assert_equals "yes" "yes" "req-005: retroactive-release-tags.md blob id matches v0.38.0 at HEAD and in the working tree"
 else
-  assert_equals "yes" "no" "req-005: retroactive-release-tags.md is byte-identical to v0.38.0"
+  assert_equals "yes" "no" "req-005: retroactive-release-tags.md blob id matches v0.38.0 at HEAD and in the working tree (v0.38.0=${OLD_ID:-none} HEAD=${HEAD_ID:-none} tree=${WT_ID:-none})"
 fi
 
 print_summary

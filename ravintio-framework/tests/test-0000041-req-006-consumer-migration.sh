@@ -37,6 +37,10 @@ RM_CMD="rm -- $LEFTOVER"
 WORK="$(mktemp -d -t ravintio_0000041_req006_XXXXXX)" || { echo "  FAIL: req-006: mktemp -d failed"; exit 1; }
 trap 'rm -rf "$WORK"' EXIT
 
+# IS_WIN: yes under Git Bash, MSYS, or Cygwin. There, ln -s copies the target.
+IS_WIN=no
+case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) IS_WIN=yes ;; esac
+
 yes_no() {
   if "$@"; then echo yes; else echo no; fi
 }
@@ -366,12 +370,16 @@ C="$(mk_consumer c5b 0.38.0 yes no)"
 assert_equals "none" "$(run_migration "$C" confirm yes)" "req-006: a release.yml older than 0.39.0 writes no record"
 
 # Case 6: ravintio-framework itself is a link.
-C="$(mk_consumer c6 0.39.0 yes no)"
-mv "$C/ravintio-framework" "$C/real-pack"
-ln -s real-pack "$C/ravintio-framework"
-assert_equals "skipped" "$(run_migration "$C" confirm yes)" "req-006: a linked ravintio-framework records skipped"
-assert_contains "refused" "$(cat "$C/plan/_migrations/$STEM.md")" "req-006: a linked ravintio-framework records the reason refused"
-assert_equals "yes" "$(yes_no test -f "$C/real-pack/component.yml")" "req-006: a linked ravintio-framework keeps the file"
+if [ "$IS_WIN" = yes ]; then
+  echo "  SKIP (windows): a linked ravintio-framework: ln -s makes a copy under Git Bash, so a link cannot be built"
+else
+  C="$(mk_consumer c6 0.39.0 yes no)"
+  mv "$C/ravintio-framework" "$C/real-pack"
+  ln -s real-pack "$C/ravintio-framework"
+  assert_equals "skipped" "$(run_migration "$C" confirm yes)" "req-006: a linked ravintio-framework records skipped"
+  assert_contains "refused" "$(cat "$C/plan/_migrations/$STEM.md")" "req-006: a linked ravintio-framework records the reason refused"
+  assert_equals "yes" "$(yes_no test -f "$C/real-pack/component.yml")" "req-006: a linked ravintio-framework keeps the file"
+fi
 
 # =============================================================================
 echo ""

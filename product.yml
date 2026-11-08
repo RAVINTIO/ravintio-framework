@@ -12,8 +12,8 @@
 
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
-version: "0.39.0"
-feature: "0000041-pack-source-under-src"
+version: "0.39.1"
+feature: "0000042-fix-windows-shards-pr-77"
 
 versionPolicy: "max-component-version"
 

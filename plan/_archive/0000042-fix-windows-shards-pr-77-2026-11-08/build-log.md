@@ -233,3 +233,31 @@ Revalidation (P6): P4 steps 0-5, pass. The full suite after the P6 commit `21bb3
 Drift (P6): none. Component boundaries, data ownership, and ADR compliance match. No API. Glossary terms (`IS_WIN`, guard, Windows skip, blob id, release copy) appear in the suites and docs.
 Gate (P6): five living and component docs updated, recommendations and changelog written, backlog 0000431 filed for the tech debt row. Skill Map unchanged.
 Progress: P6 done at 2026-11-08T10:31:01Z: docs updated, cross-model review approved, and four exception items wait for the human on the loop
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T10:31:33Z` |
+| End | `2026-11-08T10:32:38Z` |
+| Wall-clock | `1` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (installed copy), Step 5c read from `src/ravintio-framework/skills/ravintio-ship-agent/SKILL.md` |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` (cross-reference search with the regression-candidate scan) |
+| Notes | `run-mode.mjs` prints `interactive` (backlog 0000427). This session keeps `autonomous` per the P0 decision. |
+
+Decision (P7): run Step 5c from the source ship skill / reason: the installed ship skill is stale and lacks Step 5c, and ADR-004 places `release-check.mjs` between Step 5c and Step 6.
+Cross-reference check (P7): no living doc links to a 0000042 artifact under `plan/current/`. The decisions index already names the archive path.
+Regression candidates (P7): no `# REGRESSION-CANDIDATE:` tag in the 0000042 suites. No regression candidates.
+Changelog (P7): release summary added to `plan/changelog/0000042-fix-windows-shards-pr-77-2026-11-08.md`. Test report at `plan/changelog/0000042-fix-windows-shards-pr-77-test-report-2026-11-08.md`.
+Step 5b (P7): product.yml: version "0.39.1", feature "0000042-fix-windows-shards-pr-77"
+Step 5c (P7): project kind `framework source`. summary: version 0.39.1, source-commit f4e624fb2a2d5108831629b11c53d982c39a66c1, added 1, changed 6, removed 0, unchanged 1200
+Release check (P7, ADR-004): `node src/ravintio-framework/scripts/release-check.mjs --root . --files-only` exit 0, before the archive.
+Archive (P7): `archive-current.mjs` moved 23 items and removed `plan/current/.feature-id`. archive-dir: plan/_archive/0000042-fix-windows-shards-pr-77-2026-11-08
+docs/about.md (P7): version 0.39.1, feature 0000042-fix-windows-shards-pr-77, updated 08 Nov 2026.
+Credential scan (P7): held back ravintio-framework/release.yml
+Exception waiting (P7, 7): credential sighting in ravintio-framework/release.yml:634 and ravintio-framework/release.yml:635. Both lines are path and SHA-256 pairs, as in 0000041 (backlog 0000425). If you confirm a false positive, commit the file.
+Progress: P7 done at 2026-11-08T10:32:38Z: plan archived, release copy rebuilt at 0.39.1, release.yml held back by the credential scan

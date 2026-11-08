@@ -1,6 +1,6 @@
 # Test coverage - ravintio-framework
 
-Last updated: 0000041-pack-source-under-src
+Last updated: 0000042-fix-windows-shards-pr-77
 
 ## Summary
 
@@ -29,9 +29,19 @@ All eight sit in `src/ravintio-framework/tests/`.
 
 Existing suites changed in 0000041 to read the pack through `tests/helpers/pack-root.sh`. The 0000039 brand guard and the 0000040 residue guard also run against the new layout.
 
+## 0000042 suite
+
+| Suite | Requirement |
+|---|---|
+| `test-0000042-req-001-windows-guards.sh` | Runs the 0000041 req-005 and req-006 suites under a `uname` stand-in that reports `MINGW64_NT`, and counts their `SKIP (windows)` lines. Checks both suites still pass 67 and 127 cases natively, checks the `tests/README.md` rows, and runs the req-005 suite under a failing `mktemp` stand-in. |
+
+The 0000041 req-005 and req-006 suites changed in 0000042: one Windows guard each, Windows paths for Node, and a blob id compare. The full run for 0000042 covers 177 suites.
+
 ## Known gaps
 
 - The case-collision case (RS-F07) skips on a case-insensitive file system. Linux CI runs it.
 - The same-user link race (RS-F02 to RS-F04) has no test, because the race cannot be made reliable.
 - The real-repo case of the 0000037 req-008 suite skips (backlog 0000402).
 - No test covers a deleted `release.yml` in the CI integrity job (backlog 0000418).
+- No Windows run tests that `project-kind.mjs` and the 0.39.0 migration refuse links. Linux and macOS run those cases (0000042 ADR-002, backlog 0000431).
+- No test covers a `mktemp` that prints nothing and exits 0 in the req-005 suite. The suite checks for it (0000042 security re-review R-2).
