@@ -140,3 +140,26 @@ Parallelism (P3): one requirement, so the TDD loop ran in sequence. Each step de
 Requirement-ID scan (P3): 1 requirements, 0 unmapped. All three criteria read `execution`, deferred to P4.
 Gate (P3): req-001 GREEN, three suites and `tests/README.md` changed, manifest at 0.39.1. Skill Map unchanged.
 Progress: P3 done at 2026-11-08T08:53:43Z: req-001 GREEN on macOS through a uname stand-in, version 0.39.1
+
+### P4: Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T08:54:10Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-validate-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `1` (local full suite with the PR #77 CI run) |
+| Notes | Library audit, lint, type-check, and build don't apply: the change is Bash suites with no dependency manifest and no build step. The pack's CI holds no lint job. |
+
+Self-description check (P4): `self-description-check.mjs .` exit 0.
+PR #77 CI (P4, head `605839ca`, run 42464874771): Windows shards 5 and 6 pass, the two that failed in run 42409694287. Shard 4 fails on one case, `test-0000032-req-007-stderr-block-reasons.sh`: "ratchet-check uncommitted-marker call completes under 200 ms (took 201 ms)". That suite passed on shard 4 in run 42409694287.
+Full suite (P4, local macOS): 138 feature suites passed and 2 failed, 37 regression suites passed and 0 failed, 177 run.
+- `test-0000039-req-001-pack-paths-and-identifiers.sh`: the AC3 rename checks failed because the orchestrator set `RAVINTIO_PASS_COMMIT` to this run's head. That variable is for 0000039's own P4 only. Rerun without it: 17 passed, 0 failed.
+- `test-0000040-req-007-docs-and-adr-supersede.sh`: 53 passed, 1 failed on "plan/_archive/ holds no change against main". The check diffs against the local `main`, and the 0000041 archive on this branch differs. CI has no local `main` and skips it. Backlog 0000428.
+Decision (P4): count both local failures as outside req-001 and pass the local gate / reason: the first came from a wrong environment variable and passes without it, and the second fails on every feature branch after a P7 and has no link to the changed suites.
+Decision (P4): rerun the failed shard 4 job without a code change / reason: backlog 0000265 already tracks this Windows timing flake, and req-001 touches no ratchet-check code. Fixing it is out of scope.
