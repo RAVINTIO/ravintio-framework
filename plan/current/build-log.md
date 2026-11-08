@@ -164,3 +164,4 @@ Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5`,
 TDD (P3, req-001, attempt 1): RED at `28ac725a`. The 0000043 suite had 14 failures, 0000031 had 2, and 0000037 had 5, each exiting 1. The orchestrator reran all three to confirm.
 TDD (P3, req-001, attempt 1): GREEN. The three suites exit 0 with 18, 26, and 52 passed. The full `--quiet` run shows 140 feature suites passed and 1 failed, with 37 regression suites passed.
 Known failure (P3): `test-0000040-req-007-docs-and-adr-supersede.sh` fails one check, "plan/_archive/ holds no change against main", because this branch adds the 0000041 and 0000042 archives. CI has no local `main` and skips the check. Backlog 0000428 already holds it, so the run files nothing new.
+TDD (P3, req-001): refactor changed one stale header comment in the 0000037 suite. No assertion changed. The three suites exit 0, and the full run matches GREEN.

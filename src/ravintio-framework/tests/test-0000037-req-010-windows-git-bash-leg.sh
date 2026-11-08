@@ -9,8 +9,8 @@
 # req-010: the skip table in ravintio-framework/tests/README.md exists with its header row.
 #
 # Cap rule (ADR-014): the first pass kept timeout-minutes 10. P3 measured a Git Bash
-# run over 10 minutes (about 38 suites), so the job uses the expression named in
-# WINDOWS_CAP_EXPR and the Windows leg is sharded seven ways (second fallback).
+# run over 10 minutes (about 38 suites), so the Windows leg is sharded seven ways
+# (second fallback). Since 0000043 ADR-002 each matrix entry carries its own cap.
 # req-010: a test of the shard selection in run-tests.sh runs against dummy suites.
 # req-010: every SKIP (windows) guard has a skip table row, and every row has a guard.
 #
