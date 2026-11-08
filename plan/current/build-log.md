@@ -111,3 +111,22 @@ Decision (P1): apply the three minor iteration 2 findings after the loop closed 
 Gate (P1): every artifact produced, no OpenAPI spec because the change adds no API, and `consistency-check.mjs` clean after the minor fixes. Skill Map updated.
 Credential scan (P1): clean (regex only)
 Progress: P1 done at 2026-11-08T13:34:19Z: 2 requirements, critic approved on iteration 2
+
+---
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-08T13:34:44Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-adr-agent (installed copy, not stale) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | Four short ADRs run inline. ADR-003 and ADR-004 cite ADR-002, and each ADR is one file from context already held. |
+
+Skills inbox (P1 to P2): empty.
