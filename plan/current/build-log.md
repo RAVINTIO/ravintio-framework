@@ -219,12 +219,12 @@ Progress: P4 done at 2026-11-08T14:54:26Z: PR #77 green, macOS shards at 6.5 and
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-08T14:54:54Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-08T14:58:34Z` |
+| Wall-clock | `4` |
 | Streams | `n/a` |
-| Model tier | primary (security subagent) |
+| Model tier | primary (security subagent and re-review subagent) |
 | Skills loaded | ravintio-security-agent (installed copy, not stale) |
-| Agents spawned | `1` |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | none |
@@ -237,3 +237,8 @@ Security (P5): risk Low. 0 critical, 0 high, 0 medium, 2 low, and 3 info finding
   - Out of scope: the workflow has no top-level `permissions:`. Backlog 0000218 already holds it.
 Deviation (P5, unclassified): the elapsed step's guard now rejects a leading zero and values over 10 digits, for S-001 and S-002. req-002 and ADR-003 record it.
 TDD (P5, S-001 and S-002): RED with 4 new checks failing in the req-002 suite. GREEN after the guard change: the req-002 suite passes 44 checks, and the req-001, 0000031, and 0000037 suites exit 0.
+Re-review (P5): a fresh-context reviewer marks S-001 and S-002 resolved. It ran the real block with hostile values under Bash 3.2.57, and each printed `Elapsed: unknown` and exited 0. See `security-rereview.md`.
+  - New S-006 (info): a 10-digit start time later than now passes the guard and prints a negative time. Only a tampered `GITHUB_ENV` can cause it, which gains nothing (S-003). No action.
+Gate (P5): report produced with specific findings. Risk Low, with 0 critical, 0 high, and 0 medium findings open.
+Credential scan (P5): clean (regex only)
+Progress: P5 done at 2026-11-08T14:58:34Z: risk Low, 2 low findings fixed and re-reviewed
