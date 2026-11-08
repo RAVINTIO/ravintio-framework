@@ -73,3 +73,5 @@ P0 gate checklist: every item passes.
 Credential scan (P0): clean (regex only)
 Progress: P0 done at 2026-11-08T13:25:13Z: design confirmed, 2 stories, autonomous run on the PR #77 branch
 Run mode confirmed: autonomous (2026-11-08T13:25:13Z)
+Run-mode mismatch (P0): `run-mode.mjs` prints `interactive` after the anchor commit `1cebbc2b`, with "a commit removed or edited the confirmation line". The removals are earlier P7 archive commits on this branch. Backlog 0000427.
+Decision (P0): this session keeps `autonomous`, as the human picked it, and a resumed session reads `interactive` / reason: backlog 0000427 is a known defect, and 0000042 took the same path.
