@@ -84,4 +84,5 @@ Progress: P0 done at 2026-11-08T08:33:48Z: design confirmed for the 0000042 Wind
 Toggle record (P1): design_critic: on (autonomous absent default), reversal_protocol: on (autonomous absent default), verify_by_execution: on (autonomous absent default), cross_model_review: on (autonomous absent default), parallel_streams: off (one unit of work)
 Baseline (P1): on macOS, `test-0000041-req-005-applies-to-header.sh` passes 67 and fails 0, and `test-0000041-req-006-consumer-migration.sh` passes 127 and fails 0. Neither prints a SKIP line.
 Decision (P1): split step for req-001: keep / reason: one observable outcome, both Windows shards green with every skip named, and three criteria.
+Decision (P1): after the P4 CI pass, push the branch and read the Windows shards of PR #77 before P7 archives the design / reason: R-002, a fix after the archive hits the `gate-write` block in backlog 0000426.
 Decision (P1): the P3 RED evidence for req-001 is the recorded Windows failure in run 42409694287 / reason: macOS and Linux can't reproduce Git Bash link and path behaviour, so no local test can go red first.
