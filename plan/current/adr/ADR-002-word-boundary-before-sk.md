@@ -45,7 +45,7 @@ The `api-secret-key` rule reads `/sk-[A-Za-z0-9_-]{20,}/`. It matches `sk-` anyw
 - Prose and paths that hold a word ending in `sk`, such as `task-` or `desk-`, no longer trip the rule.
 
 **Negative:**
-- A key glued to a letter, a digit, or `_` goes undetected by the regex rule (risk register R-001).
+- A key glued to an ASCII letter, a digit, or `_` goes undetected by the regex rule (risk register R-001).
 
 **Risks:**
 - A future vendored folder whose name starts with `sk-` still trips the rule after `/`. The scan then holds the file back, as it does now.

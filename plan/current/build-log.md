@@ -110,12 +110,12 @@ Progress: P1 done at 2026-11-10T22:32:36Z: 1 requirement, critic approved on ite
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T22:32:36Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-10T22:36:16Z` |
+| Wall-clock | `3` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-adr-agent |
-| Agents spawned | `pending` |
+| Model tier | primary (orchestrator), primary (2 critic passes) |
+| Skills loaded | ravintio-adr-agent, ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | Two short ADRs run inline under the size floor. |
@@ -126,3 +126,12 @@ Critic (P2, iteration 1): REJECT. See `critic-verdict-p2-1.md`. Five findings, a
   - ADR-002 and the glossary say "ASCII letter", since `\b` without the `u` flag treats `é` as a non-word character.
   - ADR-002 adds the fixed-prefix-set alternative.
   - req-001's **Skill** link now resolves.
+Critic (P2, iteration 2): APPROVE. See `critic-verdict-p2-2.md`. All 5 iteration 1 findings resolved. The loop closes with `status: done`.
+Decision (P2): apply two minor iteration 2 findings after the loop closed / reason: each is a wording fix, and none changes scope.
+  - req-001 adds a line that "letter" means an ASCII letter, so P3 adds no `é` negative case.
+  - ADR-002 Negative and R-001 say "ASCII letter".
+Decision (P2): leave design.md's "a letter" wording as a known gap / reason: the design is confirmed, req-001 and ADR-002 now pin the meaning, and the gap errs on the safe side.
+Decision (P2): no third ADR-001 alternative for a shared gitleaks configuration / reason: two alternatives meet the rubric, and gitleaks is optional here.
+Gate (P2): an ADR exists for the stack and for the one security trade-off. No data ownership change. `consistency-check.mjs` clean. Skill Map unchanged.
+Credential scan (P2): clean (regex only)
+Progress: P2 done at 2026-11-10T22:36:16Z: 2 ADRs, critic approved on iteration 2
