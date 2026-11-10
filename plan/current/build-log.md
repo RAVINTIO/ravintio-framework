@@ -64,3 +64,27 @@ Brief complete: no
 Stack unchanged: yes
 Run mode confirmed: autonomous (2026-11-10T22:26:36Z)
 Progress: P0 done at 2026-11-10T22:26:36Z: design confirmed, autonomous run, one requirement
+
+---
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:27:27Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-spec-agent (source copy, step 1b) |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | The spec units run inline. Each is one short file from context already held, so they fall under the size floor. |
+
+Skills inbox (P0 to P1): empty.
+Toggle record (P1): `ravintio-overrides/loop-toggles.yml` is absent. In `autonomous`, `design_critic`, `reversal_protocol`, `verify_by_execution`, and `cross_model_review` read as `on`.
+Decision (P1): no OpenAPI spec, operational model, SLO definitions, or cost model / reason: the change adds no API, no runtime service, and no spend.
+Decision (P1): the component manifest stays as it is at P1 / reason: `src/ravintio-framework/component.yml` exists, and the rule change alters no purpose, scope, or contract. P3 carries the 0.39.3 version bump.
+Decision (P1): req-001 names the vendored folder in words / reason: the current rule matched the folder name in the first draft before any commit. This is new prose, not a held-back file.
+Decision (P1): split step for req-001: keep / reason: one observable outcome, a scan that skips `sk-` inside a word, in three criteria.
