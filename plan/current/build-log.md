@@ -169,3 +169,30 @@ Decision (P3): req-001 criterion 6 moves from `unit` to `execution`, checked at 
 Requirement-ID scan (P3): 1 requirement, 0 unmapped. Criteria 1, 2, 4, and 5 declare `unit`, and both suite copies carry `# Verified by: unit` with 8 `0000044 req-001` case calls. Criteria 3 and 6 declare `execution`, deferred to P4.
 Credential scan (P3): clean (regex only)
 Progress: P3 done at 2026-11-10T22:57:27Z: req-001 GREEN, 8 new cases in each suite copy, manifest at 0.39.3
+
+---
+
+### P4: Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:57:49Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), primary (verify-by-execution) |
+| Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | none |
+
+Skills inbox (P3 to P4): empty.
+Library audit (P4): skipped. The change adds no dependency manifest.
+Lint (P4): `node --check` passes on `credential-scan.mjs`, and `bash -n` passes on both suite copies. No `shellcheck` is installed.
+Typecheck and build (P4): not applicable. No typed language changes, and P7 runs the release build.
+Test (P4): the local full run shows 142 feature suites passed and 0 failed, with 37 regression suites passed.
+Semantic correctness (P4): `coverage-table.md` maps all 6 criteria. Five pass, and criterion 3 waits for P7.
+Verify by execution (P4): criteria 1, 2, 4, 5, and 6 verified in file, staged, and safe-paths modes. Criterion 3 is partly verified on the current `release.yml` and deferred to P7. See `verification-report.md`.
+Decision (P4): raise PR #78 now, before P7 / reason: CI runs on `pull_request` only (0000031 ADR 003), and a CI failure after the P7 archive is hard to fix (backlog 0000426). P9 updates the PR, and `gh pr create` needs no prompt under `custom-001`.
+PR: #78
