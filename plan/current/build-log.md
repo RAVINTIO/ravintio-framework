@@ -177,8 +177,8 @@ Progress: P3 done at 2026-11-10T22:57:27Z: req-001 GREEN, 8 new cases in each su
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T22:57:49Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-10T23:56:25Z` |
+| Wall-clock | `58` |
 | Streams | `n/a` |
 | Model tier | primary (orchestrator), primary (verify-by-execution) |
 | Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (1 subagent) |
@@ -196,3 +196,10 @@ Semantic correctness (P4): `coverage-table.md` maps all 6 criteria. Five pass, a
 Verify by execution (P4): criteria 1, 2, 4, 5, and 6 verified in file, staged, and safe-paths modes. Criterion 3 is partly verified on the current `release.yml` and deferred to P7. See `verification-report.md`.
 Decision (P4): raise PR #78 now, before P7 / reason: CI runs on `pull_request` only (0000031 ADR 003), and a CI failure after the P7 archive is hard to fix (backlog 0000426). P9 updates the PR, and `gh pr create` needs no prompt under `custom-001`.
 PR: #78
+CI (P4): run `42921658648` on head `4b795b00`: 15 of 16 checks passed. Windows shard 3 of 7 failed one check in `test-0000032-req-009-shell-guard-path-parity.sh`, "each guard call completes in under 200 ms", with the slowest call at 278 ms. Elapsed 16 min 52 s of a 20 min cap.
+Self-correct cycle 1 (P4): Check: test (CI, Windows shard 3). Error: shell guard call took 278 ms against a 200 ms limit. Root cause: Windows runner load. This feature leaves the shell guard unchanged, and backlog 0000275 tracks the same suite's timing flake. Fix: rerun the failed job, with no code change. Result: pass.
+CI (P4): the rerun of Windows shard 3 passed, so all 16 checks on head `4b795b00` pass. The rerun job ran from 23:36:44Z to 23:56:13Z, about 19.5 minutes of its 20-minute cap. Backlog 0000432 already tracks the slow Windows shards 3 and 4, so the run files nothing new.
+Self-correct cycles (P4): 1, a CI rerun with no code change.
+Gate (P4): CI passes, local tests pass, and the acceptance criteria verify. Criterion 3 waits for P7.
+Credential scan (P4): clean (regex only)
+Progress: P4 done at 2026-11-10T23:56:25Z: PR #78 green after one Windows rerun, 1 self-correct cycle
