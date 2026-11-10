@@ -160,3 +160,7 @@ Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5` 
 Decision (P3): the 0000037 suite gains a `# Verified by: unit` header line beside its `integration` line / reason: req-001 criteria declare `unit`, and the requirement-ID scan compares the declared type with the suite header. The suite now covers both types.
 TDD (P3, req-001, attempt 1): RED at `78c07a7a`. Both copies of the 0000037 suite exit 1 with 181 passed and 8 failed. The 8 failures are the new negative assertions. The orchestrator reran both to confirm, and the two bodies match below the path header.
 Decision (P3): the suite splits the vendored folder name as three string parts / reason: the current rule matched the two-part form in the suite text itself.
+TDD (P3, req-001, attempt 1): GREEN at `c3290082`. One line changes in `credential-scan.mjs`. Both suite copies exit 0 with 189 passed. `credential-scan.mjs --file ravintio-framework/release.yml` now exits 0.
+Full run (P3): 142 feature suites passed and 0 failed, with 37 regression suites passed.
+Component close-out (P3): only `ravintio-framework` changed under `src/`. Its manifest goes from 0.39.2 to 0.39.3 with feature `0000044-credential-scan-word-boundary`.
+Decision (P3): a patch bump to 0.39.3, not the codegen rule's minor bump / reason: the confirmed design records 0.39.3, because the change fixes a false match and adds no pack feature.

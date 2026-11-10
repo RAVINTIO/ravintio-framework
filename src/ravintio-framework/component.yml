@@ -1,7 +1,7 @@
 id: "ravintio-framework"
 name: "RAVINTIO Framework"
-feature: "0000043-macos-test-job-timeout"
-version: "0.39.2"
+feature: "0000044-credential-scan-word-boundary"
+version: "0.39.3"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
@@ -243,7 +243,10 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-11-08"
+  updatedAt: "2026-11-10"
+  # Updated by 0000044 (codegen-agent) P3: the api-secret-key rule in
+  # scripts/credential-scan.mjs needs a word boundary before sk-, and the
+  # 0000037 credential scan suite gains word boundary cases.
   # Updated by 0000041 (codegen-agent) P3: the pack source moved to
   # src/ravintio-framework/. Added build-release.mjs, release-check.mjs,
   # project-kind.mjs, the tests/helpers/pack-root.sh resolver, and the 0.39.0
