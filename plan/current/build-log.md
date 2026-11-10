@@ -47,3 +47,5 @@ Skill drift (P0): stale installed copies of ravintio-codegen-agent, ravintio-doc
 P0 exchange (pre-flight): Q: Are all previous PRs merged and is main up to date? / A: "You tell me". The agent checked: no open PR, PR #77 merged last, local main matches origin/main at 4764d2d5. Created feat/0000044-credential-scan-word-boundary.
 Backlog pickup (P0): pull in 0000425, which the human named. Leave the other 256 entries untouched.
 Release budget: none, three-story rule
+Strict-mode ack (P0): wrote session ID bb5eec78-c41f-40d9-bc28-25e31ef01df6 to plan/.orchestrator-ack.
+Scope Lock dispatch (P0): 4 ravintio-scope-lock-agent drafts in one parallel batch, all 4 returned. Tier: cheaper.
