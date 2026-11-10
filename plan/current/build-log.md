@@ -15,7 +15,7 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Tool | `Claude Code` |
 | Primary model | `claude-opus-5-5` |
 | Cheaper model | `claude-sonnet-5-5` |
-| Run mode | `pending` |
+| Run mode | `autonomous` |
 | Parallel streams | `off (single requirement)` |
 
 ---
@@ -27,17 +27,17 @@ summary: "Working log file maintained by the orchestrator throughout the pipelin
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T01:52:42Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-10T22:26:36Z` |
+| Wall-clock | `1234` |
 | Streams | `n/a` |
 | Model tier | primary |
 | Skills loaded | ravintio-orchestrator (source copy) |
-| Agents spawned | `pending` |
+| Agents spawned | `4` |
 | MCP calls | `0` |
-| Parallel task batches | `pending` |
-| P0 questions asked | `pending` |
-| Brief complete | `pending` |
-| Stack unchanged | `pending` |
+| Parallel task batches | `1` |
+| P0 questions asked | `3` |
+| Brief complete | `no` |
+| Stack unchanged | `yes` |
 | Notes | none |
 
 P0 references loaded: ravintio-framework/skills/ravintio-orchestrator/references/phase-0-assess-and-coach.md, ravintio-framework/skills/ravintio-orchestrator/references/adoption-modes.md
@@ -49,3 +49,18 @@ Backlog pickup (P0): pull in 0000425, which the human named. Leave the other 256
 Release budget: none, three-story rule
 Strict-mode ack (P0): wrote session ID bb5eec78-c41f-40d9-bc28-25e31ef01df6 to plan/.orchestrator-ack.
 Scope Lock dispatch (P0): 4 ravintio-scope-lock-agent drafts in one parallel batch, all 4 returned. Tier: cheaper.
+P0 exchange (combined confirmation): Q: design draft, four Scope Lock drafts, run mode / A: run mode [3] autonomous. Design and Scope Lock answers not yet given.
+P0 exchange (follow-up): Q: confirm the design and give each Scope Lock draft accept, edit, or reject / A: "Confirmed all".
+Scope Lock (happy path): the scan exits 0 on the release.yml risk- path lines, so release.yml commits, and a real key at a line start or after =, a quote, a colon, or a space still gets reported [source: agent-draft-accepted]
+Scope Lock (first-run path): the P7 release step rebuilds release.yml before the scan, nobody edits the stale untracked copy, and the rebuilt file commits on this branch [source: agent-draft-accepted]
+Scope Lock (error path): a real key directly after a letter, a digit, or _ goes undetected, the human accepts that trade, and the suite pins both sides [source: agent-draft-accepted]
+Scope Lock (cross-session): the scan keeps no state, an interruption risks only uncommitted edits, and the 0000041 hold-back line lives only in that run's archive [source: agent-draft-accepted]
+Scope Lock complete. All four scenario paths captured.
+Adoption mode: standard-iterative, confirmed by human on 2026-11-10
+Version confirmed: 0.39.3
+Backlog pickup (P0): 0000425 pulled in, folder deleted in the design confirmation commit.
+P0 questions asked: 3
+Brief complete: no
+Stack unchanged: yes
+Run mode confirmed: autonomous (2026-11-10T22:26:36Z)
+Progress: P0 done at 2026-11-10T22:26:36Z: design confirmed, autonomous run, one requirement
