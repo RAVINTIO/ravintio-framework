@@ -26,6 +26,7 @@ The design declares Node built-ins, Bash suites under `run-tests.sh`, and GitHub
 | Alternative | Pros | Cons | Why Rejected |
 |-------------|------|------|-------------|
 | Require gitleaks for every scan | A maintained rule set with entropy checks | A new required binary on every machine and CI runner | 0000037 ADR 001 keeps the scan to Node built-ins, and gitleaks already runs where it is installed |
+| An npm secret-scanning package as a dev dependency | Maintained patterns, updated by others | The pack ships no `package.json`, and a new package is a supply-chain input to a security check | 0000037 ADR 001 rules out packages, and one regex change fixes the false match |
 
 ## Affected Components
 
@@ -39,7 +40,7 @@ The design declares Node built-ins, Bash suites under `run-tests.sh`, and GitHub
 - No new dependency reaches CI or the release copy.
 
 **Negative:**
-- The regex rules stay the only check on machines without gitleaks, so their accuracy matters more (ADR-002).
+- On a machine without gitleaks, the regex rules are the only check. So a key glued to an ASCII word character now passes every check there (ADR-002, risk register R-001).
 
 **Risks:**
 - None beyond the risk register.

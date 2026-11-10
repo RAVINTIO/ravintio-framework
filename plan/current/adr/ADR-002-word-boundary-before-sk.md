@@ -18,8 +18,8 @@ The `api-secret-key` rule reads `/sk-[A-Za-z0-9_-]{20,}/`. It matches `sk-` anyw
 ## Decision
 
 - The rule becomes `/\bsk-[A-Za-z0-9_-]{20,}/`.
-- `\b` holds at the start of a line or between a word character and any other character. A word character is a letter, a digit, or `_`.
-- The rule therefore skips `sk-` after a letter, a digit, or `_`. It still matches at column 1 and after every other character, such as `=`, a quote, a colon, a space, `-`, or `/`.
+- `\b` holds at the start of a line or between a word character and any other character. A word character is an ASCII letter, a digit, or `_`, because the pattern has no `u` flag.
+- The rule therefore skips `sk-` after an ASCII letter, a digit, or `_`. It still matches after a non-ASCII letter, such as `é`. It still matches at column 1 and after every other character, such as `=`, a quote, a colon, a space, `-`, or `/`.
 - The trade is a known false negative. A real key glued to a word character, such as `KEY_sk-...`, goes undetected by this rule. The human on the loop accepted this trade at the P0 Scope Lock (error path).
 
 ## Alternatives Considered
@@ -29,6 +29,7 @@ The `api-secret-key` rule reads `/sk-[A-Za-z0-9_-]{20,}/`. It matches `sk-` anyw
 | Allowlist `release.yml` | No change to any rule | A real key in `release.yml` would go unseen, and an allowlist invites more entries | Hides a whole file, which is broader than the false match |
 | A rule that skips the `release.yml` hash-line shape | Exact fit for the known false match | Ties the scan to one file format, and any other word ending in `sk` still trips | Fixes one symptom, not the cause |
 | A lookbehind that excludes only letters | Still catches `_sk-` and `1sk-` | A second, less common pattern for readers, and `_sk-` inside identifiers still trips | `\b` is the standard boundary and reads at a glance |
+| Allow only a fixed set of characters before `sk-`, such as the line start, whitespace, `=`, `:`, or a quote | Also skips a folder named `sk-...` after `/` | Misses keys after `(`, `,`, `[`, `-`, or any other character left off the list | A missed real key costs more than a held-back file, and `\b` misses fewer keys |
 | Raise the length floor above 20 | No boundary logic | Real keys vary in length, and long path names still trip | Trades one false match for a missed real key |
 
 ## Affected Components

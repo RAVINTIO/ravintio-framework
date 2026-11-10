@@ -121,3 +121,8 @@ Progress: P1 done at 2026-11-10T22:32:36Z: 1 requirement, critic approved on ite
 | Notes | Two short ADRs run inline under the size floor. |
 
 Skills inbox (P1 to P2): empty.
+Critic (P2, iteration 1): REJECT. See `critic-verdict-p2-1.md`. Five findings, all revised.
+  - ADR-001 adds an npm package alternative and ties its negative consequence to R-001.
+  - ADR-002 and the glossary say "ASCII letter", since `\b` without the `u` flag treats `é` as a non-word character.
+  - ADR-002 adds the fixed-prefix-set alternative.
+  - req-001's **Skill** link now resolves.

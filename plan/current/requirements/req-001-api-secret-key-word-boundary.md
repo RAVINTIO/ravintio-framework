@@ -6,7 +6,7 @@ version: "0.1.0"
 ---
 # Requirement: req-001 - api-secret-key word boundary
 
-**Skill:** [spec-agent](../skills/ravintio-spec-agent/SKILL.md)
+**Skill:** [spec-agent](../../../ravintio-framework/skills/ravintio-spec-agent/SKILL.md)
 **Feature:** 0000044-credential-scan-word-boundary
 **Source:** US-001
 **Priority:** must-have
