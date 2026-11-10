@@ -6,6 +6,7 @@
 #          credential-scan.mjs detects and reports. Skill text enforces the stop.
 #
 # Verified by: integration
+# Verified by: unit
 # REGRESSION-CANDIDATE: covers the credential-scan script contract and its enforcement text, tagged by test-writer for human review at P7
 
 set -uo pipefail
@@ -172,6 +173,37 @@ rule_case "slack-token" "xo""xb-1234567890"
 rule_case "github-pat" "github""_pat_$(printf '%022d' 0)"
 rule_case "api-secret-key" "sk""-$(printf '%024d' 0)"
 rule_case "google-api-key" "AI""za$(printf '%035d' 0)"
+
+# 0000044 req-001: the api-secret-key rule needs a word boundary before the key prefix.
+echo "0000044 req-001: api-secret-key word boundary"
+WB_KEY="sk""-$(printf '%024d' 0)"
+WB_HASH="$(printf '%064d' 0)"
+WB_DIR="ri""sk""-requirements-analysis"
+
+# wb_negative <label> <line> <needle>: the line exits 0, reports no rule, and prints no fixture text.
+wb_negative() {
+  printf '%s\n' "$2" >"$WORK/wb.txt"
+  run_scan "$WORK" "$BIN" --file wb.txt
+  assert_equals "0" "$RC" "0000044 req-001: $1 exits 0"
+  lacks "api-secret-key" "$OUT" "0000044 req-001: $1 reports no api-secret-key"
+  lacks "$3" "$OUT" "0000044 req-001: $1 prints no fixture text"
+}
+# wb_positive <label> <prefix>: the key after the prefix exits 1 and reports the rule.
+wb_positive() {
+  printf '%s%s\n' "$2" "$WB_KEY" >"$WORK/wb.txt"
+  run_scan "$WORK" "$BIN" --file wb.txt
+  assert_equals "1" "$RC" "0000044 req-001: $1 exits 1"
+  assert_contains "wb.txt:1 api-secret-key" "$OUT" "0000044 req-001: $1 reports path, line, and rule"
+  lacks "$WB_KEY" "$OUT" "0000044 req-001: $1 prints no matched value"
+}
+wb_negative "release.yml hash line under a risk folder" "  \"external-skills/${WB_DIR}/SKILL.md\": \"${WB_HASH}\"" "$WB_HASH"
+wb_negative "key after a letter" "a${WB_KEY}" "$WB_KEY"
+wb_negative "key after a digit" "7${WB_KEY}" "$WB_KEY"
+wb_negative "key after an underscore" "_${WB_KEY}" "$WB_KEY"
+wb_positive "key at column 1" ""
+wb_positive "key after =" "="
+wb_positive "key after a double quote" '"'
+wb_positive "key after a colon" ":"
 
 # Every refused file name, run on a staged fixture, in upper and lower case.
 echo "req-003: every refused file name runs on a fixture"
