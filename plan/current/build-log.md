@@ -158,3 +158,5 @@ Capability skills (before P3): none applies to a one-line Node regex and Bash su
 Dispatch order (P3): sequential. One requirement, so no parallel batch.
 Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5` / reason: the run's declared cheaper model.
 Decision (P3): the 0000037 suite gains a `# Verified by: unit` header line beside its `integration` line / reason: req-001 criteria declare `unit`, and the requirement-ID scan compares the declared type with the suite header. The suite now covers both types.
+TDD (P3, req-001, attempt 1): RED at `78c07a7a`. Both copies of the 0000037 suite exit 1 with 181 passed and 8 failed. The 8 failures are the new negative assertions. The orchestrator reran both to confirm, and the two bodies match below the path header.
+Decision (P3): the suite splits the vendored folder name as three string parts / reason: the current rule matched the two-part form in the suite text itself.
