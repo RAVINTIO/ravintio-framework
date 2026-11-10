@@ -135,3 +135,26 @@ Decision (P2): no third ADR-001 alternative for a shared gitleaks configuration 
 Gate (P2): an ADR exists for the stack and for the one security trade-off. No data ownership change. `consistency-check.mjs` clean. Skill Map unchanged.
 Credential scan (P2): clean (regex only)
 Progress: P2 done at 2026-11-10T22:36:16Z: 2 ADRs, critic approved on iteration 2
+
+---
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:36:46Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), cheaper (TDD subagents) |
+| Skills loaded | ravintio-codegen-agent (source copy, step 1b), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | P3 start `HEAD`: `ccd598b1`. |
+
+Skills inbox (P2 to P3): empty.
+Capability skills (before P3): none applies to a one-line Node regex and Bash suite change.
+Dispatch order (P3): sequential. One requirement, so no parallel batch.
+Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5` / reason: the run's declared cheaper model.
+Decision (P3): the 0000037 suite gains a `# Verified by: unit` header line beside its `integration` line / reason: req-001 criteria declare `unit`, and the requirement-ID scan compares the declared type with the suite header. The suite now covers both types.
