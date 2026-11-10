@@ -11,9 +11,9 @@
   - US-001: As a framework maintainer, I run the credential scan on a release build, so that `release.yml` commits without a false hold-back.
 - Acceptance criteria confirmed: 4 (from `feature-brief.md`)
 - Constraints:
-  - Node built-ins only (0000037 ADR-001).
+  - Node built-ins only (0000037 ADR 001).
   - No agent edits a held-back file to hide a match.
-  - The release script, not **Write** or **Edit**, writes the root `ravintio-framework/` copy (0000041 ADR-004).
+  - The release script, not **Write** or **Edit**, writes the root `ravintio-framework/` copy (0000041 ADR 004).
 - Integrations: every caller of `credential-scan.mjs`, in staged, `--file`, and `--safe-paths` modes.
 
 ## Architecture Layer

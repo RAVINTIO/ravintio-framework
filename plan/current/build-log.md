@@ -88,3 +88,8 @@ Decision (P1): no OpenAPI spec, operational model, SLO definitions, or cost mode
 Decision (P1): the component manifest stays as it is at P1 / reason: `src/ravintio-framework/component.yml` exists, and the rule change alters no purpose, scope, or contract. P3 carries the 0.39.3 version bump.
 Decision (P1): req-001 names the vendored folder in words / reason: the current rule matched the folder name in the first draft before any commit. This is new prose, not a held-back file.
 Decision (P1): split step for req-001: keep / reason: one observable outcome, a scan that skips `sk-` inside a word, in three criteria.
+Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all revised.
+Requirement Change (P1, cosmetic): the design's two cross-feature ADR references now read `0000037 ADR 001` and `0000041 ADR 004`, so `consistency-check.mjs` doesn't read them as local ADRs. No meaning changed.
+Deviation (P1, unclassified): the design's suite list named an existing line-start case. The `rule_case` helper puts each key after `x` and a space, so that case covers a space, not column 1. req-001 adds a column-1 case and a colon case.
+Decision (P1): req-001 keeps criteria 1 and 2 as written and adds criteria 4 to 6 / reason: `ratchet-check.mjs` blocks rewriting a criterion while the critic loop is active, and addition strengthens the set.
+Decision (P1): split step for req-001 at six criteria: keep / reason: criteria 4 and 5 sharpen 1 and 2, and the version in criterion 6 ships only with the rule change.

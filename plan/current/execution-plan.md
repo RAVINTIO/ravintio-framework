@@ -18,7 +18,7 @@ The `api-secret-key` rule gains a word boundary before `sk-`. The 0000037 creden
 |----|-------------|--------|
 | NFR-001 | The rule stays linear on one long line | The pattern adds only the zero-width `\b`. It holds no nested quantifier. |
 | NFR-002 | The scan prints no matched text | Every new suite case checks that the output lacks the fixture text. |
-| NFR-003 | Node built-ins only (0000037 ADR-001) | No new import in `credential-scan.mjs`. |
+| NFR-003 | Node built-ins only (0000037 ADR 001) | No new import in `credential-scan.mjs`. |
 
 ## API and data summary
 
@@ -27,4 +27,9 @@ The `api-secret-key` rule gains a word boundary before `sk-`. The 0000037 creden
 
 ## Component
 
-- `ravintio-framework`: `scripts/credential-scan.mjs`, `tests/test-0000037-req-003-credential-scan.sh`, `tests/regression/test-0000037-req-003-credential-scan.sh`, and `component.yml` for the 0.39.3 version.
+- `ravintio-framework` under `src/ravintio-framework/`:
+  - `scripts/credential-scan.mjs`
+  - `tests/test-0000037-req-003-credential-scan.sh` and `tests/regression/test-0000037-req-003-credential-scan.sh`
+  - `component.yml` for the 0.39.3 version
+- `./product.yml`, if the product version needs the 0.39.3 bump.
+- The root `ravintio-framework/` copy and its `release.yml`. The P7 release script rebuilds them. No agent writes them with **Write** or **Edit**.
