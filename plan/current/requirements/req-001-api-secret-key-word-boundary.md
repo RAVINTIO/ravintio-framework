@@ -26,8 +26,8 @@ As a framework maintainer, I run the credential scan on a release build, so that
   - The hash-line fixture copies the real shape: two leading spaces, a quoted path, a colon, a space, and a quoted hash.
   - `sk-` keys after a letter, a digit, and `_` each exit 0.
   - Each negative case also checks that the output lacks `api-secret-key`.
-  - `sk-` keys after `=`, a double quote, and a space each exit 1 and report `api-secret-key`.
-  - `sk-` keys at column 1 and after a colon also each exit 1 and report `api-secret-key`. The column-1 case writes its fixture without the `rule_case` prefix.
+  - `sk-` keys after `=`, a double quote, and a space each exit 1 and report `api-secret-key`. The space case is the existing `rule_case` fixture, so P3 adds no new space case.
+  - `sk-` keys at column 1 and after a colon also each exit 1 and report `api-secret-key`. The column-1 case writes its fixture without the `rule_case` prefix. It still checks that the output lacks the fixture text.
   - The existing `rule_case` fixture puts its key after `x` and a space, so it already covers the space case.
 - Each new fixture builds its key at run time, as the existing `rule_case` fixtures do, so the suite file holds no matching text.
 - The `ravintio-framework` manifest under `src/` moves to version 0.39.3.
@@ -46,7 +46,7 @@ As a framework maintainer, I run the credential scan on a release build, so that
 - [ ] `credential-scan.mjs --file` exits 1 and reports `api-secret-key` for an `sk-` key after a colon.
   - Verified by: unit - the new colon case in both copies of the 0000037 suite
 - [ ] `src/ravintio-framework/component.yml` reads version `0.39.3`.
-  - Verified by: unit - `node ravintio-framework/scripts/product-version.mjs` prints `0.39.3`
+  - Verified by: unit - the `version` line of `src/ravintio-framework/component.yml` reads `"0.39.3"`
 
 ## Dependencies
 

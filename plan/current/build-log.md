@@ -72,12 +72,12 @@ Progress: P0 done at 2026-11-10T22:26:36Z: design confirmed, autonomous run, one
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T22:27:27Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-10T22:32:36Z` |
+| Wall-clock | `5` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-spec-agent (source copy, step 1b) |
-| Agents spawned | `pending` |
+| Model tier | primary (orchestrator), primary (2 critic passes) |
+| Skills loaded | ravintio-spec-agent (source copy, step 1b), ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | The spec units run inline. Each is one short file from context already held, so they fall under the size floor. |
@@ -93,3 +93,31 @@ Requirement Change (P1, cosmetic): the design's two cross-feature ADR references
 Deviation (P1, unclassified): the design's suite list named an existing line-start case. The `rule_case` helper puts each key after `x` and a space, so that case covers a space, not column 1. req-001 adds a column-1 case and a colon case.
 Decision (P1): req-001 keeps criteria 1 and 2 as written and adds criteria 4 to 6 / reason: `ratchet-check.mjs` blocks rewriting a criterion while the critic loop is active, and addition strengthens the set.
 Decision (P1): split step for req-001 at six criteria: keep / reason: criteria 4 and 5 sharpen 1 and 2, and the version in criterion 6 ships only with the rule change.
+Critic (P1, iteration 2): APPROVE. See `critic-verdict-2.md`. All 8 iteration 1 findings resolved. The loop closes with `status: done`.
+Decision (P1): apply the three minor iteration 2 findings after the loop closed / reason: each is a one-line wording fix, and none changes scope.
+  - req-001 states that the space case is the existing `rule_case` fixture.
+  - The column-1 case still checks that the output lacks the fixture text.
+  - Criterion 6 reads the manifest `version` line, not `product-version.mjs`, which prints the highest component version.
+Note (P1): `feature-brief.md` brief AC 1 names the vendored folder in full, and the current rule matches it. The P0 commit predates the autonomous scan rule. After P3 the new rule passes it, so P7 can commit the archive.
+Gate (P1): every artifact produced, no OpenAPI spec because the change adds no API, and `consistency-check.mjs` clean. Skill Map unchanged.
+Credential scan (P1): clean (regex only)
+Progress: P1 done at 2026-11-10T22:32:36Z: 1 requirement, critic approved on iteration 2
+
+---
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:32:36Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-adr-agent |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | Two short ADRs run inline under the size floor. |
+
+Skills inbox (P1 to P2): empty.
