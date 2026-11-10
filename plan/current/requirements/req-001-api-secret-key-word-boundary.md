@@ -47,7 +47,7 @@ As a framework maintainer, I run the credential scan on a release build, so that
 - [ ] `credential-scan.mjs --file` exits 1 and reports `api-secret-key` for an `sk-` key after a colon.
   - Verified by: unit - the new colon case in both copies of the 0000037 suite
 - [ ] `src/ravintio-framework/component.yml` reads version `0.39.3`.
-  - Verified by: unit - the `version` line of `src/ravintio-framework/component.yml` reads `"0.39.3"`
+  - Verified by: execution - P4 reads the `version` line of `src/ravintio-framework/component.yml` and finds `"0.39.3"`
 
 ## Dependencies
 

@@ -143,12 +143,12 @@ Progress: P2 done at 2026-11-10T22:36:16Z: 2 ADRs, critic approved on iteration 
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T22:36:46Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-10T22:57:27Z` |
+| Wall-clock | `20` |
 | Streams | `n/a` |
 | Model tier | primary (orchestrator), cheaper (TDD subagents) |
 | Skills loaded | ravintio-codegen-agent (source copy, step 1b), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
-| Agents spawned | `pending` |
+| Agents spawned | `3` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | P3 start `HEAD`: `ccd598b1`. |
@@ -164,3 +164,8 @@ TDD (P3, req-001, attempt 1): GREEN at `c3290082`. One line changes in `credenti
 Full run (P3): 142 feature suites passed and 0 failed, with 37 regression suites passed.
 Component close-out (P3): only `ravintio-framework` changed under `src/`. Its manifest goes from 0.39.2 to 0.39.3 with feature `0000044-credential-scan-word-boundary`.
 Decision (P3): a patch bump to 0.39.3, not the codegen rule's minor bump / reason: the confirmed design records 0.39.3, because the change fixes a false match and adds no pack feature.
+TDD (P3, req-001): refactor added one comment above the `api-secret-key` rule. No regex or assertion changed. Both suite copies still exit 0 with 189 passed.
+Decision (P3): req-001 criterion 6 moves from `unit` to `execution`, checked at P4 / reason: no suite asserts the manifest version, and a suite pinned to one version string would fail at the next release.
+Requirement-ID scan (P3): 1 requirement, 0 unmapped. Criteria 1, 2, 4, and 5 declare `unit`, and both suite copies carry `# Verified by: unit` with 8 `0000044 req-001` case calls. Criteria 3 and 6 declare `execution`, deferred to P4.
+Credential scan (P3): clean (regex only)
+Progress: P3 done at 2026-11-10T22:57:27Z: req-001 GREEN, 8 new cases in each suite copy, manifest at 0.39.3
