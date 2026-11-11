@@ -281,3 +281,33 @@ Revalidation (P6): P4 steps 0-5, pass. On head `29c3b90c`, 142 feature suites pa
 Gate (P6): zero drift, every expected artifact present, revalidation passed, and the cross-model review approved. One exception waits for the human on the loop.
 Credential scan (P6): clean (regex only)
 Progress: P6 done at 2026-11-11T00:57:36Z: 7 docs updated, cross-model review approved on iteration 3, 1 exception waiting
+
+---
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:15:54Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | none |
+
+CI (P7, before the archive): every PR #78 check passes on head `6817bc51`, 16 of 16.
+Cross-reference check (P7): no living doc links to a 0000044 artifact under `plan/current/`. The decisions-index ADR link already names `plan/_archive/0000044-credential-scan-word-boundary-2026-11-11/adr/`.
+Step 1 (P7): the P6 iteration log at `plan/changelog/0000044-credential-scan-word-boundary-2026-11-11.md` already holds the changelog's fields in its Release summary. The ship step keeps that one file, as 0000042 and 0000043 did.
+Step 2 (P7): no `.skips` file.
+Decision (P7): promote no regression candidate / reason: the only tagged suite is the 0000037 credential scan suite, and this feature updated its regression copy with the same cases. A promotion would overwrite that copy's path header.
+Step 3 (P7): wrote `plan/current/.feature-id`.
+Step 5 (P7): wrote `plan/changelog/0000044-credential-scan-word-boundary-test-report-2026-11-11.md`.
+Step 5b (P7): product.yml: version "0.39.3", feature "0000044-credential-scan-word-boundary"
+Step 5c (P7): project kind `framework source`. summary: version 0.39.3, source-commit 6817bc51fd07d7b80810e3ddd0e57708dd6ec0ef, added 0, changed 7, removed 0, unchanged 1202
+Verify by execution (P7, req-001 criterion 3): `credential-scan.mjs --file ravintio-framework/release.yml` exits 0 on the rebuilt 0.39.3 file. The P7 commit check follows.
+Step 6 (P7): `archive-current.mjs` moved 26 items into `plan/_archive/0000044-credential-scan-word-boundary-2026-11-11` and removed `plan/current/.feature-id`. archive-dir: plan/_archive/0000044-credential-scan-word-boundary-2026-11-11
+Step 6b (P7): `docs/about.md` reads version 0.39.3 and feature 0000044-credential-scan-word-boundary.

@@ -1,8 +1,15 @@
 # Risk - ravintio-framework
 
-Last updated: 0000041-pack-source-under-src
+Last updated: 0000044-credential-scan-word-boundary
 
 Component-scoped risks. The full register for each feature sits in the feature's `risk-register.md`. The component manifest lists earlier risks from features 0000021 to 0000040.
+
+## Risks added by 0000044
+
+| ID | Risk | Likelihood | Impact | Status |
+|---|---|---|---|---|
+| R-001 | A real `sk-` key glued to an ASCII letter, a digit, or `_` goes undetected by the `api-secret-key` rule. | low | medium | Open, accepted at the 0000044 P0 Scope Lock. gitleaks still runs where it is installed, and no CI job runs it (backlog 0000435). |
+| N-001 | A key after a `\x` escape or an ANSI colour code goes undetected. The rule before 0000044 caught both. | low | low | Open (backlog 0000437). |
 
 ## Risks added by 0000041
 
