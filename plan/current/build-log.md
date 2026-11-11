@@ -90,7 +90,7 @@ Decision (P1): req-001 names the vendored folder in words / reason: the current 
 Decision (P1): split step for req-001: keep / reason: one observable outcome, a scan that skips `sk-` inside a word, in three criteria.
 Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all revised.
 Requirement Change (P1, cosmetic): the design's two cross-feature ADR references now read `0000037 ADR 001` and `0000041 ADR 004`, so `consistency-check.mjs` doesn't read them as local ADRs. No meaning changed.
-Deviation (P1, unclassified): the design's suite list named an existing line-start case. The `rule_case` helper puts each key after `x` and a space, so that case covers a space, not column 1. req-001 adds a column-1 case and a colon case.
+Deviation (P1, additive): the design's suite list named an existing line-start case. The `rule_case` helper puts each key after `x` and a space, so that case covers a space, not column 1. req-001 adds a column-1 case and a colon case.
 Decision (P1): req-001 keeps criteria 1 and 2 as written and adds criteria 4 to 6 / reason: `ratchet-check.mjs` blocks rewriting a criterion while the critic loop is active, and addition strengthens the set.
 Decision (P1): split step for req-001 at six criteria: keep / reason: criteria 4 and 5 sharpen 1 and 2, and the version in criterion 6 ships only with the rule change.
 Critic (P1, iteration 2): APPROVE. See `critic-verdict-2.md`. All 8 iteration 1 findings resolved. The loop closes with `status: done`.
@@ -226,7 +226,7 @@ Security (P5): overall risk medium. See `security-report.md`. One medium finding
 Backlog filed (P5): 0000435, CI runs no credential scan or gitleaks (S-002).
 Backlog filed (P5): 0000436, no rule for underscore-style secret keys (S-004).
 Decision (P5): fix S-001 in this run, through the TDD loop / reason: the fix only strengthens the rule, keeps the design's intent, and a medium finding on a security control shouldn't ship open.
-Deviation (P5, unclassified): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`, not the design's `/\bsk-[A-Za-z0-9_-]{20,}/`. It also matches after a percent escape, `\n`, `\r`, `\t`, or a `\u` escape. req-001 adds criterion 7, and ADR-002 gains an amendment.
+Deviation (P5, altering): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`, not the design's `/\bsk-[A-Za-z0-9_-]{20,}/`. It also matches after a percent escape, `\n`, `\r`, `\t`, or a `\u` escape. req-001 adds criterion 7, and ADR-002 gains an amendment.
 TDD (P5, req-001 criterion 7, attempt 1): RED at `1d373270`. Both suite copies exit 1 with 196 passed and 14 failed, all on the 7 new escape cases. The orchestrator reran both to confirm.
 TDD (P5, req-001 criterion 7, attempt 1): GREEN at `405415d0`. Both suite copies exit 0 with 210 passed. The current `release.yml` still scans clean.
 TDD (P5, req-001 criterion 7): refactor merged the two comment lines above the rule. No regex or assertion changed. Both suite copies still exit 0.
@@ -264,3 +264,8 @@ Drift (P6): none found. The glossary terms word boundary and hold-back appear in
 Completeness (P6): the P1 minimal set, 2 ADRs, the security report and re-review, and `recommendations.md` exist. No OpenAPI, operational model, SLO, or cost model applies.
 Backlog routing (P6): `recommendations.md` holds no new Deferred Items or Tech Debt row, so P6 files no entry.
 Iteration log (P6): `plan/changelog/0000044-credential-scan-word-boundary-2026-11-11.md`.
+Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 deviations. See `deviation-review.md`.
+  - P1, the column-1 and colon cases: additive.
+  - P5, the escape-aware pattern: altering. It keeps the problem, the user, and the in-scope list, and it only adds detection. It still replaces the pattern text the human on the loop confirmed.
+  - No Decision line touches data, a schema, or a destructive operation.
+Exception waiting (P6, 2): the P5 pattern deviation is altering. The human on the loop must accept the escape-aware pattern, or ask for the plain word-boundary pattern, before merging PR #78. If accepted, `design.md` Rule change and Scalability lines need the shipped pattern. The plain pattern would reopen security finding S-001.
