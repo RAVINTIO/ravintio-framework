@@ -1,6 +1,6 @@
 # Quirks - ravintio-framework
 
-Last updated: 0000043-macos-test-job-timeout
+Last updated: 0000044-credential-scan-word-boundary
 
 ## Two copies of the pack
 

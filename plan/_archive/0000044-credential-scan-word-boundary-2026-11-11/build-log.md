@@ -1,0 +1,368 @@
+---
+title: "Build Log - 0000044-credential-scan-word-boundary"
+summary: "Working log file maintained by the orchestrator throughout the pipeline run."
+---
+# Build Log - 0000044-credential-scan-word-boundary
+
+> Created at P0. Appended by the orchestrator at each phase boundary. Survives session changes.
+
+## Header
+
+| Field | Value |
+|-------|-------|
+| Feature ID | `0000044-credential-scan-word-boundary` |
+| Pipeline start | `2026-11-10T01:52:42Z` |
+| Tool | `Claude Code` |
+| Primary model | `claude-opus-5-5` |
+| Cheaper model | `claude-sonnet-5-5` |
+| Run mode | `autonomous` |
+| Parallel streams | `off (single requirement)` |
+
+---
+
+## Phase Log
+
+### P0: Assess & Coach
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T01:52:42Z` |
+| End | `2026-11-10T22:26:36Z` |
+| Wall-clock | `1234` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-orchestrator (source copy) |
+| Agents spawned | `4` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| P0 questions asked | `3` |
+| Brief complete | `no` |
+| Stack unchanged | `yes` |
+| Notes | none |
+
+P0 references loaded: ravintio-framework/skills/ravintio-orchestrator/references/phase-0-assess-and-coach.md, ravintio-framework/skills/ravintio-orchestrator/references/adoption-modes.md
+Migrations: none pending
+Release check (P0): exit 0, update: own-build, version 0.39.2, source commit 8ec4bd3660032167d36d2d816310d4a7e527809d. Recorded value was 0.39.1. Wrote plan/framework-release.yml from the record line.
+Skill drift (P0): stale installed copies of ravintio-codegen-agent, ravintio-docs-agent, ravintio-migrator, ravintio-orchestrator, ravintio-ship-agent, and ravintio-spec-agent. Loading source copies this session. Recommended a ravintio-refresh-setup run.
+P0 exchange (pre-flight): Q: Are all previous PRs merged and is main up to date? / A: "You tell me". The agent checked: no open PR, PR #77 merged last, local main matches origin/main at 4764d2d5. Created feat/0000044-credential-scan-word-boundary.
+Backlog pickup (P0): pull in 0000425, which the human named. Leave the other 256 entries untouched.
+Release budget: none, three-story rule
+Strict-mode ack (P0): wrote session ID bb5eec78-c41f-40d9-bc28-25e31ef01df6 to plan/.orchestrator-ack.
+Scope Lock dispatch (P0): 4 ravintio-scope-lock-agent drafts in one parallel batch, all 4 returned. Tier: cheaper.
+P0 exchange (combined confirmation): Q: design draft, four Scope Lock drafts, run mode / A: run mode [3] autonomous. Design and Scope Lock answers not yet given.
+P0 exchange (follow-up): Q: confirm the design and give each Scope Lock draft accept, edit, or reject / A: "Confirmed all".
+Scope Lock (happy path): the scan exits 0 on the release.yml risk- path lines, so release.yml commits, and a real key at a line start or after =, a quote, a colon, or a space still gets reported [source: agent-draft-accepted]
+Scope Lock (first-run path): the P7 release step rebuilds release.yml before the scan, nobody edits the stale untracked copy, and the rebuilt file commits on this branch [source: agent-draft-accepted]
+Scope Lock (error path): a real key directly after a letter, a digit, or _ goes undetected, the human accepts that trade, and the suite pins both sides [source: agent-draft-accepted]
+Scope Lock (cross-session): the scan keeps no state, an interruption risks only uncommitted edits, and the 0000041 hold-back line lives only in that run's archive [source: agent-draft-accepted]
+Scope Lock complete. All four scenario paths captured.
+Adoption mode: standard-iterative, confirmed by human on 2026-11-10
+Version confirmed: 0.39.3
+Backlog pickup (P0): 0000425 pulled in, folder deleted in the design confirmation commit.
+P0 questions asked: 3
+Brief complete: no
+Stack unchanged: yes
+Run mode confirmed: autonomous (2026-11-10T22:26:36Z)
+Progress: P0 done at 2026-11-10T22:26:36Z: design confirmed, autonomous run, one requirement
+
+---
+
+### P1: Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:27:27Z` |
+| End | `2026-11-10T22:32:36Z` |
+| Wall-clock | `5` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), primary (2 critic passes) |
+| Skills loaded | ravintio-spec-agent (source copy, step 1b), ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | The spec units run inline. Each is one short file from context already held, so they fall under the size floor. |
+
+Skills inbox (P0 to P1): empty.
+Toggle record (P1): `ravintio-overrides/loop-toggles.yml` is absent. In `autonomous`, `design_critic`, `reversal_protocol`, `verify_by_execution`, and `cross_model_review` read as `on`.
+Decision (P1): no OpenAPI spec, operational model, SLO definitions, or cost model / reason: the change adds no API, no runtime service, and no spend.
+Decision (P1): the component manifest stays as it is at P1 / reason: `src/ravintio-framework/component.yml` exists, and the rule change alters no purpose, scope, or contract. P3 carries the 0.39.3 version bump.
+Decision (P1): req-001 names the vendored folder in words / reason: the current rule matched the folder name in the first draft before any commit. This is new prose, not a held-back file.
+Decision (P1): split step for req-001: keep / reason: one observable outcome, a scan that skips `sk-` inside a word, in three criteria.
+Critic (P1, iteration 1): REJECT. See `critic-verdict-1.md`. Eight findings, all revised.
+Requirement Change (P1, cosmetic): the design's two cross-feature ADR references now read `0000037 ADR 001` and `0000041 ADR 004`, so `consistency-check.mjs` doesn't read them as local ADRs. No meaning changed.
+Deviation (P1, additive): the design's suite list named an existing line-start case. The `rule_case` helper puts each key after `x` and a space, so that case covers a space, not column 1. req-001 adds a column-1 case and a colon case.
+Decision (P1): req-001 keeps criteria 1 and 2 as written and adds criteria 4 to 6 / reason: `ratchet-check.mjs` blocks rewriting a criterion while the critic loop is active, and addition strengthens the set.
+Decision (P1): split step for req-001 at six criteria: keep / reason: criteria 4 and 5 sharpen 1 and 2, and the version in criterion 6 ships only with the rule change.
+Critic (P1, iteration 2): APPROVE. See `critic-verdict-2.md`. All 8 iteration 1 findings resolved. The loop closes with `status: done`.
+Decision (P1): apply the three minor iteration 2 findings after the loop closed / reason: each is a one-line wording fix, and none changes scope.
+  - req-001 states that the space case is the existing `rule_case` fixture.
+  - The column-1 case still checks that the output lacks the fixture text.
+  - Criterion 6 reads the manifest `version` line, not `product-version.mjs`, which prints the highest component version.
+Note (P1): `feature-brief.md` brief AC 1 names the vendored folder in full, and the current rule matches it. The P0 commit predates the autonomous scan rule. After P3 the new rule passes it, so P7 can commit the archive.
+Gate (P1): every artifact produced, no OpenAPI spec because the change adds no API, and `consistency-check.mjs` clean. Skill Map unchanged.
+Credential scan (P1): clean (regex only)
+Progress: P1 done at 2026-11-10T22:32:36Z: 1 requirement, critic approved on iteration 2
+
+---
+
+### P2: ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:32:36Z` |
+| End | `2026-11-10T22:36:16Z` |
+| Wall-clock | `3` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), primary (2 critic passes) |
+| Skills loaded | ravintio-adr-agent, ravintio-design-critic (2 subagents) |
+| Agents spawned | `2` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | Two short ADRs run inline under the size floor. |
+
+Skills inbox (P1 to P2): empty.
+Critic (P2, iteration 1): REJECT. See `critic-verdict-p2-1.md`. Five findings, all revised.
+  - ADR-001 adds an npm package alternative and ties its negative consequence to R-001.
+  - ADR-002 and the glossary say "ASCII letter", since `\b` without the `u` flag treats `é` as a non-word character.
+  - ADR-002 adds the fixed-prefix-set alternative.
+  - req-001's **Skill** link now resolves.
+Critic (P2, iteration 2): APPROVE. See `critic-verdict-p2-2.md`. All 5 iteration 1 findings resolved. The loop closes with `status: done`.
+Decision (P2): apply two minor iteration 2 findings after the loop closed / reason: each is a wording fix, and none changes scope.
+  - req-001 adds a line that "letter" means an ASCII letter, so P3 adds no `é` negative case.
+  - ADR-002 Negative and R-001 say "ASCII letter".
+Decision (P2): leave design.md's "a letter" wording as a known gap / reason: the design is confirmed, req-001 and ADR-002 now pin the meaning, and the gap errs on the safe side.
+Decision (P2): no third ADR-001 alternative for a shared gitleaks configuration / reason: two alternatives meet the rubric, and gitleaks is optional here.
+Gate (P2): an ADR exists for the stack and for the one security trade-off. No data ownership change. `consistency-check.mjs` clean. Skill Map unchanged.
+Credential scan (P2): clean (regex only)
+Progress: P2 done at 2026-11-10T22:36:16Z: 2 ADRs, critic approved on iteration 2
+
+---
+
+### P3: Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:36:46Z` |
+| End | `2026-11-10T22:57:27Z` |
+| Wall-clock | `20` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), cheaper (TDD subagents) |
+| Skills loaded | ravintio-codegen-agent (source copy, step 1b), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `3` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | P3 start `HEAD`: `ccd598b1`. |
+
+Skills inbox (P2 to P3): empty.
+Capability skills (before P3): none applies to a one-line Node regex and Bash suite change.
+Dispatch order (P3): sequential. One requirement, so no parallel batch.
+Decision (P3): the TDD subagents run on the cheaper tier as `claude-sonnet-5-5` / reason: the run's declared cheaper model.
+Decision (P3): the 0000037 suite gains a `# Verified by: unit` header line beside its `integration` line / reason: req-001 criteria declare `unit`, and the requirement-ID scan compares the declared type with the suite header. The suite now covers both types.
+TDD (P3, req-001, attempt 1): RED at `78c07a7a`. Both copies of the 0000037 suite exit 1 with 181 passed and 8 failed. The 8 failures are the new negative assertions. The orchestrator reran both to confirm, and the two bodies match below the path header.
+Decision (P3): the suite splits the vendored folder name as three string parts / reason: the current rule matched the two-part form in the suite text itself.
+TDD (P3, req-001, attempt 1): GREEN at `c3290082`. One line changes in `credential-scan.mjs`. Both suite copies exit 0 with 189 passed. `credential-scan.mjs --file ravintio-framework/release.yml` now exits 0.
+Full run (P3): 142 feature suites passed and 0 failed, with 37 regression suites passed.
+Component close-out (P3): only `ravintio-framework` changed under `src/`. Its manifest goes from 0.39.2 to 0.39.3 with feature `0000044-credential-scan-word-boundary`.
+Decision (P3): a patch bump to 0.39.3, not the codegen rule's minor bump / reason: the confirmed design records 0.39.3, because the change fixes a false match and adds no pack feature.
+TDD (P3, req-001): refactor added one comment above the `api-secret-key` rule. No regex or assertion changed. Both suite copies still exit 0 with 189 passed.
+Decision (P3): req-001 criterion 6 moves from `unit` to `execution`, checked at P4 / reason: no suite asserts the manifest version, and a suite pinned to one version string would fail at the next release.
+Requirement-ID scan (P3): 1 requirement, 0 unmapped. Criteria 1, 2, 4, and 5 declare `unit`, and both suite copies carry `# Verified by: unit` with 8 `0000044 req-001` case calls. Criteria 3 and 6 declare `execution`, deferred to P4.
+Credential scan (P3): clean (regex only)
+Progress: P3 done at 2026-11-10T22:57:27Z: req-001 GREEN, 8 new cases in each suite copy, manifest at 0.39.3
+
+---
+
+### P4: Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T22:57:49Z` |
+| End | `2026-11-10T23:56:25Z` |
+| Wall-clock | `58` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator), primary (verify-by-execution) |
+| Skills loaded | ravintio-validate-agent, ravintio-verify-by-execution (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | none |
+
+Skills inbox (P3 to P4): empty.
+Library audit (P4): skipped. The change adds no dependency manifest.
+Lint (P4): `node --check` passes on `credential-scan.mjs`, and `bash -n` passes on both suite copies. No `shellcheck` is installed.
+Typecheck and build (P4): not applicable. No typed language changes, and P7 runs the release build.
+Test (P4): the local full run shows 142 feature suites passed and 0 failed, with 37 regression suites passed.
+Semantic correctness (P4): `coverage-table.md` maps all 6 criteria. Five pass, and criterion 3 waits for P7.
+Verify by execution (P4): criteria 1, 2, 4, 5, and 6 verified in file, staged, and safe-paths modes. Criterion 3 is partly verified on the current `release.yml` and deferred to P7. See `verification-report.md`.
+Decision (P4): raise PR #78 now, before P7 / reason: CI runs on `pull_request` only (0000031 ADR 003), and a CI failure after the P7 archive is hard to fix (backlog 0000426). P9 updates the PR, and `gh pr create` needs no prompt under `custom-001`.
+PR: #78
+CI (P4): run `42921658648` on head `4b795b00`: 15 of 16 checks passed. Windows shard 3 of 7 failed one check in `test-0000032-req-009-shell-guard-path-parity.sh`, "each guard call completes in under 200 ms", with the slowest call at 278 ms. Elapsed 16 min 52 s of a 20 min cap.
+Self-correct cycle 1 (P4): Check: test (CI, Windows shard 3). Error: shell guard call took 278 ms against a 200 ms limit. Root cause: Windows runner load. This feature leaves the shell guard unchanged, and backlog 0000275 tracks the same suite's timing flake. Fix: rerun the failed job, with no code change. Result: pass.
+CI (P4): the rerun of Windows shard 3 passed, so all 16 checks on head `4b795b00` pass. The rerun job ran from 23:36:44Z to 23:56:13Z, about 19.5 minutes of its 20-minute cap. Backlog 0000432 already tracks the slow Windows shards 3 and 4, so the run files nothing new.
+Self-correct cycles (P4): 1, a CI rerun with no code change.
+Gate (P4): CI passes, local tests pass, and the acceptance criteria verify. Criterion 3 waits for P7.
+Credential scan (P4): clean (regex only)
+Progress: P4 done at 2026-11-10T23:56:25Z: PR #78 green after one Windows rerun, 1 self-correct cycle
+
+---
+
+### P5: Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T23:56:57Z` |
+| End | `2026-11-11T00:21:00Z` |
+| Wall-clock | `24` |
+| Streams | `n/a` |
+| Model tier | primary (review and re-review), cheaper (TDD subagents) |
+| Skills loaded | ravintio-security-agent (2 subagents), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `5` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | One reviewer covers every section. The change is one regex in one component. |
+
+Skills inbox (P4 to P5): empty.
+Security (P5): overall risk medium. See `security-report.md`. One medium finding, S-001: `\b` misses `sk-` after a percent escape or a backslash escape, which the old rule caught. Two low and four informational findings.
+Backlog filed (P5): 0000435, CI runs no credential scan or gitleaks (S-002).
+Backlog filed (P5): 0000436, no rule for underscore-style secret keys (S-004).
+Decision (P5): fix S-001 in this run, through the TDD loop / reason: the fix only strengthens the rule, keeps the design's intent, and a medium finding on a security control shouldn't ship open.
+Deviation (P5, altering): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`, not the design's `/\bsk-[A-Za-z0-9_-]{20,}/`. It also matches after a percent escape, `\n`, `\r`, `\t`, or a `\u` escape. req-001 adds criterion 7, and ADR-002 gains an amendment.
+TDD (P5, req-001 criterion 7, attempt 1): RED at `1d373270`. Both suite copies exit 1 with 196 passed and 14 failed, all on the 7 new escape cases. The orchestrator reran both to confirm.
+TDD (P5, req-001 criterion 7, attempt 1): GREEN at `405415d0`. Both suite copies exit 0 with 210 passed. The current `release.yml` still scans clean.
+TDD (P5, req-001 criterion 7): refactor merged the two comment lines above the rule. No regex or assertion changed. Both suite copies still exit 0.
+Security re-review (P5): a fresh-context reviewer with no memory of the fix closed S-001 and rated the change low. See `security-rereview.md`. No false match came back, and 10 MB lines take 22 ms or less. Two low and four informational findings.
+Backlog filed (P5): 0000437, the rule still misses `\x` escapes, ANSI colour codes, and rarer escapes (N-001 to N-004).
+Backlog filed (P5): 0000438, a 10 MB line makes the scan throw and exit 2 (N-005). It predates 0000044 and fails closed.
+Decision (P5): defer N-001 to N-006 / reason: each is low or informational, the rule before 0000044 shared N-005, and N-006 fails safe.
+Full run (P5): after the S-001 fix, 142 feature suites passed and 0 failed, with 37 regression suites passed. `coverage-table.md` adds criterion 7. The P5 push reruns CI on PR #78, and P9 reads those checks.
+Gate (P5): risk low after the fix. S-001 closed, no critical, high, or medium finding open. Each fix had a fresh-context re-review.
+Credential scan (P5): clean (regex only)
+Progress: P5 done at 2026-11-11T00:21:00Z: S-001 fixed and re-reviewed, risk low, 4 backlog entries filed
+
+---
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T00:21:30Z` |
+| End | `2026-11-11T00:57:36Z` |
+| Wall-clock | `36` |
+| Streams | `n/a` |
+| Model tier | primary (orchestrator and deviation review), `claude-fable-5-1` (cross-model review) |
+| Skills loaded | ravintio-docs-agent (source copy, step 1b), ravintio-reversal-assessor (1 subagent) |
+| Agents spawned | `4` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | The doc edits ran inline as one batch of parallel calls. Each is a short edit from context already held, under the size floor. |
+
+Skills inbox (P5 to P6): empty.
+Gate A (P6): `docs/` exists.
+P6 Gate B: docs update assessment (autonomous run, auto-accepted). The run narrowed one credential scan rule, with no new component, API, or dependency. Auto-accepted: updating `docs/architecture-overview.md`, `docs/component-registry.md`, `docs/decisions-index.md`, and `docs/dependency-graph.md`, plus `src/ravintio-framework/docs/test-coverage.md`, `risk.md`, and `quirks.md`. No update needed for `docs/api-index.md`, because no component exposes an API.
+Per-component docs (P6): `purpose.md`, `interface-contract.md`, `dependencies.md`, and `scope.md` need no change, because the pack's purpose, interface, and dependencies are unchanged. No `data-contract.md` applies, because the pack owns no data.
+Drift (P6): none found. The glossary terms word boundary and hold-back appear in the rule comment and suite labels. No API, data ownership, or dependency direction changed. The rule follows ADR-002 and its amendment.
+Completeness (P6): the P1 minimal set, 2 ADRs, the security report and re-review, and `recommendations.md` exist. No OpenAPI, operational model, SLO, or cost model applies.
+Backlog routing (P6): `recommendations.md` holds no new Deferred Items or Tech Debt row, so P6 files no entry.
+Iteration log (P6): `plan/changelog/0000044-credential-scan-word-boundary-2026-11-11.md`.
+Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 deviations. See `deviation-review.md`.
+  - P1, the column-1 and colon cases: additive.
+  - P5, the escape-aware pattern: altering. It keeps the problem, the user, and the in-scope list, and it only adds detection. It still replaces the pattern text the human on the loop confirmed.
+  - No Decision line touches data, a schema, or a destructive operation.
+Exception waiting (P6, 2): the P5 pattern deviation is altering. The human on the loop must accept the escape-aware pattern, or ask for the plain word-boundary pattern, before merging PR #78. If accepted, `design.md` Rule change and Scalability lines need the shipped pattern. The plain pattern would reopen security finding S-001.
+Cross-model review (P6, iteration 1): REJECT. Reviewer `claude-fable-5-1`. Implementers `claude-sonnet-5-5` and `claude-opus-5-5`. See `cross-model-review-1.md`. Every functional check holds. Six findings, all fixed:
+  - Three low: sentences over 25 words in `architecture-overview.md`, `component-registry.md`, and `test-coverage.md`. Each is split.
+  - The rule comment and the registry now name the four escapes, not "a percent or backslash escape".
+  - The manifest `updatedAt` reads `2026-11-11`, with a P5 and P6 comment line.
+  - The decisions-index link names the archive folder dated 2026-11-11. P7 must archive on that date, or P7 updates the link.
+Cross-model review (P6, iteration 2): REJECT. See `cross-model-review-2.md`. Five iteration 1 findings fixed. One new low finding: one sentence grew to 25 words. P6 dropped one word.
+Cross-model review (P6, iteration 3): APPROVE. See `cross-model-review-3.md`. All six rubric checks hold. Two informational findings, none blocking: a 26-word manifest comment, and N-006 not recorded in `quirks.md`. The loop closes with `status: done`.
+Decision (P6): leave both iteration 3 informational findings / reason: neither is a doc artifact rule, and a further edit would need a fourth review past the cap.
+Revalidation (P6): P4 steps 0-5, pass. On head `29c3b90c`, 142 feature suites passed and 0 failed, with 37 regression suites passed. `consistency-check.mjs` and `self-description-check.mjs` pass.
+Gate (P6): zero drift, every expected artifact present, revalidation passed, and the cross-model review approved. One exception waits for the human on the loop.
+Credential scan (P6): clean (regex only)
+Progress: P6 done at 2026-11-11T00:57:36Z: 7 docs updated, cross-model review approved on iteration 3, 1 exception waiting
+
+---
+
+### P7: Archive
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:15:54Z` |
+| End | `2026-11-11T01:17:00Z` |
+| Wall-clock | `1` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | none |
+
+CI (P7, before the archive): every PR #78 check passes on head `6817bc51`, 16 of 16.
+Cross-reference check (P7): no living doc links to a 0000044 artifact under `plan/current/`. The decisions-index ADR link already names `plan/_archive/0000044-credential-scan-word-boundary-2026-11-11/adr/`.
+Step 1 (P7): the P6 iteration log at `plan/changelog/0000044-credential-scan-word-boundary-2026-11-11.md` already holds the changelog's fields in its Release summary. The ship step keeps that one file, as 0000042 and 0000043 did.
+Step 2 (P7): no `.skips` file.
+Decision (P7): promote no regression candidate / reason: the only tagged suite is the 0000037 credential scan suite, and this feature updated its regression copy with the same cases. A promotion would overwrite that copy's path header.
+Step 3 (P7): wrote `plan/current/.feature-id`.
+Step 5 (P7): wrote `plan/changelog/0000044-credential-scan-word-boundary-test-report-2026-11-11.md`.
+Step 5b (P7): product.yml: version "0.39.3", feature "0000044-credential-scan-word-boundary"
+Step 5c (P7): project kind `framework source`. summary: version 0.39.3, source-commit 6817bc51fd07d7b80810e3ddd0e57708dd6ec0ef, added 0, changed 7, removed 0, unchanged 1202
+Verify by execution (P7, req-001 criterion 3): `credential-scan.mjs --file ravintio-framework/release.yml` exits 0 on the rebuilt 0.39.3 file. The P7 commit check follows.
+Step 6 (P7): `archive-current.mjs` moved 26 items into `plan/_archive/0000044-credential-scan-word-boundary-2026-11-11` and removed `plan/current/.feature-id`. archive-dir: plan/_archive/0000044-credential-scan-word-boundary-2026-11-11
+Step 6b (P7): `docs/about.md` reads version 0.39.3 and feature 0000044-credential-scan-word-boundary.
+Step 7 (P7): scan-then-commit over 64 candidates, scan exit 0, all 64 safe. Commit `508867b4`.
+Credential scan (P7): clean (regex only). `ravintio-framework/release.yml` was on the safe list.
+Verify by execution (P7, req-001 criterion 3): verified. The scan passed the rebuilt `release.yml`, and `git ls-files` lists it after commit `508867b4`.
+Progress: P7 done at 2026-11-11T01:17:00Z: plan/current archived, root copy rebuilt at 0.39.3, release.yml committed with no hold-back
+
+---
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:17:00Z` |
+| End | `2026-11-11T01:19:29Z` |
+| Wall-clock | `2` |
+| Streams | `n/a` |
+| Model tier | cheaper |
+| Skills loaded | ravintio-build-assessment-agent (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | none |
+
+P8 (build assessment): `build-report.md` written. Note for the report: the 18-minute gap from the P6 End to the P7 Start was the wait for the PR #78 checks on head `6817bc51`, which the P7 block records.
+Clean-tree check (P8): the only changes sit under the archive directory, so the P9 marker commit carries them. Clean otherwise.
+Progress: P8 done at 2026-11-11T01:19:29Z: build report written
+
+---
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:19:29Z` |
+| End | `2026-11-11T01:48:07Z` |
+| Wall-clock | `28` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | PR #78 exists from P4. |
+
+PR: #78 https://github.com/RAVINTIO/ravintio-framework/pull/78
+Step 9 (P9): `product-version.mjs` prints 0.39.3, which matches the P0 version. Tag `v0.39.3` created on `f001ec06`.
+Step 10 (P9): Option [1], no `local-git-only` or `restore-pr-attribution` override text. Branch `feat/0000044-credential-scan-word-boundary` pushed. PR #78 is open, so P9 updates it. PR text folder: `/var/folders/6c/f2zkjmp17kqggf4l4yt83_z40000gn/T/tmp.Dnv2dpzET0`, removed after the edit.
+Credential scan (P9): PR text clean (regex only)
+Step 10 (P9): PR #78 title and body updated. `gh pr ready --undo 78` set it to draft, because one exception waits. The body names exception item 2 by path.
+Step 10 (P9): the changelog already names PR #78, so it needs no PR edit.
+Step 10b (P9): one leftover, the archived build log, committed as `86db7dc4` after a clean scan, and pushed.
+CI (P9, first read): run `42938290371` on head `86db7dc4`. macOS shard 2 of 3 failed one check in the ratchet-check timing suite, "ratchet-check uncommitted-marker call completes under 200 ms", at 206 ms. This feature leaves `ratchet-check` unchanged, and backlog 0000265 tracks the flake.
+CI fix attempt 1 (P9): rerun the failed job with no code change, after the run finishes. GitHub only allows a failed-job rerun once the whole run ends.
+CI fix attempt 1 (P9): the rerun of macOS shard 2 of 3 passed. No code changed, so the tag stays on `f001ec06`.
+CI checks (P9): all passed (16 of 16, head `86db7dc4`)
+Progress: P9 done at 2026-11-11T01:48:07Z: tag v0.39.3, PR #78 draft with all checks passing, 1 exception waiting
