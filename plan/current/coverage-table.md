@@ -13,4 +13,5 @@ Both suite copies run every case: `tests/test-0000037-req-003-credential-scan.sh
 | req-001 | 3: P7 scan passes the rebuilt `release.yml`, and the P7 commit includes it | execution | `verification-report.md`, with the rebuild and commit deferred to P7 | deferred to P7 |
 | req-001 | 4: negative outputs hold no `api-secret-key` line, and the fixture copies the real hash-line shape | unit | `wb_negative` "reports no api-secret-key" assertions, and the hash-line fixture with two spaces, quoted path, colon, and quoted hash | pass |
 | req-001 | 5: exits 1 and reports the rule after a colon | unit | `wb_positive` "key after a colon" | pass |
+| req-001 | 7 (added at P5): exits 1 and reports the rule after `%3D`, `%22`, `%20`, `%3A`, `\n`, `\t`, and `"` | unit | `wb_positive` escape cases, added at P5 for security finding S-001 | pass |
 | req-001 | 6: the manifest reads version `0.39.3` | execution | `verification-report.md`: the manifest reads `version: "0.39.3"` | pass |

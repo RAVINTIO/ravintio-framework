@@ -211,12 +211,12 @@ Progress: P4 done at 2026-11-10T23:56:25Z: PR #78 green after one Windows rerun,
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-10T23:56:57Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-11T00:21:00Z` |
+| Wall-clock | `24` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-security-agent (1 subagent) |
-| Agents spawned | `pending` |
+| Model tier | primary (review and re-review), cheaper (TDD subagents) |
+| Skills loaded | ravintio-security-agent (2 subagents), ravintio-test-writer, ravintio-implementer, ravintio-refactor |
+| Agents spawned | `5` |
 | MCP calls | `0` |
 | Parallel task batches | `0` |
 | Notes | One reviewer covers every section. The change is one regex in one component. |
@@ -234,3 +234,7 @@ Security re-review (P5): a fresh-context reviewer with no memory of the fix clos
 Backlog filed (P5): 0000437, the rule still misses `\x` escapes, ANSI colour codes, and rarer escapes (N-001 to N-004).
 Backlog filed (P5): 0000438, a 10 MB line makes the scan throw and exit 2 (N-005). It predates 0000044 and fails closed.
 Decision (P5): defer N-001 to N-006 / reason: each is low or informational, the rule before 0000044 shared N-005, and N-006 fails safe.
+Full run (P5): after the S-001 fix, 142 feature suites passed and 0 failed, with 37 regression suites passed. `coverage-table.md` adds criterion 7. The P5 push reruns CI on PR #78, and P9 reads those checks.
+Gate (P5): risk low after the fix. S-001 closed, no critical, high, or medium finding open. Each fix had a fresh-context re-review.
+Credential scan (P5): clean (regex only)
+Progress: P5 done at 2026-11-11T00:21:00Z: S-001 fixed and re-reviewed, risk low, 4 backlog entries filed
