@@ -230,3 +230,7 @@ Deviation (P5, unclassified): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-
 TDD (P5, req-001 criterion 7, attempt 1): RED at `1d373270`. Both suite copies exit 1 with 196 passed and 14 failed, all on the 7 new escape cases. The orchestrator reran both to confirm.
 TDD (P5, req-001 criterion 7, attempt 1): GREEN at `405415d0`. Both suite copies exit 0 with 210 passed. The current `release.yml` still scans clean.
 TDD (P5, req-001 criterion 7): refactor merged the two comment lines above the rule. No regex or assertion changed. Both suite copies still exit 0.
+Security re-review (P5): a fresh-context reviewer with no memory of the fix closed S-001 and rated the change low. See `security-rereview.md`. No false match came back, and 10 MB lines take 22 ms or less. Two low and four informational findings.
+Backlog filed (P5): 0000437, the rule still misses `\x` escapes, ANSI colour codes, and rarer escapes (N-001 to N-004).
+Backlog filed (P5): 0000438, a 10 MB line makes the scan throw and exit 2 (N-005). It predates 0000044 and fails closed.
+Decision (P5): defer N-001 to N-006 / reason: each is low or informational, the rule before 0000044 shared N-005, and N-006 fails safe.
