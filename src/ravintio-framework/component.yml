@@ -243,10 +243,12 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-11-10"
+  updatedAt: "2026-11-11"
   # Updated by 0000044 (codegen-agent) P3: the api-secret-key rule in
   # scripts/credential-scan.mjs needs a word boundary before sk-, and the
   # 0000037 credential scan suite gains word boundary cases.
+  # Updated by 0000044 P5 and P6: the rule also matches after %XX, \n, \r,
+  # \t, or \uXXXX (security finding S-001), with seven escape cases.
   # Updated by 0000041 (codegen-agent) P3: the pack source moved to
   # src/ravintio-framework/. Added build-release.mjs, release-check.mjs,
   # project-kind.mjs, the tests/helpers/pack-root.sh resolver, and the 0.39.0

@@ -50,7 +50,8 @@ The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the p
 
 0000044 adds no suite. Both copies of `test-0000037-req-003-credential-scan.sh` gain a `0000044 req-001` block and a `# Verified by: unit` header line. Each copy passes 210 checks.
 
-- 4 negative cases: a `release.yml` hash line under the vendored risk requirements analysis skill folder, and keys after an ASCII letter, a digit, and `_`.
+- 1 negative case: a `release.yml` hash line under the vendored risk requirements analysis skill folder.
+- 3 negative cases: keys after an ASCII letter, a digit, and `_`.
 - 11 positive cases: keys at column 1, after `=`, a double quote, and a colon, and after 7 escapes. The escapes are `%3D`, `%22`, `%20`, `%3A`, `\n`, `\t`, and `"`.
 
 The full run for 0000044 covers 179 suites.

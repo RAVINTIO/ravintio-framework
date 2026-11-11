@@ -269,3 +269,8 @@ Deviation review (P6): a fresh-context `ravintio-reversal-assessor` classed 2 de
   - P5, the escape-aware pattern: altering. It keeps the problem, the user, and the in-scope list, and it only adds detection. It still replaces the pattern text the human on the loop confirmed.
   - No Decision line touches data, a schema, or a destructive operation.
 Exception waiting (P6, 2): the P5 pattern deviation is altering. The human on the loop must accept the escape-aware pattern, or ask for the plain word-boundary pattern, before merging PR #78. If accepted, `design.md` Rule change and Scalability lines need the shipped pattern. The plain pattern would reopen security finding S-001.
+Cross-model review (P6, iteration 1): REJECT. Reviewer `claude-fable-5-1`. Implementers `claude-sonnet-5-5` and `claude-opus-5-5`. See `cross-model-review-1.md`. Every functional check holds. Six findings, all fixed:
+  - Three low: sentences over 25 words in `architecture-overview.md`, `component-registry.md`, and `test-coverage.md`. Each is split.
+  - The rule comment and the registry now name the four escapes, not "a percent or backslash escape".
+  - The manifest `updatedAt` reads `2026-11-11`, with a P5 and P6 comment line.
+  - The decisions-index link names the archive folder dated 2026-11-11. P7 must archive on that date, or P7 updates the link.
