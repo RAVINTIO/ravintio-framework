@@ -54,7 +54,8 @@ const CONTENT_RULES = [
   ['slack-token', /xox[baprs]-/],
   ['github-pat', /github_pat_[A-Za-z0-9_]{20,}/],
   // The word boundary matches sk- after a non-word character or at the line start. It skips sk- inside a word, such as a path.
-  ['api-secret-key', /\bsk-[A-Za-z0-9_-]{20,}/],
+  // The rule also matches after a percent escape or a backslash escape.
+  ['api-secret-key', /(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/],
   ['google-api-key', /AIza[0-9A-Za-z_-]{35}/],
 ];
 
