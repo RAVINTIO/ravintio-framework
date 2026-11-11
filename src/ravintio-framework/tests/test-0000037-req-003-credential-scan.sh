@@ -204,6 +204,13 @@ wb_positive "key at column 1" ""
 wb_positive "key after =" "="
 wb_positive "key after a double quote" '"'
 wb_positive "key after a colon" ":"
+wb_positive "key after %3D" '%3D'
+wb_positive "key after %22" '%22'
+wb_positive "key after %20" '%20'
+wb_positive "key after %3A" '%3A'
+wb_positive "key after an escaped newline" '\n'
+wb_positive "key after an escaped tab" '\t'
+wb_positive "key after an escaped unicode quote" '\u'"0022"
 
 # Every refused file name, run on a staged fixture, in upper and lower case.
 echo "req-003: every refused file name runs on a fixture"
