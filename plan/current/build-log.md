@@ -203,3 +203,27 @@ Self-correct cycles (P4): 1, a CI rerun with no code change.
 Gate (P4): CI passes, local tests pass, and the acceptance criteria verify. Criterion 3 waits for P7.
 Credential scan (P4): clean (regex only)
 Progress: P4 done at 2026-11-10T23:56:25Z: PR #78 green after one Windows rerun, 1 self-correct cycle
+
+---
+
+### P5: Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-10T23:56:57Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-security-agent (1 subagent) |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | One reviewer covers every section. The change is one regex in one component. |
+
+Skills inbox (P4 to P5): empty.
+Security (P5): overall risk medium. See `security-report.md`. One medium finding, S-001: `\b` misses `sk-` after a percent escape or a backslash escape, which the old rule caught. Two low and four informational findings.
+Backlog filed (P5): 0000435, CI runs no credential scan or gitleaks (S-002).
+Backlog filed (P5): 0000436, no rule for underscore-style secret keys (S-004).
+Decision (P5): fix S-001 in this run, through the TDD loop / reason: the fix only strengthens the rule, keeps the design's intent, and a medium finding on a security control shouldn't ship open.
+Deviation (P5, unclassified): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`, not the design's `/\bsk-[A-Za-z0-9_-]{20,}/`. It also matches after a percent escape, `\n`, `\r`, `\t`, or a `\u` escape. req-001 adds criterion 7, and ADR-002 gains an amendment.

@@ -21,6 +21,7 @@ As a framework maintainer, I run the credential scan on a release build, so that
 - The rule matches `sk-` at the start of a line or after any character that isn't a letter, a digit, or `_`.
 - The rule doesn't match `sk-` after a letter, a digit, or `_`.
 - In this requirement, "letter" means an ASCII letter, `A` to `Z` or `a` to `z`. The pattern has no `u` flag, so `sk-` after a non-ASCII letter such as `é` still matches. P3 adds no negative case for a non-ASCII letter.
+- P5 security finding S-001 adds an escape-aware boundary. The rule also matches `sk-` directly after a percent escape such as `%3D`, after `\n`, `\r`, or `\t`, or after a `\u` escape with 4 hex digits. The rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`.
 - No other content rule, name rule, or output format changes. The scan still never prints matched text.
 - `test-0000037-req-003-credential-scan.sh` and its copy under `tests/regression/` gain the same new cases:
   - A `release.yml` hash line under the vendored risk requirements analysis skill folder, with a 64-character hex hash, exits 0. The fixture builds the folder name at run time.
@@ -46,6 +47,8 @@ As a framework maintainer, I run the credential scan on a release build, so that
   - Verified by: unit - the negative cases in both copies of the 0000037 suite
 - [ ] `credential-scan.mjs --file` exits 1 and reports `api-secret-key` for an `sk-` key after a colon.
   - Verified by: unit - the new colon case in both copies of the 0000037 suite
+- [ ] `credential-scan.mjs --file` exits 1 and reports `api-secret-key` for an `sk-` key after `%3D`, `%22`, `%20`, `%3A`, `\n`, `\t`, and a `"` escape.
+  - Verified by: unit - the new escape cases in both copies of the 0000037 suite
 - [ ] `src/ravintio-framework/component.yml` reads version `0.39.3`.
   - Verified by: execution - P4 reads the `version` line of `src/ravintio-framework/component.yml` and finds `"0.39.3"`
 

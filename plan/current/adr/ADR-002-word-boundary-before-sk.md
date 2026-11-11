@@ -22,6 +22,13 @@ The `api-secret-key` rule reads `/sk-[A-Za-z0-9_-]{20,}/`. It matches `sk-` anyw
 - The rule therefore skips `sk-` after an ASCII letter, a digit, or `_`. It still matches after a non-ASCII letter, such as `é`. It still matches at column 1 and after every other character, such as `=`, a quote, a colon, a space, `-`, or `/`.
 - The trade is a known false negative. A real key glued to a word character, such as `KEY_sk-...`, goes undetected by this rule. The human on the loop accepted this trade at the P0 Scope Lock (error path).
 
+### Amendment (P5, security finding S-001)
+
+- A percent escape or a backslash escape ends in a word character, such as the `D` in `%3D` or the `n` in `\n`. So `\b` alone misses a key in URL-encoded bodies, curl traces, and escaped JSON. The old rule caught those.
+- The rule therefore becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`.
+- Each lookbehind has a fixed length, and the pattern holds no nested quantifier, so it stays linear on one long line.
+- The release.yml hash lines still pass, because a letter that isn't part of an escape precedes `sk-` there.
+
 ## Alternatives Considered
 
 | Alternative | Pros | Cons | Why Rejected |
