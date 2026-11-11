@@ -355,3 +355,8 @@ Progress: P8 done at 2026-11-11T01:19:29Z: build report written
 | Notes | PR #78 exists from P4. |
 
 PR: #78 https://github.com/RAVINTIO/ravintio-framework/pull/78
+Step 9 (P9): `product-version.mjs` prints 0.39.3, which matches the P0 version. Tag `v0.39.3` created on `f001ec06`.
+Step 10 (P9): Option [1], no `local-git-only` or `restore-pr-attribution` override text. Branch `feat/0000044-credential-scan-word-boundary` pushed. PR #78 is open, so P9 updates it. PR text folder: `/var/folders/6c/f2zkjmp17kqggf4l4yt83_z40000gn/T/tmp.Dnv2dpzET0`, removed after the edit.
+Credential scan (P9): PR text clean (regex only)
+Step 10 (P9): PR #78 title and body updated. `gh pr ready --undo 78` set it to draft, because one exception waits. The body names exception item 2 by path.
+Step 10 (P9): the changelog already names PR #78, so it needs no PR edit.
