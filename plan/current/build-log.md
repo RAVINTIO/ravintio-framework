@@ -246,12 +246,12 @@ Progress: P5 done at 2026-11-11T00:21:00Z: S-001 fixed and re-reviewed, risk low
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-11T00:21:30Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-11T00:57:36Z` |
+| Wall-clock | `36` |
 | Streams | `n/a` |
-| Model tier | primary |
-| Skills loaded | ravintio-docs-agent (source copy, step 1b) |
-| Agents spawned | `pending` |
+| Model tier | primary (orchestrator and deviation review), `claude-fable-5-1` (cross-model review) |
+| Skills loaded | ravintio-docs-agent (source copy, step 1b), ravintio-reversal-assessor (1 subagent) |
+| Agents spawned | `4` |
 | MCP calls | `0` |
 | Parallel task batches | `1` |
 | Notes | The doc edits ran inline as one batch of parallel calls. Each is a short edit from context already held, under the size floor. |
@@ -274,3 +274,10 @@ Cross-model review (P6, iteration 1): REJECT. Reviewer `claude-fable-5-1`. Imple
   - The rule comment and the registry now name the four escapes, not "a percent or backslash escape".
   - The manifest `updatedAt` reads `2026-11-11`, with a P5 and P6 comment line.
   - The decisions-index link names the archive folder dated 2026-11-11. P7 must archive on that date, or P7 updates the link.
+Cross-model review (P6, iteration 2): REJECT. See `cross-model-review-2.md`. Five iteration 1 findings fixed. One new low finding: one sentence grew to 25 words. P6 dropped one word.
+Cross-model review (P6, iteration 3): APPROVE. See `cross-model-review-3.md`. All six rubric checks hold. Two informational findings, none blocking: a 26-word manifest comment, and N-006 not recorded in `quirks.md`. The loop closes with `status: done`.
+Decision (P6): leave both iteration 3 informational findings / reason: neither is a doc artifact rule, and a further edit would need a fourth review past the cap.
+Revalidation (P6): P4 steps 0-5, pass. On head `29c3b90c`, 142 feature suites passed and 0 failed, with 37 regression suites passed. `consistency-check.mjs` and `self-description-check.mjs` pass.
+Gate (P6): zero drift, every expected artifact present, revalidation passed, and the cross-model review approved. One exception waits for the human on the loop.
+Credential scan (P6): clean (regex only)
+Progress: P6 done at 2026-11-11T00:57:36Z: 7 docs updated, cross-model review approved on iteration 3, 1 exception waiting

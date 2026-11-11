@@ -1,7 +1,7 @@
 ---
 title: "Loop State: cross_model_review"
 summary: "Persisted state for one loop instance; survives context resets and session interrupts."
-status: "active"
+status: "done"
 ---
 # Loop State: cross_model_review
 
@@ -13,11 +13,11 @@ status: "active"
 | Loop id | `cross_model_review` |
 | Owning phase | `P6` |
 | Toggle level | `on` |
-| Iteration | `2` of cap `3` |
+| Iteration | `3` of cap `3` |
 | Approach | `1 of 3 (autonomous only)` |
 | Reversal budget remaining | `2` (shared across all loops; feature-wide) |
-| Last decision | `continue` |
-| Last updated | `2026-11-11T00:36:10Z` |
+| Last decision | `done` |
+| Last updated | `2026-11-11T00:57:36Z` |
 
 ---
 
@@ -37,6 +37,12 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Observation:** REJECT in `cross-model-review-2.md`. Five iteration 1 findings fixed, and the archive link waits for P7. One new low finding: the iteration 1 fix grew one sentence to 25 words.
 - **Decision:** continue: drop one word, then run a fresh reviewer for iteration 3, the last under the cap.
 - **Correction:** the iteration 2 timestamp, `00:36:10Z`, was an estimate and not taken from `date -u`. The real reading was `2026-11-11T00:35:51Z`. The record above stays unedited, as the run log is append-only.
+
+### Iteration 3 (2026-11-11T00:57:36Z)
+- **Approach:** 1
+- **Action:** fresh-context review on `claude-fable-5-1` over the revised diff.
+- **Observation:** APPROVE in `cross-model-review-3.md`. All six rubric checks hold. Two new informational findings, none blocking.
+- **Decision:** done: the pass condition is met.
 
 ---
 
