@@ -36,6 +36,7 @@ Append-only: one record per iteration. Never rewrite a prior record.
 - **Action:** fresh-context review on `claude-fable-5-1` over the revised diff.
 - **Observation:** REJECT in `cross-model-review-2.md`. Five iteration 1 findings fixed, and the archive link waits for P7. One new low finding: the iteration 1 fix grew one sentence to 25 words.
 - **Decision:** continue: drop one word, then run a fresh reviewer for iteration 3, the last under the cap.
+- **Correction:** the iteration 2 timestamp, `00:36:10Z`, was an estimate and not taken from `date -u`. The real reading was `2026-11-11T00:35:51Z`. The record above stays unedited, as the run log is append-only.
 
 ---
 
