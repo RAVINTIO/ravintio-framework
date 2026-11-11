@@ -344,8 +344,8 @@ Progress: P8 done at 2026-11-11T01:19:29Z: build report written
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-11T01:19:29Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-11T01:48:07Z` |
+| Wall-clock | `28` |
 | Streams | `n/a` |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent (source copy, step 1b) |
@@ -360,3 +360,9 @@ Step 10 (P9): Option [1], no `local-git-only` or `restore-pr-attribution` overri
 Credential scan (P9): PR text clean (regex only)
 Step 10 (P9): PR #78 title and body updated. `gh pr ready --undo 78` set it to draft, because one exception waits. The body names exception item 2 by path.
 Step 10 (P9): the changelog already names PR #78, so it needs no PR edit.
+Step 10b (P9): one leftover, the archived build log, committed as `86db7dc4` after a clean scan, and pushed.
+CI (P9, first read): run `42938290371` on head `86db7dc4`. macOS shard 2 of 3 failed one check in the ratchet-check timing suite, "ratchet-check uncommitted-marker call completes under 200 ms", at 206 ms. This feature leaves `ratchet-check` unchanged, and backlog 0000265 tracks the flake.
+CI fix attempt 1 (P9): rerun the failed job with no code change, after the run finishes. GitHub only allows a failed-job rerun once the whole run ends.
+CI fix attempt 1 (P9): the rerun of macOS shard 2 of 3 passed. No code changed, so the tag stays on `f001ec06`.
+CI checks (P9): all passed (16 of 16, head `86db7dc4`)
+Progress: P9 done at 2026-11-11T01:48:07Z: tag v0.39.3, PR #78 draft with all checks passing, 1 exception waiting
