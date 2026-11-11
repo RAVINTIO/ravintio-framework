@@ -238,3 +238,29 @@ Full run (P5): after the S-001 fix, 142 feature suites passed and 0 failed, with
 Gate (P5): risk low after the fix. S-001 closed, no critical, high, or medium finding open. Each fix had a fresh-context re-review.
 Credential scan (P5): clean (regex only)
 Progress: P5 done at 2026-11-11T00:21:00Z: S-001 fixed and re-reviewed, risk low, 4 backlog entries filed
+
+---
+
+### P6: Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T00:21:30Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-docs-agent (source copy, step 1b) |
+| Agents spawned | `pending` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | The doc edits ran inline as one batch of parallel calls. Each is a short edit from context already held, under the size floor. |
+
+Skills inbox (P5 to P6): empty.
+Gate A (P6): `docs/` exists.
+P6 Gate B: docs update assessment (autonomous run, auto-accepted). The run narrowed one credential scan rule, with no new component, API, or dependency. Auto-accepted: updating `docs/architecture-overview.md`, `docs/component-registry.md`, `docs/decisions-index.md`, and `docs/dependency-graph.md`, plus `src/ravintio-framework/docs/test-coverage.md`, `risk.md`, and `quirks.md`. No update needed for `docs/api-index.md`, because no component exposes an API.
+Per-component docs (P6): `purpose.md`, `interface-contract.md`, `dependencies.md`, and `scope.md` need no change, because the pack's purpose, interface, and dependencies are unchanged. No `data-contract.md` applies, because the pack owns no data.
+Drift (P6): none found. The glossary terms word boundary and hold-back appear in the rule comment and suite labels. No API, data ownership, or dependency direction changed. The rule follows ADR-002 and its amendment.
+Completeness (P6): the P1 minimal set, 2 ADRs, the security report and re-review, and `recommendations.md` exist. No OpenAPI, operational model, SLO, or cost model applies.
+Backlog routing (P6): `recommendations.md` holds no new Deferred Items or Tech Debt row, so P6 files no entry.
+Iteration log (P6): `plan/changelog/0000044-credential-scan-word-boundary-2026-11-11.md`.

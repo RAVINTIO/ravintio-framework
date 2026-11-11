@@ -1,6 +1,6 @@
 # Test coverage - ravintio-framework
 
-Last updated: 0000043-macos-test-job-timeout
+Last updated: 0000044-credential-scan-word-boundary
 
 ## Summary
 
@@ -46,6 +46,15 @@ The 0000041 req-005 and req-006 suites changed in 0000042: one Windows guard eac
 
 The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the per-entry cap and the 3 macOS shards. The full run for 0000043 covers 179 suites.
 
+## 0000044 changes
+
+0000044 adds no suite. Both copies of `test-0000037-req-003-credential-scan.sh` gain a `0000044 req-001` block and a `# Verified by: unit` header line. Each copy passes 210 checks.
+
+- 4 negative cases: a `release.yml` hash line under the vendored risk requirements analysis skill folder, and keys after an ASCII letter, a digit, and `_`.
+- 11 positive cases: keys at column 1, after `=`, a double quote, and a colon, and after 7 escapes. The escapes are `%3D`, `%22`, `%20`, `%3A`, `\n`, `\t`, and `"`.
+
+The full run for 0000044 covers 179 suites.
+
 ## Known gaps
 
 - The case-collision case (RS-F07) skips on a case-insensitive file system. Linux CI runs it.
@@ -54,4 +63,5 @@ The 0000031 req-001 and 0000037 req-010 suites changed in 0000043 to check the p
 - No test covers a deleted `release.yml` in the CI integrity job (backlog 0000418).
 - No Windows run tests that `project-kind.mjs` and the 0.39.0 migration refuse links. Linux and macOS run those cases (0000042 ADR-002, backlog 0000431).
 - No test covers a `mktemp` that prints nothing and exits 0 in the req-005 suite. The suite checks for it (0000042 security re-review R-2).
+- No test covers a key after a `\x` escape or an ANSI colour code, which the `api-secret-key` rule misses (backlog 0000437).
 - No CI run has shown the elapsed step after a real step timeout. The req-002 suite runs the step's block with a start 16 minutes old (0000043 verification report).
