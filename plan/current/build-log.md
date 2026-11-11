@@ -227,3 +227,6 @@ Backlog filed (P5): 0000435, CI runs no credential scan or gitleaks (S-002).
 Backlog filed (P5): 0000436, no rule for underscore-style secret keys (S-004).
 Decision (P5): fix S-001 in this run, through the TDD loop / reason: the fix only strengthens the rule, keeps the design's intent, and a medium finding on a security control shouldn't ship open.
 Deviation (P5, unclassified): the `api-secret-key` rule becomes `/(?:\b|(?<=%[0-9A-Fa-f]{2}|\\[nrt]|\\u[0-9A-Fa-f]{4}))sk-[A-Za-z0-9_-]{20,}/`, not the design's `/\bsk-[A-Za-z0-9_-]{20,}/`. It also matches after a percent escape, `\n`, `\r`, `\t`, or a `\u` escape. req-001 adds criterion 7, and ADR-002 gains an amendment.
+TDD (P5, req-001 criterion 7, attempt 1): RED at `1d373270`. Both suite copies exit 1 with 196 passed and 14 failed, all on the 7 new escape cases. The orchestrator reran both to confirm.
+TDD (P5, req-001 criterion 7, attempt 1): GREEN at `405415d0`. Both suite copies exit 0 with 210 passed. The current `release.yml` still scans clean.
+TDD (P5, req-001 criterion 7): refactor merged the two comment lines above the rule. No regex or assertion changed. Both suite copies still exit 0.
