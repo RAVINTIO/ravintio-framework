@@ -289,8 +289,8 @@ Progress: P6 done at 2026-11-11T00:57:36Z: 7 docs updated, cross-model review ap
 | Field | Value |
 |-------|-------|
 | Start | `2026-11-11T01:15:54Z` |
-| End | `pending` |
-| Wall-clock | `pending` |
+| End | `2026-11-11T01:17:00Z` |
+| Wall-clock | `1` |
 | Streams | `n/a` |
 | Model tier | primary |
 | Skills loaded | ravintio-ship-agent (source copy, step 1b) |
@@ -311,3 +311,47 @@ Step 5c (P7): project kind `framework source`. summary: version 0.39.3, source-c
 Verify by execution (P7, req-001 criterion 3): `credential-scan.mjs --file ravintio-framework/release.yml` exits 0 on the rebuilt 0.39.3 file. The P7 commit check follows.
 Step 6 (P7): `archive-current.mjs` moved 26 items into `plan/_archive/0000044-credential-scan-word-boundary-2026-11-11` and removed `plan/current/.feature-id`. archive-dir: plan/_archive/0000044-credential-scan-word-boundary-2026-11-11
 Step 6b (P7): `docs/about.md` reads version 0.39.3 and feature 0000044-credential-scan-word-boundary.
+Step 7 (P7): scan-then-commit over 64 candidates, scan exit 0, all 64 safe. Commit `508867b4`.
+Credential scan (P7): clean (regex only). `ravintio-framework/release.yml` was on the safe list.
+Verify by execution (P7, req-001 criterion 3): verified. The scan passed the rebuilt `release.yml`, and `git ls-files` lists it after commit `508867b4`.
+Progress: P7 done at 2026-11-11T01:17:00Z: plan/current archived, root copy rebuilt at 0.39.3, release.yml committed with no hold-back
+
+---
+
+### P8: Build Assessment
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:17:00Z` |
+| End | `2026-11-11T01:19:29Z` |
+| Wall-clock | `2` |
+| Streams | `n/a` |
+| Model tier | cheaper |
+| Skills loaded | ravintio-build-assessment-agent (1 subagent) |
+| Agents spawned | `1` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | none |
+
+P8 (build assessment): `build-report.md` written. Note for the report: the 18-minute gap from the P6 End to the P7 Start was the wait for the PR #78 checks on head `6817bc51`, which the P7 block records.
+Clean-tree check (P8): the only changes sit under the archive directory, so the P9 marker commit carries them. Clean otherwise.
+Progress: P8 done at 2026-11-11T01:19:29Z: build report written
+
+---
+
+### P9: Ship
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-11-11T01:19:29Z` |
+| End | `pending` |
+| Wall-clock | `pending` |
+| Streams | `n/a` |
+| Model tier | primary |
+| Skills loaded | ravintio-ship-agent (source copy, step 1b) |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `0` |
+| Notes | PR #78 exists from P4. |
+
+PR: #78 https://github.com/RAVINTIO/ravintio-framework/pull/78
